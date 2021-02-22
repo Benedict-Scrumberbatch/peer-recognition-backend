@@ -24,7 +24,7 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Backend code for CS320 Peer Recognition Software Prototype (Spring 2021) using the [Nest](https://github.com/nestjs/nest) framework.
 
 ## Installation
 
