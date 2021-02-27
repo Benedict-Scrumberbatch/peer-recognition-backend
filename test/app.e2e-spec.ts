@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
-import {getEmployeeRepository, getCompanyRepository, getLoginRepository} from "index";
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
@@ -23,14 +22,3 @@ describe('AppController (e2e)', () => {
       .expect('Hello World!');
   });
 });
-
-describe('database', () => {
-  const cRep = getCompanyRepository();
-  const eRep = getEmployeeRepository();
-  const lRep = getLoginRepository();
-
-  cRep.createAndSave({id: 1, name: "Totally Real Company Inc."});
-
-  eRep.createAndSave({employeeID: 1, firstName: 'Test', lastName: 'User', positionTitle: 'A totally real job', startDate: 'February 29, 2021', managerID = 1, companyID = 1});
-  
-})

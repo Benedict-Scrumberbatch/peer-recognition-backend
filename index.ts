@@ -7,7 +7,9 @@ var connection;
 
 export async function connect(){
 createConnection().then(async connection => { 
-    
+
+    console.log("Creating connection to the database");
+
     const emps = connection.manager.getRepository(Employee);
     const comps = connection.manager.getRepository(Company);
     const logs = connection.manager.getRepository(Login);
