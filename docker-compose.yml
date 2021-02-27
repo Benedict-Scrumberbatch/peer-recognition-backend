@@ -8,7 +8,7 @@ services:
     volumes:
       - database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
     enviornment:
-            PG_USER: "test"
-            PG_PASSWORD: "test"
+            POSTGRES_USER: "test"
+            POSTGRES_PASSWORD: "test"
 volumes:
   database-data: # named volumes can be managed easier using docker-compose
