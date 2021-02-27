@@ -1,4 +1,4 @@
-import {Entity, PrimayGeneratedColumn, PrimaryColumn, Column, OneToMany, ManyToOne, JoinColumn} from "typeorm";
+import {Entity, PrimayGeneratedColumn, PrimaryColumn, Column, OneToMany, ManyToOne, JoinColumn, Index} from "typeorm";
 
 @Entity()
 export class Company {
@@ -13,8 +13,9 @@ export class Company {
 }
 
 @Entity()
+@Index(["companyID", "employeeID"], {unique: true}) //specifies a composite primary key
 export class Employee {
-    @PrimaryColumn()
+    @Column()
     employeeID: number;
     @Column()
     firstName: string;
@@ -28,7 +29,7 @@ export class Employee {
     managerID: number;
     @Column()
     isManager: boolean;
-    @PrimaryColumn()
+    @Column()
     @ManyToOne(type => Company, company => company.employees)
     companyID: number;
 }
