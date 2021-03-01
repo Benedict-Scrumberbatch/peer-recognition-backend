@@ -27,7 +27,21 @@
 Backend code for CS320 Peer Recognition Software Prototype (Spring 2021) using the [Nest](https://github.com/nestjs/nest) framework.
 
 ## Installation
+From the root directory of the project
 
+### Docker setup
+#### stop current database
+```bash
+$ docker-compose down; docker rm -fr (docker ps | grep postgres | cut -c1-12);\
+docker volume rm peer-recognition-backend_database-data
+```
+
+#### build the new database
+```bash
+$ docker-compose up
+```
+
+## install the dependencies
 ```bash
 $ npm install
 ```
@@ -57,6 +71,13 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+
+## Docker Notes
+### persistence
+The database has persistence of information between sessions.  It however does *not* currently have any form of **environmental** persistence, nor does it have direct file support in the repo, instead it has a volume holding the information.
+
+### Connection
+The database is currently used by connecting to 
 
 ## Support
 
