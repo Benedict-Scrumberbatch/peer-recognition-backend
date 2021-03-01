@@ -77,7 +77,7 @@ $ npm run test:cov
 The database has persistence of information between sessions.  It however does *not* currently have any form of **environmental** persistence, nor does it have direct file support in the repo, instead it has a volume holding the information.
 
 ### Connection
-The database is currently used by connecting to 
+The database is currently used by connecting to localhost:5432.
 
 ## Support
 
