@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
+import { resolveConfigFile } from 'prettier';
 
 //Change to a real interface
 export type User = any;
@@ -7,7 +8,7 @@ export type User = any;
 export class UsersService {
     //Must hash passwords
     //In reality will grab user information from the database.
-    private readonly users = [ //Temporary dummy users.
+    public users = [ //Temporary dummy users.
         {
             userId: 1,
             username: 'greg',
