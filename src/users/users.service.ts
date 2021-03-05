@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Users } from './users.entity';
+import { Login } from './login.entity';
 //Change to a real interface
 export type User = any;
 
@@ -10,7 +11,9 @@ export class UsersService {
 
     constructor(
         @InjectRepository(Users)
-        private usersRepository: Repository<Users>
+        private usersRepository: Repository<Users>,
+        @InjectRepository(Login)
+        private loginRepo: Repository<Login>
     ){}
 
     //Must hash passwords
@@ -29,8 +32,6 @@ export class UsersService {
     ];
 
     async findOne(username: string): Promise<User | undefined> {
-        // return this.users.find(user => user.username === username);
-        let user = this.usersRepository.findOne({ where: { email: username } });
-        return user;
+        return this.loginRepo.findOne( { where: { email: username }});
     }
 }

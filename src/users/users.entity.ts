@@ -15,9 +15,6 @@ export class Users {
     companyId: number;
 
     @Column()
-    password: string;
-
-    @Column()
     positionTitle: string;
 
     @Column()
@@ -25,9 +22,6 @@ export class Users {
 
     @Column()
     isManager: boolean;
-
-    @Column()
-    email: string;
 
     @Column("timestamp")
     startDate: Date;
