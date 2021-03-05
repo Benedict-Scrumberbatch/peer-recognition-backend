@@ -6,7 +6,7 @@
 [circleci-url]: https://circleci.com/gh/nestjs/nest
 
   <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
+    <p align="center"> <! I would remove this >
 <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
 <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
 <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
@@ -22,21 +22,21 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+# Description
 
 Backend code for CS320 Peer Recognition Software Prototype (Spring 2021) using the [Nest](https://github.com/nestjs/nest) framework.
 
-## Installation
+# Installation
 From the root directory of the project
 
-### Docker setup
-#### stop current database
+## Docker setup
+### stop current database
 ```bash
 $ docker-compose down; docker rm -fr (docker ps | grep postgres | cut -c1-12);\
 docker volume rm peer-recognition-backend_database-data
 ```
 
-#### build the new database
+### build the new database
 ```bash
 $ docker-compose up
 ```
@@ -71,13 +71,12 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
-
-## Docker Notes
+# Database Functions
 ### persistence
 The database has persistence of information between sessions.  It however does *not* currently have any form of **environmental** persistence, nor does it have direct file support in the repo, instead it has a volume holding the information.
 
-### Connection
-The database is currently used by connecting to localhost:5432.
+# API endpoints
+The system can be connected to by using port 3000 on the localhost.
 
 ## Support
 
