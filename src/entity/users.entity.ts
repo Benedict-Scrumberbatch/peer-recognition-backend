@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryColumn, JoinColumn, OneToMany, ManyToOne } from 'typeorm';
-import { Company } from "./Company";
-import { Recognition } from "./Recognition";
+import { Company } from "./company.entity";
+import { Recognition } from "./recognition.entity";
 
 @Entity({name: "user", synchronize: false})
 export class Users {

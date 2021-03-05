@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryColumn, OneToMany, TableForeignKey } from 'typeorm';
-import { Tag } from "./Tag";
+import { Tag } from "./tag.entity";
 
 @Entity({name: "company", synchronize: false})
 export class Company {

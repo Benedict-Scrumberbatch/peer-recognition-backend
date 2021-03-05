@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, JoinColumn, ManyToOne } from 'typeorm';
-import { Company } from "./Company";
-import { Users } from "./Users";
-import { Tag } from "./Tag";
+import { Company } from "./company.entity";
+import { Users } from "./users.entity";
+import { Tag } from "./tag.entity";
 
 @Entity({name: "recognition", synchronize: false})
 export class Recognition {

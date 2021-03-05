@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Users } from 'src/entity/Users';
-import { Login } from 'src/entity/Login';
+import { Users } from '../entity/users.entity';
+import { Login } from '../entity/login.entity';
 //Change to a real interface
 export type User = any;
 
