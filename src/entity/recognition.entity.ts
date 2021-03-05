@@ -3,7 +3,7 @@ import { Company } from "./company.entity";
 import { Users } from "./users.entity";
 import { Tag } from "./tag.entity";
 
-@Entity({name: "recognition", synchronize: false})
+@Entity({name: "recognition"})
 export class Recognition {
     @PrimaryGeneratedColumn()
     recId: number;

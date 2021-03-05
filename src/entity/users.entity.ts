@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryColumn, JoinColumn, OneToMany, ManyToOne } from 
 import { Company } from "./company.entity";
 import { Recognition } from "./recognition.entity";
 
-@Entity({name: "user", synchronize: false})
+@Entity({name: "user"})
 export class Users {
     @PrimaryColumn()
     employeeId: number;

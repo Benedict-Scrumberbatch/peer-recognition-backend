@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryColumn, OneToOne, JoinColumn } from 'typeorm';
 import { Company } from "./company.entity";
 import { Users } from "./users.entity";
 
-@Entity({name: "login", synchronize: false})
+@Entity({name: "login"})
 export class Login {
     @PrimaryColumn()
     email: string;
