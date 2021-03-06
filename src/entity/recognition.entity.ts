@@ -8,8 +8,8 @@ export class Recognition {
     @PrimaryGeneratedColumn()
     recId: number;
 
-    @ManyToOne(()=> Company, company=>company.tags)
-    company: Company;
+    // @ManyToOne(()=> Company, company=>company.tags)
+    // company: Company;
 
     @Column("timestamp")
     postDate: Date;
