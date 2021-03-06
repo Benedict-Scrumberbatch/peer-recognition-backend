@@ -14,9 +14,10 @@ export class Users {
     @Column()
     lastName: string;
 
-    // @PrimaryColumn()
-    // @JoinColumn()
-    // companyId: number;
+    @PrimaryColumn()
+    @ManyToOne(()=>Company, company=>company.employees)
+    @JoinColumn()
+    company: Company;
 
     @Column()
     positionTitle: string;
