@@ -14,8 +14,7 @@ export class Users {
     @Column()
     lastName: string;
 
-    @PrimaryColumn()
-    @ManyToOne(()=>Company, company=>company.employees)
+    @ManyToOne(()=>Company, company=>company.employees, { primary: true })
     @JoinColumn()
     company: Company;
 

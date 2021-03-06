@@ -1,9 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, JoinColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, JoinColumn, ManyToOne, Index, OneToMany } from 'typeorm';
 import { Company } from "./company.entity";
 import { Users } from "./users.entity";
 import { Tag } from "./tag.entity";
 
 @Entity({name: "recognition"})
+@Index(["company", "recID"], {unique: true})
 export class Recognition {
     @PrimaryGeneratedColumn()
     recId: number;
@@ -21,4 +22,9 @@ export class Recognition {
     @ManyToOne(()=> Users, users=>users.recsReceived)
     @JoinColumn()
     empTo: Users;
+
+    @OneToMany(()=>Tag, tag=>tag.rec)
+    @JoinColumn()
+    tags: Tag[];
+
 }
