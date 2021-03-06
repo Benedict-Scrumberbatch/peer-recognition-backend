@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryColumn, JoinColumn, OneToMany, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryColumn, JoinColumn, OneToMany, ManyToOne, OneToOne } from 'typeorm';
 import { Company } from "./company.entity";
+import { Login } from './login.entity';
 import { Recognition } from "./recognition.entity";
 
 @Entity({name: "user"})
@@ -13,9 +14,9 @@ export class Users {
     @Column()
     lastName: string;
 
-    @PrimaryColumn()
-    @JoinColumn()
-    companyId: number;
+    // @PrimaryColumn()
+    // @JoinColumn()
+    // companyId: number;
 
     @Column()
     positionTitle: string;
@@ -41,4 +42,8 @@ export class Users {
 
     @Column()
     msg: string;
+
+    @OneToOne(() => Login)
+    @JoinColumn()
+    employee: Login;
 }
