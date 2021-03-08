@@ -4,13 +4,13 @@ import { Login } from './login.entity';
 import { Recognition } from "./recognition.entity";
 
 @Entity({name: "users"})
-@Index(["companyId", "employeeId"], {unique: true})
 export class Users {
     
-    // @ManyToOne(()=>Company, {primary: true} )
-    // @JoinColumn({name: "companyId", referencedColumnName: "companyId"})
-    // company: Company;
-    //FIXME: companyID is a primarycolumn but also a foreign key, still working on getting the foreign key part to work
+    @ManyToOne(()=>Company, {primary: true} )
+    @JoinColumn({name: "companyId", referencedColumnName: "companyId"})
+    company: Company;
+    
+    //for some reason this works... I feel like this should be making two columns with the same name, so if there is an error that looks like that it might be here.
     @PrimaryColumn()
     companyId: number;
 
@@ -33,7 +33,10 @@ export class Users {
     startDate: Date;
 
     @ManyToOne(()=> Users)
-    @JoinColumn()
+    @JoinColumn([
+        {referencedColumnName: "companyId"},
+        {referencedColumnName: "employeeId"}
+    ])
     manager: Users;
 
     @OneToMany(()=>Recognition, rec=>rec.empFrom)
