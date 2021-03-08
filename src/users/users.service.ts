@@ -1,10 +1,21 @@
 import { Injectable } from '@nestjs/common';
-
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Users } from '../entity/users.entity';
+import { Login } from '../entity/login.entity';
 //Change to a real interface
 export type User = any;
 
 @Injectable()
 export class UsersService {
+
+    constructor(
+        @InjectRepository(Users)
+        private usersRepository: Repository<Users>,
+        @InjectRepository(Login)
+        private loginRepo: Repository<Login>
+    ){}
+
     //Must hash passwords
     //In reality will grab user information from the database.
     private readonly users = [ //Temporary dummy users.
@@ -21,6 +32,6 @@ export class UsersService {
     ];
 
     async findOne(username: string): Promise<User | undefined> {
-        return this.users.find(user => user.username === username);
+        return this.loginRepo.findOne( { where: { email: username }});
     }
 }
