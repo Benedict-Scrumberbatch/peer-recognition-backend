@@ -1,10 +1,19 @@
-import { Entity, Column, PrimaryColumn, JoinColumn, OneToMany, ManyToOne, OneToOne } from 'typeorm';
+import { Entity, Column, PrimaryColumn, JoinColumn, OneToMany, ManyToOne, OneToOne, Index } from 'typeorm';
 import { Company } from "./company.entity";
 import { Login } from './login.entity';
 import { Recognition } from "./recognition.entity";
 
-@Entity({name: "user"})
+@Entity({name: "users"})
+@Index(["companyId", "employeeId"], {unique: true})
 export class Users {
+    
+    // @ManyToOne(()=>Company, {primary: true} )
+    // @JoinColumn({name: "companyId", referencedColumnName: "companyId"})
+    // company: Company;
+    //FIXME: companyID is a primarycolumn but also a foreign key, still working on getting the foreign key part to work
+    @PrimaryColumn()
+    companyId: number;
+
     @PrimaryColumn()
     employeeId: number;
 
@@ -14,15 +23,8 @@ export class Users {
     @Column()
     lastName: string;
 
-    @ManyToOne(()=>Company, company=>company.employees, { primary: true })
-    @JoinColumn()
-    company: Company;
-
     @Column()
     positionTitle: string;
-
-    @Column()
-    companyName: string;
 
     @Column()
     isManager: boolean;
@@ -39,9 +41,6 @@ export class Users {
 
     @OneToMany(()=>Recognition, rec=>rec.empTo)
     recsReceived: Recognition[];
-
-    @Column()
-    msg: string;
 
     @OneToOne(() => Login)
     @JoinColumn()
