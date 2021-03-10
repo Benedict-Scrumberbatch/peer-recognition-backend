@@ -45,7 +45,8 @@ export class Users {
     @OneToMany(()=>Recognition, rec=>rec.empTo)
     recsReceived: Recognition[];
 
-    @OneToOne(() => Login)
-    @JoinColumn()
-    employee: Login;
+    //This relation was making it impossible to create rows in the table.
+    // @OneToOne(() => Login)
+    // @JoinColumn()
+    // employee: Login;
 }

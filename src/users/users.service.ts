@@ -3,8 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Users } from '../entity/users.entity';
 import { Login } from '../entity/login.entity';
-//Change to a real interface
-export type User = any;
+
 
 @Injectable()
 export class UsersService {
@@ -18,20 +17,13 @@ export class UsersService {
 
     //Must hash passwords
     //In reality will grab user information from the database.
-    private readonly users = [ //Temporary dummy users.
-        {
-            userId: 1,
-            username: 'greg',
-            password: 'password1'
-        },
-        {
-            userId: 2,
-            username: 'bob',
-            password: 'password2'
-        }
-    ];
 
-    async findOne(username: string): Promise<User | undefined> {
-        return this.loginRepo.findOne( { where: { email: username }});
+    async loginUser(username: string): Promise<any | undefined> {
+        return this.loginRepo.findOne( { relations: ["employee"], where: { email: username } });
     }
-}
+
+    //Function retrieves user profile using their userId.
+    async getProfile(userId: number, companyId: number): Promise<any | undefined> {
+        return this.usersRepository.findOne( { relations: ["manager"], where: { employeeId: userId, companyId: companyId } } );
+    }
+} 
