@@ -1,9 +1,19 @@
-import { Entity, Column, PrimaryColumn, JoinColumn, OneToMany, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryColumn, JoinColumn, OneToMany, ManyToOne, OneToOne, Index } from 'typeorm';
 import { Company } from "./company.entity";
+import { Login } from './login.entity';
 import { Recognition } from "./recognition.entity";
 
-@Entity({name: "user"})
+@Entity({name: "users"})
 export class Users {
+    
+    @ManyToOne(()=>Company, {primary: true} )
+    @JoinColumn({name: "companyId", referencedColumnName: "companyId"})
+    company: Company;
+    
+    //for some reason this works... I feel like this should be making two columns with the same name, so if there is an error that looks like that it might be here.
+    @PrimaryColumn()
+    companyId: number;
+
     @PrimaryColumn()
     employeeId: number;
 
@@ -13,15 +23,8 @@ export class Users {
     @Column()
     lastName: string;
 
-    @PrimaryColumn()
-    @JoinColumn()
-    companyId: number;
-
     @Column()
     positionTitle: string;
-
-    @Column()
-    companyName: string;
 
     @Column()
     isManager: boolean;
@@ -30,7 +33,10 @@ export class Users {
     startDate: Date;
 
     @ManyToOne(()=> Users)
-    @JoinColumn()
+    @JoinColumn([
+        {referencedColumnName: "companyId"},
+        {referencedColumnName: "employeeId"}
+    ])
     manager: Users;
 
     @OneToMany(()=>Recognition, rec=>rec.empFrom)
@@ -39,6 +45,8 @@ export class Users {
     @OneToMany(()=>Recognition, rec=>rec.empTo)
     recsReceived: Recognition[];
 
-    @Column()
-    msg: string;
+    //This relation was making it impossible to create rows in the table.
+    // @OneToOne(() => Login)
+    // @JoinColumn()
+    // employee: Login;
 }

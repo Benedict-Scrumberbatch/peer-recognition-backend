@@ -11,7 +11,10 @@ export class Login {
     pswd: string;
 
     @OneToOne(() => Users)
-    @JoinColumn()
+    @JoinColumn([
+        {referencedColumnName: "companyId"},
+        {referencedColumnName: "employeeId"}
+    ])
     employee: Users;
 
 }
