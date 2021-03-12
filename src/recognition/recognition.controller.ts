@@ -11,7 +11,7 @@ export class RecognitionController {
         return this.recs.findAll();
     }
     @Post('create')
-        create(@Body() createRecDto: CreateRecDto){
+        create(@Body() createRecDto: CreateRecDto): Promise<Recognition>{
             return this.recs.createRec(createRecDto);
         }
     @Delete(':id')
