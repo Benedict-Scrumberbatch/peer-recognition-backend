@@ -10,6 +10,11 @@ import { ROLES_KEY } from './roles.decorator';
 export class RolesGuard implements CanActivate {
     constructor (private reflector: Reflector) {}
 
+    /**
+     * This method verifies the user role.
+     * @param context Execution context
+     * @returns True if user role matches the restriction, false otherwise.
+     */
     canActivate(context: ExecutionContext): boolean {
         const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
             context.getHandler(), 
