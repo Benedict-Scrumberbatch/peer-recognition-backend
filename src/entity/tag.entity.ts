@@ -11,9 +11,11 @@ export class Tag {
     @Column()
     value: string
 
-    @ManyToOne(()=> Company, company=>company.tags)
+    // @Index()
+    @ManyToOne(()=> Company, company=>company.tags, {primary: true})
     company: Company;
 
+    @Index()
     @Column()
     companyCompanyId: number;
 
