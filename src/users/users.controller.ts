@@ -9,8 +9,7 @@ import { RolesGuard } from '../roles/roles.guard';
 export class UsersController {
     constructor (private usersService: UsersService) {}
 
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles(Role.Admin, Role.Employee)
+    @UseGuards(JwtAuthGuard)
     @Get('profile')
     getProfile(@Request() req) {
         return this.usersService.getProfile(req.user.employeeId, req.user.companyId);
