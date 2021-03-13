@@ -12,4 +12,10 @@ export class UsersController {
         return this.usersService.getProfile(req.user.employeeId, req.user.companyId);
         // return req.user;
     }
+
+    @UseGuards(JwtAuthGuard)
+    @Get(':employ_id/company:comp_id')
+    async getUser(@param("employ_id") employee_id: number, @param("comp_id") company_id: number) {
+        return await this.usersService.getProfile(employee_id, company_id);
+    }
 }
