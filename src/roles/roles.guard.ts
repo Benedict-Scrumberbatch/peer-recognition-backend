@@ -3,6 +3,9 @@ import { Reflector } from '@nestjs/core';
 import { Role } from './role.enum';
 import { ROLES_KEY } from './roles.decorator';
 
+/**
+ * Roles guard is responsible for verifying if a user should be allowed to access the endpoint.
+ */
 @Injectable()
 export class RolesGuard implements CanActivate {
     constructor (private reflector: Reflector) {}
