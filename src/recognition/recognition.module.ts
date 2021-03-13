@@ -7,9 +7,9 @@ import { Users } from 'src/entity/users.entity';
 import { Tag } from 'src/entity/tag.entity';
 import { Company } from 'src/entity/company.entity';
 @Module({
-  imports: [ TypeOrmModule.forFeature([Recognition, Users, Tag, Company])],
+  imports: [ TypeOrmModule.forFeature([ Recognition])],
+  providers: [RecognitionService],
   controllers: [ RecognitionController],
-  providers: [ RecognitionService],
   exports: [RecognitionService]
 })
 export class RecognitionModule {}

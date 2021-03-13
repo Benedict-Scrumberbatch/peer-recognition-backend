@@ -5,7 +5,7 @@ import {Recognition} from '../entity/recognition.entity';
 
 @Controller('recognition')
 export class RecognitionController {
-    constructor(private readonly recs: RecognitionService){}
+    constructor(private recs: RecognitionService){}
     @Get()
     findAll(): Promise<Recognition[]>{
         return this.recs.findAll();
