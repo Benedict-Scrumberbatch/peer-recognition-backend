@@ -3,7 +3,7 @@ import { Company } from './company.entity';
 import { Recognition } from './recognition.entity';
 
 @Entity({name: "tag"})
-@Index(["companyCompanyId", "tagId"])
+@Index(["tagId"], {unique: true})
 export class Tag {
     @PrimaryGeneratedColumn()
     tagId: number;
