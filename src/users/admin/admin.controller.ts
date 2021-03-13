@@ -1,17 +1,25 @@
 import { Body, Controller, Delete, Request, Get, Param, Post, Query } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { UsersService } from '../users.service';
-import { CreateUserDto } from '../create-user.dto';
+import { CreateUserDto } from './create-user.dto';
 
 @Controller('admin')
 export class AdminController {
     constructor(private adminService: AdminService){}
 
-    @Get(':employeeId')
-    getProfile(@Request() req) {
-        return this.adminService.getUser(req.user.employeeId, req.user.companyId);
+    @Get()
+    findAll() {
+        return this.adminService.findAll();
     }
 
-    @Delete(':employeeid')
-    remove(@Param('employeeid') employeeid: number) {}
+    @Get(':employeeId')
+    findOne(@Param('employeeId') employeeId: number) {
+        return this.adminService.findOne(employeeId);
+    }
+
+    @Delete(':employeeId')
+    removeUser(@Param('employeeId') employeeId: number) {
+        return this.adminService.removeUser(employeeId)
+    }
+   
 }
