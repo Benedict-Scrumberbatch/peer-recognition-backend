@@ -4,7 +4,7 @@ import { Users } from "./users.entity";
 import { Tag } from "./tag.entity";
 
 @Entity({name: "recognition"})
-@Index(["company", "postDate"], {unique: true})
+// @Index(["company", "postDate"], {unique: true})
 export class Recognition {
     @PrimaryGeneratedColumn()
     recId: number;

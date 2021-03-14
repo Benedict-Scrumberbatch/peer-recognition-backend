@@ -1,9 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, ManyToMany, Index } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, ManyToMany, Index, PrimaryColumn } from 'typeorm';
 import { Company } from './company.entity';
 import { Recognition } from './recognition.entity';
 
 @Entity({name: "tag"})
-@Index(["companyCompanyId", "tagId"])
+@Index(["tagId"], {unique: true})
 export class Tag {
     @PrimaryGeneratedColumn()
     tagId: number;
@@ -11,9 +11,11 @@ export class Tag {
     @Column()
     value: string
 
-    @ManyToOne(()=> Company, company=>company.tags)
+    // @Index()
+    @ManyToOne(()=> Company, company=>company.tags, {primary: true})
     company: Company;
 
+    @Index()
     @Column()
     companyCompanyId: number;
 
