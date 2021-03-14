@@ -6,6 +6,7 @@ import { Company } from '../../entity/company.entity';
 import { Recognition } from '../../entity/recognition.entity';
 import { CreateUserDto } from './create-user.dto';
 import { Tag } from 'src/entity/tag.entity';
+import { Login } from 'src/entity/login.entity';
 
 @Injectable()
 export class AdminService { 
@@ -21,6 +22,9 @@ export class AdminService {
 
         @InjectRepository(Recognition)
         private recognitionsRepository: Repository<Recognition>,
+
+        @InjectRepository(Login)
+        private loginRepository: Repository<Login>,
     ) {}
 
     findAll(): Promise<Users[]> {
@@ -35,7 +39,7 @@ export class AdminService {
     //     await this.usersRepository.delete({ companyId: companyId, employeeId: employeeId  } );
     // }
     
-    createUser(createuserDto: CreateUserDto): Promise<Users> {
+    async createUser(createuserDto: CreateUserDto): Promise<Users> {
         // // Hard-coded rec
         // const rec = new Recognition();
         // rec.recId = 1;
@@ -61,6 +65,7 @@ export class AdminService {
 
         const user = new Users();
         user.company = null;    // Null for now
+
         user.employeeId = createuserDto.employeeId;
         user.companyId = createuserDto.companyId;
 
@@ -73,6 +78,11 @@ export class AdminService {
         
         user.manager = null;    // Null for now
 
-        return this.usersRepository.save(user);
+        const login = new Login()
+        login.email = createuserDto.firstName + createuserDto.lastName + '@ukg.com';
+        login.pswd = createuserDto.pswd;
+        login.employee = await this.usersRepository.save(user);
+        
+        return user;
     }
 }

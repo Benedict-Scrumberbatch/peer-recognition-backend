@@ -7,11 +7,12 @@ import { Users } from '../../entity/users.entity';
 import { Tag } from 'src/entity/tag.entity';
 import { Recognition } from 'src/entity/recognition.entity';
 import { Company } from 'src/entity/company.entity';
+import { Login } from 'src/entity/login.entity';
 
 @Module({
   imports: [
     UsersModule, 
-    TypeOrmModule.forFeature([Users, Tag, Recognition, Company]),
+    TypeOrmModule.forFeature([Users, Tag, Recognition, Company, Login]),
   ],
   providers: [AdminService],
   controllers: [AdminController],

@@ -13,8 +13,8 @@ export class CreateUserDto {
 
     readonly isManager: boolean;
     readonly positionTitle: string;
-    readonly startDate: Date
 
     readonly manager: Users
 
+    readonly pswd: string;
 }
