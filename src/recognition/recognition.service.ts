@@ -28,14 +28,18 @@ export class RecognitionService {
     async createRec(recDto: CreateRecDto): Promise<Recognition> {
         const rec = new Recognition();
         rec.msg = recDto.msg;
-        rec.postDate = recDto.post_time;
-        rec.recId = recDto.recognitionID;
+        rec.postDate = new Date();
         rec.company = await this.companyRepository.findOne({where:{companyId : recDto.company}});
         rec.empFrom = await this.userRepository.findOne({where:{employeeId:recDto.employeeFrom}});
         rec.empTo = await this.userRepository.findOne({where:{employeeId:recDto.employeeTo}});
+        if(recDto.tags != undefined){
         for(let i = 0; i < recDto.tags.length;i++){
-            rec.tags.push(await this.tagRepository.findOne({ where: { tagId: recDto.tags[i] } }))
+            const tag = await this.tagRepository.findOne({ where: { tagId: recDto.tags[i] } });
+            if(tag != undefined){
+            rec.tags.push()
+            }
         }
+    }
         this.recognitionsRepository.save(rec);
         return rec
      }
