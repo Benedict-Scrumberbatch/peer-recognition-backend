@@ -1,6 +1,5 @@
 import { Body, Controller, Delete, Request, Get, Param, Post, Query } from '@nestjs/common';
 import { AdminService } from './admin.service';
-import { UsersService } from '../users.service';
 import { CreateUserDto } from './create-user.dto';
 
 @Controller('admin')
@@ -17,9 +16,14 @@ export class AdminController {
         return this.adminService.findOne(employeeId);
     }
 
-    @Delete(':employeeId')
-    removeUser(@Param('employeeId') employeeId: number) {
-        return this.adminService.removeUser(employeeId)
+    // @Delete()
+    // removeUser(@Body() companyId: number, employeeId: number) {
+    //     return this.adminService.removeUser(companyId, employeeId)
+    // }
+
+    @Post()
+    createUser(@Body() createuserDto: CreateUserDto) {
+        return this.adminService.createUser(createuserDto);
     }
    
 }
