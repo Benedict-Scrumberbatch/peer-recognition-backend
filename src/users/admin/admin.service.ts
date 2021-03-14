@@ -27,17 +27,19 @@ export class AdminService {
         private loginRepository: Repository<Login>,
     ) {}
 
-    findAll(): Promise<Users[]> {
-        return this.usersRepository.find();
+    async findAll(): Promise<Users[]> {
+        return await this.usersRepository.find();
     }
     
-    findOne(employeeId: number): Promise<Users> {
-        return this.usersRepository.findOne(employeeId);
+    async findOne(employeeId: number): Promise<Users> {
+        return await this.usersRepository.findOne(employeeId);
     }
 
-    // async removeUser(companyId: number, employeeId: number): Promise<void> {
-    //     await this.usersRepository.delete({ companyId: companyId, employeeId: employeeId  } );
-    // }
+    async removeUser(companyId: number, employeeId: number): Promise<Users> {
+        const user = this.usersRepository.findOne(employeeId);
+        this.usersRepository.delete({ companyId: companyId, employeeId: employeeId });
+        return await user;
+    }
     
     async createUser(createuserDto: CreateUserDto): Promise<Users> {
         // // Hard-coded rec
@@ -49,24 +51,40 @@ export class AdminService {
         // tag.tagId = 1;
         // tag.value = 'Cool';
 
-        // // Hard-coded company
-        // const company = new Company();
-        // company.companyId = 1;
-        // company.name = 'Bennedict Scrumberbatch';
+        
         // company.tags.push(tag);        
 
         // tag.company = company;
         // tag.companyCompanyId = 1;
         // tag.rec = rec;
 
-        // this.companyRepository.save(company);
         // this.tagRepository.save(tag);
         // this.recognitionsRepository.save(rec);
 
-        const user = new Users();
-        user.company = null;    // Null for now
+        // Hard-coded Manager
+        // const manager = new Users();
+        // manager.companyId = 1;
+        // manager.employeeId = 1;
+        // manager.firstName = 'Sahil';
+        // manager.lastName = 'Malhotra';
+        // manager.isManager = true;
+        // manager.manager = null;
+        // manager.positionTitle = 'Project Manager';
+        // manager.startDate = new Date(Date.now());
+        // this.usersRepository.save(manager);
 
-        user.employeeId = createuserDto.employeeId;
+        // // Hard-coded company
+        // const company = new Company();
+        // company.companyId = 1;
+        // company.name = 'Bennedict Scrumberbatch';
+        // this.companyRepository.save(company);
+        
+        const user = new Users();
+        user.company = await this.companyRepository.findOne({where:{companyId : createuserDto.companyId}})
+
+        const store = await this.usersRepository.find();
+        
+        user.employeeId = store.length + 1;
         user.companyId = createuserDto.companyId;
 
         user.firstName = createuserDto.firstName;
@@ -76,7 +94,7 @@ export class AdminService {
         user.positionTitle = createuserDto.positionTitle;
         user.startDate = new Date(Date.now());
         
-        user.manager = null;    // Null for now
+        user.manager = await this.usersRepository.findOne({where:{employeeId : 1}}) // Sahil is the only Manager for now
 
         const login = new Login()
         login.email = createuserDto.firstName + createuserDto.lastName + '@ukg.com';

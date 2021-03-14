@@ -7,23 +7,23 @@ export class AdminController {
     constructor(private adminService: AdminService){}
 
     @Get()
-    findAll() {
-        return this.adminService.findAll();
+    async findAll() {
+        return await this.adminService.findAll();
     }
 
     @Get(':employeeId')
-    findOne(@Param('employeeId') employeeId: number) {
-        return this.adminService.findOne(employeeId);
+    async findOne(@Param('employeeId') employeeId: number) {
+        return await this.adminService.findOne(employeeId);
     }
 
-    // @Delete()
-    // removeUser(@Body() companyId: number, employeeId: number) {
-    //     return this.adminService.removeUser(companyId, employeeId)
-    // }
+    @Delete()
+    async removeUser(@Body() companyId: number, employeeId: number) {
+        return await this.adminService.removeUser(companyId, employeeId)
+    }
 
     @Post()
-    createUser(@Body() createuserDto: CreateUserDto) {
-        return this.adminService.createUser(createuserDto);
+    async createUser(@Body() createuserDto: CreateUserDto) {
+        return await this.adminService.createUser(createuserDto);
     }
    
 }
