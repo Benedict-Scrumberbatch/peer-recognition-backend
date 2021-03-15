@@ -32,6 +32,7 @@ export class RecognitionService {
         rec.company = await this.companyRepository.findOne({where:{companyId : recDto.company}});
         rec.empFrom = await this.userRepository.findOne({where:{employeeId:recDto.employeeFrom}});
         rec.empTo = await this.userRepository.findOne({where:{employeeId:recDto.employeeTo}});
+        rec.tags = [];
         if(recDto.tags != undefined){
         for(let i = 0; i < recDto.tags.length;i++){
             const tag = await this.tagRepository.findOne({ where: { tagId: recDto.tags[i] } });
@@ -40,7 +41,7 @@ export class RecognitionService {
             }
         }
     }
-        this.recognitionsRepository.save(rec);
+        await this.recognitionsRepository.save(rec);
         return rec
      }
 
