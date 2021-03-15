@@ -1,4 +1,4 @@
-import { Controller, Request, Post, UseGuards, Get } from '@nestjs/common';
+import { Controller, Request, Post, UseGuards, Get, Param } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UsersService } from './users.service';
 
@@ -15,7 +15,7 @@ export class UsersController {
 
     @UseGuards(JwtAuthGuard)
     @Get(':employ_id/company:comp_id')
-    async getUser(@param("employ_id") employee_id: number, @param("comp_id") company_id: number) {
+    async getUser(@Param("employ_id") employee_id: number, @Param("comp_id") company_id: number) {
         return await this.usersService.getProfile(employee_id, company_id);
     }
 }
