@@ -2,6 +2,7 @@ import { Entity, Column, PrimaryColumn, JoinColumn, OneToMany, ManyToOne, OneToO
 import { Company } from "./company.entity";
 import { Login } from './login.entity';
 import { Recognition } from "./recognition.entity";
+import { Role } from "../roles/role.enum";
 
 @Entity({name: "users"})
 export class Users {
@@ -28,6 +29,12 @@ export class Users {
 
     @Column()
     isManager: boolean;
+
+    @Column({ 
+        type: "enum", 
+        enum: Role, 
+        default: Role.Employee})
+    role: Role;
 
     @Column("timestamp")
     startDate: Date;

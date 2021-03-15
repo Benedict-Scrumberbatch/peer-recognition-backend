@@ -10,6 +10,5 @@ export class UsersController {
     @Get('profile')
     getProfile(@Request() req) {
         return this.usersService.getProfile(req.user.employeeId, req.user.companyId);
-        // return req.user;
     }
 }
