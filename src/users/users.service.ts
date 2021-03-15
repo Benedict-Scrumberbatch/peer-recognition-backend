@@ -30,5 +30,8 @@ export class UsersService {
     //Function retrieves range of user profiles using companyID
     async getArrayOfUsers(companyId: number){
 	    // I'm not sure this will work
-	    return await this.usersRepository.find({companyId: companyID});
+	    let profileArray = await this.usersRepository.find({companyId: companyId});
+	    console.log(profileArray);
+	    return profileArray;
     }
+}
