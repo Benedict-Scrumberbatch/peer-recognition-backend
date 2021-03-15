@@ -13,15 +13,15 @@ export class AdminController {
 
     @Get(':employeeId')
     async findOne(@Param('employeeId') employeeId: number) {
-        return await this.adminService.findOne(employeeId);
+        return await this.adminService.findOne( employeeId );
     }
 
-    @Delete()
-    async removeUser(@Body() companyId: number, employeeId: number) {
-        return await this.adminService.removeUser(companyId, employeeId)
+    @Delete('delete/:employeeId')
+    async removeUser(@Param('employeeId') employeeId: number) {
+        return await this.adminService.removeUser(employeeId)
     }
 
-    @Post()
+    @Post('create')
     async createUser(@Body() createuserDto: CreateUserDto) {
         return await this.adminService.createUser(createuserDto);
     }

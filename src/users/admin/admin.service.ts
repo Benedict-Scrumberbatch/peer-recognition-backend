@@ -32,13 +32,11 @@ export class AdminService {
     }
     
     async findOne(employeeId: number): Promise<Users> {
-        return await this.usersRepository.findOne(employeeId);
+        return await this.usersRepository.findOne({employeeId: employeeId});
     }
 
-    async removeUser(companyId: number, employeeId: number): Promise<Users> {
-        const user = this.usersRepository.findOne(employeeId);
-        this.usersRepository.delete({ companyId: companyId, employeeId: employeeId });
-        return await user;
+    async removeUser(employeeId: number): Promise<void> {
+        await this.usersRepository.delete({ employeeId: employeeId });
     }
     
     async createUser(createuserDto: CreateUserDto): Promise<Users> {
@@ -94,12 +92,14 @@ export class AdminService {
         user.positionTitle = createuserDto.positionTitle;
         user.startDate = new Date(Date.now());
         
-        user.manager = await this.usersRepository.findOne({where:{employeeId : 1}}) // Sahil is the only Manager for now
+        if (store.length > 0) 
+            user.manager = await this.usersRepository.findOne({where:{employeeId : 1}}) // set employeeId 1 as manager for now
 
-        const login = new Login()
+        const login = new Login();
         login.email = createuserDto.firstName + createuserDto.lastName + '@ukg.com';
         login.pswd = createuserDto.pswd;
         login.employee = await this.usersRepository.save(user);
+        this.loginRepository.save(login);
         
         return user;
     }
