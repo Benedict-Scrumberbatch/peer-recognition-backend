@@ -26,4 +26,9 @@ export class UsersService {
     async getProfile(userId: number, companyId: number): Promise<any | undefined> {
         return this.usersRepository.findOne( { relations: ["manager"], where: { employeeId: userId, companyId: companyId } } );
     }
-} 
+
+    //Function retrieves range of user profiles using companyID
+    async getArrayOfUsers(companyId: number){
+	    // I'm not sure this will work
+	    return await this.usersRepository.find({companyId: companyID});
+    }
