@@ -5,6 +5,6 @@
    "username": "peer-recognition-user",
    "password": "peer-recognition-password",
    "database": "peer-recognition",
-   "entities": ["dist/**/*.entity{.ts,.js}, src/**.entity{.ts,.js}"],
+   "entities": ["dist/**/*.entity{.ts,.js}"],
    "synchronize": true
 }
