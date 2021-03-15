@@ -3,7 +3,6 @@ import { Company } from './company.entity';
 import { Recognition } from './recognition.entity';
 
 @Entity({name: "tag"})
-@Index(["tagId"], {unique: true})
 export class Tag {
     @PrimaryGeneratedColumn()
     tagId: number;
@@ -11,13 +10,9 @@ export class Tag {
     @Column()
     value: string
 
-    // @Index()
-    @ManyToOne(()=> Company, company=>company.tags, {primary: true})
-    company: Company;
-
     @Index()
-    @Column()
-    companyCompanyId: number;
+    @ManyToOne(()=> Company, company=>company.tags)
+    company: Company;
 
     @ManyToMany(()=> Recognition, rec=> rec.tags)
     rec: Recognition;
