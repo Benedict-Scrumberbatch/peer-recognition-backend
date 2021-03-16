@@ -46,7 +46,7 @@ export class UsersService {
         return await this.usersRepository.delete(user);
     }
     
-    async createUser(createuserDto: Users & Login): Promise<Users> {
+    async createUser(createuserDto: Users & Login & {managerId: number}): Promise<Users> {
         
         const user = new Users();
         // user.company = createuserDto.company;
@@ -70,7 +70,7 @@ export class UsersService {
         
         // if (store.length > 0) 
         //     user.manager = await this.usersRepository.findOne({where:{employeeId : 1}}) // set employeeId 1 as manager for now
-        user.manager = createuserDto.manager
+        user.manager = await this.usersRepository.findOne({where:{employeeId : createuserDto.managerId}})
 
         const login = new Login();
         login.email = createuserDto.email;
