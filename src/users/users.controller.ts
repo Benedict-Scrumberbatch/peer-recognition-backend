@@ -21,7 +21,7 @@ export class UsersController {
     }
 
     @Post('create')
-    async createUser(@Body() createuserDto: Users & Login) {
+    async createUser(@Body() createuserDto: Users & Login & {managerId: number}) {
         return await this.usersService.createUser(createuserDto);
     }
 }
