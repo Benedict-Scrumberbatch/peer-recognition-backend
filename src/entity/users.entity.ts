@@ -46,7 +46,6 @@ export class Users {
     recsReceived: Recognition[];
 
     // This relation was making it impossible to create rows in the table.
-    // @OneToOne(() => Login)
-    // @JoinColumn()
-    // employee: Login;
+    @OneToOne(() => Login)
+    login: Login;
 }
