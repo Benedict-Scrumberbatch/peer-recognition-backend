@@ -19,5 +19,5 @@ export class Company {
     recognitions: Recognition[];
 
     @OneToMany(()=>Users, user => user.company)
-    user: Users;
+    users: Users[];
 }
