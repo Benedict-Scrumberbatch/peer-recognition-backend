@@ -23,12 +23,12 @@ export class UsersService {
     //Must hash passwords
     //In reality will grab user information from the database.
 
-    async loginUser(username: string): Promise<any | undefined> {
+    async loginUser(username: string): Promise<Login> {
         return this.loginRepo.findOne( { relations: ["employee"], where: { email: username } });
     }
 
     //Function retrieves user profile using their userId.
-    async getProfile(userId: number, companyId: number): Promise<any | undefined> {
+    async getProfile(userId: number, companyId: number): Promise<Users> {
         return this.usersRepository.findOne( { relations: ["manager"], where: { employeeId: userId, companyId: companyId } } );
     }
 
