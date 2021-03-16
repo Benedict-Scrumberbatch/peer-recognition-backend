@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { getRepository, Repository } from 'typeorm';
+import { DeleteResult, getRepository, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import {Recognition} from '../entity/recognition.entity';
 import {Company} from '../entity/company.entity'
@@ -44,7 +44,7 @@ export class RecognitionService {
         return rec
      }
 
-    async deleteRec(id: number): Promise<any> {
+    async deleteRec(id: number): Promise<DeleteResult> {
        return await this.recognitionsRepository.delete({recId:id});
      }
 
