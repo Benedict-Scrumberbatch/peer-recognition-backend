@@ -5,16 +5,19 @@ import {Tag} from '../entity/tag.entity';
 @Controller('tag')
 export class TagController {
     constructor(private tags: TagService){}
-    @Get()
-    findAll(): Promise<Tag[]>{
-        return this.tags.findAll();
-    }
-    getCompanyTags(companyId: number): Promise<Tag[]>{
-        return this.tags.getCompanyTags(companyId);
+    //Need to add some way of requiring authorization, like maybe get passed the currently logged in user and get companyId from there?
+    @Get(':id')
+    getCompanyTags(@Param('id') id): Promise<Tag[]>{
+        return this.tags.getCompanyTags(id);
     }
     @Delete(':id')
     delete(@Param('id') id){
         return this.tags.deleteTag(id);
     }
+    @Post('create')
+    create(@Body() tagData: any): Promise<Tag>{
+        return this.tags.createTag(tagData.companyId, tagData.value);
+    }
+
 
 }
