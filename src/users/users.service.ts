@@ -32,6 +32,14 @@ export class UsersService {
         return this.usersRepository.findOne( { relations: ["manager"], where: { employeeId: userId, companyId: companyId } } );
     }
 
+    //Function retrieves range of user profiles using companyID
+    async getArrayOfUsers(companyId: number){
+	    // I'm not sure this will work
+	    let profileArray = await this.usersRepository.find({companyId: companyId});
+	    console.log(profileArray);
+	    return profileArray;
+    }
+
     async removeUser(employeeId: number, companyId: number): Promise<DeleteResult> {
         const user = await this.usersRepository.findOne({ employeeId: employeeId, companyId: companyId })
         await this.loginRepo.delete({employee: user});

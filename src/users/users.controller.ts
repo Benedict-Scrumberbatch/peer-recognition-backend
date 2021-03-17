@@ -14,6 +14,18 @@ export class UsersController {
         return this.usersService.getProfile(req.user.employeeId, req.user.companyId);
     }
 
+    @UseGuards(JwtAuthGuard)
+    @Get(':employ_id/company/:comp_id')
+    async getUser(@Param("employ_id") employee_id: number, @Param("comp_id") company_id: number) {
+        return await this.usersService.getProfile(employee_id, company_id);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('company/:comp_id')
+    async getUsersByCompany(@Param("comp_id") company_id: number) {
+	    return await this.usersService.getArrayOfUsers(company_id);
+    }
+
     @Delete(':employeeId/company/:companyId')
     async removeUser(@Param('employeeId') employeeId: number, @Param('companyId') companyId: number) {
         return await this.usersService.removeUser(employeeId, companyId);
