@@ -3,10 +3,10 @@ import {CreateRecDto} from './dto/create-rec.dto'
 import {RecognitionService} from './recognition.service'
 import {Recognition} from '../entity/recognition.entity';
 
-@Controller('recognition')
+@Controller('recognitions')
 export class RecognitionController {
     constructor(private recs: RecognitionService){}
-    @Get()
+    @Get('all')
     findAll(): Promise<Recognition[]>{
         return this.recs.findAll();
     }

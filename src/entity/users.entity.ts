@@ -2,6 +2,7 @@ import { Entity, Column, PrimaryColumn, JoinColumn, OneToMany, ManyToOne, OneToO
 import { Company } from "./company.entity";
 import { Login } from './login.entity';
 import { Recognition } from "./recognition.entity";
+import { Role } from "../roles/role.enum";
 
 @Entity({name: "users"})
 @Index(['companyId', 'employeeId'], {unique: true})
@@ -31,6 +32,12 @@ export class Users {
     @Column()
     isManager: boolean;
 
+    @Column({ 
+        type: "enum", 
+        enum: Role, 
+        default: Role.Employee})
+    role: Role;
+
     @Column("timestamp")
     startDate: Date;
 
@@ -47,6 +54,7 @@ export class Users {
     @OneToMany(()=>Recognition, rec=>rec.empTo)
     recsReceived: Recognition[];
 
+    // This relation was making it impossible to create rows in the table.
     @OneToOne(() => Login)
-    employee: Login;
+    login: Login;
 }

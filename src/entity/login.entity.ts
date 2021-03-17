@@ -7,7 +7,7 @@ export class Login {
     email: string;
 
     @Column()
-    pswd: string;
+    password: string;
 
     @OneToOne(() => Users)
     @JoinColumn()
