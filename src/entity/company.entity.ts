@@ -1,6 +1,7 @@
-import { Entity, Column, PrimaryColumn, OneToMany, TableForeignKey, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn, OneToMany, JoinColumn } from 'typeorm';
 import { Tag } from "./tag.entity";
 import { Recognition } from "./recognition.entity";
+import { Users } from './users.entity';
 
 @Entity({name: "company"})
 export class Company {
@@ -16,4 +17,7 @@ export class Company {
 
     @OneToMany(()=>Recognition, rec=>rec.company)
     recognitions: Recognition[];
+
+    @OneToMany(()=>Users, user => user.company)
+    users: Users[];
 }
