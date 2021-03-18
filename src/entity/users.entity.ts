@@ -2,16 +2,18 @@ import { Entity, Column, PrimaryColumn, JoinColumn, OneToMany, ManyToOne, OneToO
 import { Company } from "./company.entity";
 import { Login } from './login.entity';
 import { Recognition } from "./recognition.entity";
+import { Role } from "../roles/role.enum";
 
 @Entity({name: "users"})
+@Index(['companyId', 'employeeId'], {unique: true})
 export class Users {
     
     @ManyToOne(()=>Company, {primary: true} )
-    // @PrimaryColumn()
-    @JoinColumn({name: "companyId", referencedColumnName: "companyId", })
+    @JoinColumn({name: "companyId", referencedColumnName: "companyId"})
     company: Company;
     
-    // // for some reason this works... I feel like this should be making two columns with the same name, so if there is an error that looks like that it might be here.
+    // This looks duplicated, but don't delete it. It is just the same as the JoinColumn. 
+    // This is necessary to make the foreign key also act as a primary key for Users.
     @PrimaryColumn()
     companyId: number;
 
@@ -30,6 +32,12 @@ export class Users {
     @Column()
     isManager: boolean;
 
+    @Column({ 
+        type: "enum", 
+        enum: Role, 
+        default: Role.Employee})
+    role: Role;
+
     @Column("timestamp")
     startDate: Date;
 
@@ -37,13 +45,16 @@ export class Users {
     @JoinColumn()
     manager: Users;
 
+    @OneToMany(()=>Users, emp=>emp.manager)
+    managed: Users[];
+
     @OneToMany(()=>Recognition, rec=>rec.empFrom)
     recsSent: Recognition[];
 
     @OneToMany(()=>Recognition, rec=>rec.empTo)
     recsReceived: Recognition[];
 
-    //This relation was making it impossible to create rows in the table.
+    // This relation was making it impossible to create rows in the table.
     @OneToOne(() => Login)
-    employee: Login;
+    login: Login;
 }

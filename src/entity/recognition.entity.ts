@@ -4,29 +4,23 @@ import { Users } from "./users.entity";
 import { Tag } from "./tag.entity";
 
 @Entity({name: "recognition"})
-// @Index(["company", "postDate"], {unique: true})
+@Index(["company", "postDate"])
 export class Recognition {
     @PrimaryGeneratedColumn()
     recId: number;
 
-    @ManyToOne(()=> Company, company=>company.tags)
+    @ManyToOne(()=> Company, company=>company.recognitions)
     company: Company;
 
     @Column("timestamp")
     postDate: Date;
 
     @ManyToOne(()=> Users, users=>users.recsSent)
-    @JoinColumn([
-        {referencedColumnName: "companyId"},
-        {referencedColumnName: "employeeId"}
-    ])
+    @JoinColumn()
     empFrom: Users;
 
     @ManyToOne(()=> Users, users=>users.recsReceived)
-    @JoinColumn([
-        {referencedColumnName: "companyId"},
-        {referencedColumnName: "employeeId"}
-    ])
+    @JoinColumn()
     empTo: Users;
 
     @ManyToMany(()=>Tag, tag=>tag.rec)

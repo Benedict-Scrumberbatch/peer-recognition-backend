@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { getRepository, Repository } from 'typeorm';
+import { DeleteResult, getRepository, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import {Recognition} from '../entity/recognition.entity';
 import {Company} from '../entity/company.entity'
@@ -10,36 +10,43 @@ import {CreateRecDto} from './dto/create-rec.dto'
 @Injectable()
 export class RecognitionService {
     constructor(
+        @InjectRepository(Users)
+        private userRepository: Repository<Users>,
+        @InjectRepository(Company)
+        private companyRepository: Repository<Company>,
+        @InjectRepository(Tag)
+        private tagRepository: Repository<Tag>, 
+        @InjectRepository(Recognition)
+        private recognitionsRepository: Repository<Recognition>,
     ){}
 
     
     async findAll(): Promise<Recognition[]>{
-        const RecognitionsRepository = getRepository(Recognition);
-        return RecognitionsRepository.find();
+        return this.recognitionsRepository.find();
      }
 
     async createRec(recDto: CreateRecDto): Promise<Recognition> {
-        const UserRepository= getRepository(Users);
-        const CompanyRepository= getRepository(Company);
-        const TagRepository = getRepository(Tag);
-        const RecognitionsRepository = getRepository(Recognition);
         const rec = new Recognition();
         rec.msg = recDto.msg;
-        rec.postDate = recDto.post_time;
-        rec.recId = recDto.recognitionID;
-        rec.company = await CompanyRepository.findOne({where:{companyId : recDto.company}});
-        rec.empFrom = await UserRepository.findOne({where:{employeeId:recDto.employeeFrom}});
-        rec.empTo = await UserRepository.findOne({where:{employeeId:recDto.employeeTo}});
+        rec.postDate = new Date();
+        rec.company = await this.companyRepository.findOne({where:{companyId : recDto.company}});
+        rec.empFrom = await this.userRepository.findOne({where:{employeeId:recDto.employeeFrom}});
+        rec.empTo = await this.userRepository.findOne({where:{employeeId:recDto.employeeTo}});
+        rec.tags = [];
+        if(recDto.tags != undefined){
         for(let i = 0; i < recDto.tags.length;i++){
-            rec.tags.push(await TagRepository.findOne({ where: { tagId: recDto.tags[i] } }))
+            const tag = await this.tagRepository.findOne({ where: { tagId: recDto.tags[i] } });
+            if(tag != undefined){
+            rec.tags.push()
+            }
         }
-        RecognitionsRepository.save(rec);
+    }
+        await this.recognitionsRepository.save(rec);
         return rec
      }
 
-    async deleteRec(id: number): Promise<any> {
-       const RecognitionsRepository = getRepository(Recognition);
-       return await RecognitionsRepository.delete({recId:id});
+    async deleteRec(id: number): Promise<DeleteResult> {
+       return await this.recognitionsRepository.delete({recId:id});
      }
 
 }
