@@ -5,17 +5,20 @@ import {Tag} from '../entity/tag.entity';
 @Controller('tag')
 export class TagController {
     constructor(private tags: TagService){}
-    //Need to add some way of requiring authorization, like maybe get passed the currently logged in user and get companyId from there?
+    //authorization: users with this companyId
     @Get(':id')
     getCompanyTags(@Param('id') id): Promise<Tag[]>{
         return this.tags.getCompanyTags(id);
     }
+    //authorization restriction should be to admins associated with this company
     @Delete(':id')
     delete(@Param('id') id){
         return this.tags.deleteTag(id);
     }
+    //authorization: admins with this companyId
     @Post('create')
-    create(@Body() tagData: any): Promise<Tag>{
+    create(@Body() tagData): Promise<Tag>{
+        //companyId to make sure an admin cannot delete an arbitrary tagId unless it is associated with their company
         return this.tags.createTag(tagData.companyId, tagData.value);
     }
 
