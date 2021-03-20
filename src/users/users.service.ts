@@ -83,7 +83,7 @@ export class UsersService {
         
         return user;
     }
-    async getRockstar( companyId: number): Promise<any | undefined> {
+    async getRockstar( companyId: number): Promise<Users | undefined> {
         let date: Date = new Date();
         let prevMonth: number = -1;
         let year = date.getFullYear()
@@ -108,7 +108,23 @@ export class UsersService {
                 maxIndex = i;
             }
         }
-        return retQuery[maxIndex];
+        let rawRockstar = retQuery[maxIndex];
+        let rockstar: Users = new Users();
+        rockstar.company = rawRockstar.companyId;
+        rockstar.employeeId = rawRockstar.employeeId;
+
+        rockstar.firstName = rawRockstar.firstName;
+        rockstar.lastName = rawRockstar.lastName;
+
+        rockstar.isManager = rawRockstar.isManager;
+        rockstar.positionTitle = rawRockstar.positionTitle;
+        rockstar.startDate = new Date(rawRockstar.startDate);
+        rockstar.role = rawRockstar.role;
+
+        rockstar.manager = await this.usersRepository.findOne({where:{employeeId : rawRockstar.managerEmployeeId}})
+
+
+        return rockstar;
 
         //calculate and return rockstar
         //recognition module
