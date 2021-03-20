@@ -21,7 +21,12 @@ export class UsersController {
     }
 
     @Post('create')
-    async createUser(@Body() createuserDto: Users & Login & {managerId: number}) {
+    async createUser(@Body() createuserDto: Users & Login & {managerId: number} & {companyName: string}) {
         return await this.usersService.createUser(createuserDto);
+    }
+
+    @Post('create_multiple')
+    async createUserMultiple(@Body() employeeMultiple: []) {
+        return await this.usersService.createUserMultiple(employeeMultiple);
     }
 }

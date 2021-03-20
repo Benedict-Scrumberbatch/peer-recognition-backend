@@ -4,6 +4,7 @@ import { DeleteResult, Repository } from 'typeorm';
 import { Users } from '../entity/users.entity';
 import { Login } from '../entity/login.entity';
 import { Company } from '../entity/company.entity';
+import { CompanyService } from 'src/company/company.service';
 
 
 @Injectable()
@@ -16,8 +17,8 @@ export class UsersService {
         private loginRepo: Repository<Login>,
         @InjectRepository(Company)
         private companyRepository: Repository<Company>,
-
         
+        private companyservice: CompanyService,
     ){}
 
     //Must hash passwords
@@ -38,18 +39,21 @@ export class UsersService {
         return await this.usersRepository.delete(user);
     }
     
-    async createUser(createuserDto: Users & Login & {managerId: number}): Promise<Users> {
-        
+    async createUser(createuserDto: Users & Login & {managerId: number} & {companyName: string}): Promise<Users> {    
         const user = new Users();
-        // user.company = createuserDto.company;
-        let company = await this.companyRepository.findOne()
-        if (!company ) {
-            company = await this.companyRepository.save({companyId: 1, name: 'Bennedict Scrumberbatch'})
+        if (createuserDto.company != undefined) {
+            user.company = createuserDto.company;
         }
-        user.company = company
-        // const store = await this.usersRepository.find();
-        
-        // user.employeeId = store.length + 1;
+        else{
+        if (createuserDto.companyId != undefined) {}
+            let company = await this.companyRepository.findOne({where:{companyId: createuserDto.companyId}})
+            if (!company ) {
+                company = await this.companyservice.createCompany({companyId: createuserDto.companyId, name: createuserDto.companyName, 
+                    tags: undefined, recognitions: undefined})
+            }
+            user.company = company
+        }
+
         user.employeeId = createuserDto.employeeId;
         user.companyId = createuserDto.companyId;
 
@@ -60,9 +64,20 @@ export class UsersService {
         user.positionTitle = createuserDto.positionTitle;
         user.startDate = new Date(createuserDto.startDate);
         
-        // if (store.length > 0) 
-        //     user.manager = await this.usersRepository.findOne({where:{employeeId : 1}}) // set employeeId 1 as manager for now
-        user.manager = await this.usersRepository.findOne({where:{employeeId : createuserDto.managerId}})
+        if (createuserDto.manager != undefined) {
+            user.manager = createuserDto.manager;
+        }
+        else {
+        if (createuserDto.managerId != undefined) {
+            let Manager = await this.usersRepository.findOne({where:{companyId: createuserDto.companyId , 
+                employeeId : createuserDto.managerId}});
+            // If manager status of managerId is false, then set it to true
+            if (Manager != undefined && Manager.isManager == false) {
+                Manager.isManager = true;
+                await this.usersRepository.save(Manager);
+            }
+            user.manager = Manager;
+        }}
 
         const login = new Login();
         login.email = createuserDto.email;
@@ -72,4 +87,13 @@ export class UsersService {
         
         return user;
     }
+
+    async createUserMultiple(employeeMultiple: []): Promise <any>{
+        let arr_employee = [];
+        for (let i = 0; i < employeeMultiple.length; i++) {
+            arr_employee.push(await this.createUser(employeeMultiple[i]));
+        }
+        return arr_employee;
+    }
+
 } 
