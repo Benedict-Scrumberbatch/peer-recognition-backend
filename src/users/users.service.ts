@@ -4,7 +4,8 @@ import { DeleteResult, Repository } from 'typeorm';
 import { Users } from '../entity/users.entity';
 import { Login } from '../entity/login.entity';
 import { Company } from '../entity/company.entity';
-import {Recognition} from '../entity/recognition.entity';
+import { Recognition } from '../entity/recognition.entity';
+import { Query } from 'typeorm/driver/Query';
 
 
 @Injectable()
@@ -95,9 +96,19 @@ export class UsersService {
         {
             prevMonth = date.getMonth() - 1
         }
-        let queryString: string = year.toString() + "-" + prevMonth.toString() + "-%";
-        let query = this.recognitionRepository.query('SELECT t1."empFromEmployeeId", MAX(t1.numRecog) FROM (select recognition."empFromEmployeeId", count(recognition."empFromEmployeeId") as numRecog from Recognition where "companyCompanyId" = ${companyID} and extract(Month from recognition."postDate") = ${prevMonth} and extract(Year from recognition."postDate") = ${year}  group by recognition."empFromEmployeeId" ) t1 group by t1."empFromEmployeeId";' );
-        return query;
+        let queryString :string = `SELECT * FROM (SELECT t1."empToEmployeeId", MAX(t1.numRecog) as numRecognitions FROM (select recognition."empToEmployeeId", count(recognition."empToEmployeeId") as numRecog from Recognition where recognition."empToCompanyId" = ${companyId} and extract(Month from recognition."postDate") = ${ prevMonth } and extract(Year from recognition."postDate") = ${ year } group by recognition."empToEmployeeId" ) t1 group by t1."empToEmployeeId") t2, users where t2."empToEmployeeId" = users."employeeId";`
+        let retQuery= await this.recognitionRepository.query(queryString);
+        let maxRecog: number = 0;
+        let maxIndex: number = 0;
+        for (let i = 0; i < retQuery.length;i++ )
+        {
+            if (retQuery[i].max > maxRecog)
+            {
+                maxRecog = retQuery.max;
+                maxIndex = i;
+            }
+        }
+        return retQuery[maxIndex];
 
         //calculate and return rockstar
         //recognition module

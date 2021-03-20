@@ -14,6 +14,7 @@ export class UsersController {
         return this.usersService.getProfile(req.user.employeeId, req.user.companyId);
     }
 
+
     @UseGuards(JwtAuthGuard)
     @Get(':employ_id/company/:comp_id')
     async getUser(@Param("employ_id") employee_id: number, @Param("comp_id") company_id: number) {
@@ -34,5 +35,12 @@ export class UsersController {
     @Post('create')
     async createUser(@Body() createuserDto: Users & Login & {managerId: number}) {
         return await this.usersService.createUser(createuserDto);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('company/rockstar/:comp_id')
+    async getRockstar(@Param('comp_id') companyId: number)
+    {
+        return await this.usersService.getRockstar(companyId);
     }
 }
