@@ -1,24 +1,30 @@
-import { Controller, Get, Post, Delete, Body, Param} from '@nestjs/common';
+import { Controller, Get, Post, Delete, Body, Param, UseGuards, Request} from '@nestjs/common';
 import {TagService} from './tag.service'
 import {Tag} from '../entity/tag.entity';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('tag')
 export class TagController {
     constructor(private tags: TagService){}
     //authorization: users with this companyId
-    @Get(':id')
-    getCompanyTags(@Param('id') id): Promise<Tag[]>{
-        return this.tags.getCompanyTags(id);
+    @UseGuards(JwtAuthGuard)
+    @Get()
+    getCompanyTags(@Request() req): Promise<Tag[]>{
+        return this.tags.getCompanyTags(req.user.companyId);
     }
     //authorization restriction should be to admins associated with this company
+    @UseGuards(JwtAuthGuard)
     @Delete(':id')
-    delete(@Param('id') id){
-        return this.tags.deleteTag(id);
+    delete(@Request() req, @Param('id') id){
+        return this.tags.deleteTag(req.user.copanyId, id);
     }
     //authorization: admins with this companyId
+    @UseGuards(JwtAuthGuard)
     @Post('create')
-    create(@Body() tagData): Promise<Tag>{
-        //companyId to make sure an admin cannot delete an arbitrary tagId unless it is associated with their company
+    create(@Request() req, @Body() tagData): Promise<Tag>{
+        if(req.user.companyId != tagData.companyId){
+            return null;    //not sure what to return
+        }
         return this.tags.createTag(tagData.companyId, tagData.value);
     }
 
