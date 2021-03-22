@@ -83,7 +83,7 @@ export class UsersService {
 
     async userStats(employeeId: number, companyId: number): Promise<UserStats> {
         let user = await this.usersRepository.findOne({
-            relations: ["tagStats"],
+            relations: ["tagStats", "tagStats.tag"],
             where: { employeeId: employeeId, companyId: companyId } 
         });
 

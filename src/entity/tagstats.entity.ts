@@ -1,8 +1,9 @@
-import { Entity, Column, ManyToOne, JoinColumn, PrimaryGeneratedColumn, PrimaryColumn } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn, PrimaryGeneratedColumn, PrimaryColumn, Index } from 'typeorm';
 import { Users } from './users.entity';
 import { Tag } from './tag.entity';
 
 @Entity({name: "tagstats"})
+@Index(["employee", "tag"], {unique: true})
 export class TagStats {
     @PrimaryGeneratedColumn('increment')
     tagstatId: number;
