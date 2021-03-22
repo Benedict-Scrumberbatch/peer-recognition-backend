@@ -1,6 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, ManyToMany, Index, PrimaryColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, ManyToMany, Index, PrimaryColumn, OneToMany } from 'typeorm';
 import { Company } from './company.entity';
 import { Recognition } from './recognition.entity';
+import { TagStats } from './tagstats.entity';
 
 @Entity({name: "tag"})
 @Index(["tagId"], {unique: true})
@@ -19,4 +20,7 @@ export class Tag {
 
     @ManyToMany(()=> Recognition, rec=> rec.tags)
     rec: Recognition;
+
+    @OneToMany(() => TagStats, stats => stats.tag)
+    tagstats: TagStats[];
 }

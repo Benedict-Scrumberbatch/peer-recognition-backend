@@ -13,14 +13,20 @@ export class UsersController {
     getProfile(@Request() req) {
         return this.usersService.getProfile(req.user.employeeId, req.user.companyId);
     }
-
+    //This endpoint should be guarded
     @Delete(':employeeId/company/:companyId')
     async removeUser(@Param('employeeId') employeeId: number, @Param('companyId') companyId: number) {
         return await this.usersService.removeUser(employeeId, companyId);
     }
-
+    //This endpoint should be guarded
     @Post('create')
     async createUser(@Body() createuserDto: Users & Login) {
         return await this.usersService.createUser(createuserDto);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('stats/:employeeId/company/:companyId')
+    getStats(@Param('employeeId') employeeId: number, @Param('companyId') companyId: number) {
+        return this.usersService.userStats(employeeId, companyId);
     }
 }

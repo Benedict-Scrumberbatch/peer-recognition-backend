@@ -6,8 +6,9 @@ import {Recognition} from '../entity/recognition.entity'
 import { Users } from 'src/entity/users.entity';
 import { Tag } from 'src/entity/tag.entity';
 import { Company } from 'src/entity/company.entity';
+import { TagStats } from 'src/entity/tagstats.entity';
 @Module({
-  imports: [ TypeOrmModule.forFeature([ Recognition, Users, Tag, Company])],
+  imports: [ TypeOrmModule.forFeature([ Recognition, Users, Tag, Company, TagStats])],
   providers: [RecognitionService],
   controllers: [ RecognitionController],
   exports: [RecognitionService]
