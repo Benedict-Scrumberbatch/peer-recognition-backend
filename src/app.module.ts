@@ -12,7 +12,7 @@ import { Company } from './entity/company.entity';
 import { RecognitionService } from './recognition/recognition.service';
 
 @Module({
-  imports: [AuthModule, UsersModule, RecognitionModule, CompanyModule TypeOrmModule.forRoot()],
+  imports: [AuthModule, UsersModule, RecognitionModule, CompanyModule, TypeOrmModule.forRoot()],
   controllers: [AppController],
   providers: [AppService],
 

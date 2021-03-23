@@ -29,7 +29,7 @@ export class UsersService {
         @InjectRepository(TagStats)
         private tagStatsRepo: Repository<TagStats>
         @InjectRepository(Recognition)
-        private recognitionRepository: Repository<Recognition>
+        private recognitionRepository: Repository<Recognition>,
         private companyservice: CompanyService,
     ){}
 
@@ -65,13 +65,18 @@ export class UsersService {
             user.company = createuserDto.company;
         }
         else{
-        if (createuserDto.companyId != undefined) {}
-            let company = await this.companyRepository.findOne({where:{companyId: createuserDto.companyId}})
-            if (!company ) {
-                company = await this.companyservice.createCompany({companyId: createuserDto.companyId, name: createuserDto.companyName, 
-                    tags: undefined, recognitions: undefined})
+            if (createuserDto.companyId != undefined) {
+                let company = await this.companyRepository.findOne({where:{companyId: createuserDto.companyId}})
+                if (!company ) {
+                    company = await this.companyservice.createCompany({
+                        companyId: createuserDto.companyId, 
+                        name: createuserDto.companyName, 
+                        tags: undefined, recognitions: undefined,
+                        users: [createuserDto]
+                    });
+                }
+                user.company = company
             }
-            user.company = company
         }
 
         user.employeeId = createuserDto.employeeId;
@@ -88,16 +93,17 @@ export class UsersService {
             user.manager = createuserDto.manager;
         }
         else {
-        if (createuserDto.managerId != undefined) {
-            let Manager = await this.usersRepository.findOne({where:{companyId: createuserDto.companyId , 
-                employeeId : createuserDto.managerId}});
-            // If manager status of managerId is false, then set it to true
-            if (Manager != undefined && Manager.isManager == false) {
-                Manager.isManager = true;
-                await this.usersRepository.save(Manager);
+            if (createuserDto.managerId != undefined) {
+                let Manager = await this.usersRepository.findOne({where:{companyId: createuserDto.companyId , 
+                    employeeId : createuserDto.managerId}});
+                // If manager status of managerId is false, then set it to true
+                if (Manager != undefined && Manager.isManager == false) {
+                    Manager.isManager = true;
+                    await this.usersRepository.save(Manager);
+                }
+                user.manager = Manager;
             }
-            user.manager = Manager;
-        }}
+        }
 
         const login = new Login();
         login.email = createuserDto.email;
@@ -107,6 +113,7 @@ export class UsersService {
         
         return user;
     }
+
 
     async userStats(employeeId: number, companyId: number): Promise<UserStats> {
         let user = await this.usersRepository.findOne({
