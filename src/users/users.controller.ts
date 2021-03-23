@@ -12,7 +12,19 @@ export class UsersController {
     @Get('profile')
     getProfile(@Request() req) {
         return this.usersService.getProfile(req.user.employeeId, req.user.companyId);
-        // return req.user;
+    }
+
+
+    @UseGuards(JwtAuthGuard)
+    @Get(':employ_id/company/:comp_id')
+    async getUser(@Param("employ_id") employee_id: number, @Param("comp_id") company_id: number) {
+        return await this.usersService.getProfile(employee_id, company_id);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('company/:comp_id')
+    async getUsersByCompany(@Param("comp_id") company_id: number) {
+	    return await this.usersService.getArrayOfUsers(company_id);
     }
 
     @Delete(':employeeId/company/:companyId')
@@ -28,5 +40,11 @@ export class UsersController {
     @Post('create_multiple')
     async createUserMultiple(@Body() employeeMultiple: []) {
         return await this.usersService.createUserMultiple(employeeMultiple);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('company/rockstar/:comp_id')
+    async getRockstar(@Param('comp_id') companyId: number) {
+        return await this.usersService.getRockstar(companyId);
     }
 }
