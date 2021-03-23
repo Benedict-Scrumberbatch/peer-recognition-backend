@@ -3,6 +3,7 @@ import { Company } from "./company.entity";
 import { Login } from './login.entity';
 import { Recognition } from "./recognition.entity";
 import { Role } from "../roles/role.enum";
+import { TagStats} from './tagstats.entity';
 
 @Entity({name: "users"})
 @Index(['companyId', 'employeeId'], {unique: true})
@@ -54,7 +55,16 @@ export class Users {
     @OneToMany(()=>Recognition, rec=>rec.empTo)
     recsReceived: Recognition[];
 
+    @Column({default: 0})
+    numRecsReceived: number;
+
+    @Column({default: 0})
+    numRecsSent: number;
+
     // This relation was making it impossible to create rows in the table.
     @OneToOne(() => Login)
     login: Login;
+
+    @OneToMany(() => TagStats, tagstats => tagstats.employee)
+    tagStats: TagStats[];
 }

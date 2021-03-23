@@ -4,10 +4,17 @@ import { DeleteResult, Repository } from 'typeorm';
 import { Users } from '../entity/users.entity';
 import { Login } from '../entity/login.entity';
 import { Company } from '../entity/company.entity';
+import { TagStats } from '../entity/tagstats.entity';
 import { CompanyService } from 'src/company/company.service';
 import { Recognition } from '../entity/recognition.entity';
 import { Query } from 'typeorm/driver/Query';
 
+
+export interface UserStats {
+    numRecsReceived: number,
+    numRecsSent: number,
+    tagStats: TagStats[]
+}
 
 @Injectable()
 export class UsersService {
@@ -19,6 +26,8 @@ export class UsersService {
         private loginRepo: Repository<Login>,
         @InjectRepository(Company)
         private companyRepository: Repository<Company>,
+        @InjectRepository(TagStats)
+        private tagStatsRepo: Repository<TagStats>,
         @InjectRepository(Recognition)
         private recognitionRepository: Repository<Recognition>,
         private companyservice: CompanyService,
@@ -105,7 +114,23 @@ export class UsersService {
         return user;
     }
 
-    async createUserMultiple(employeeMultiple: []): Promise <any> {
+
+    async userStats(employeeId: number, companyId: number): Promise<UserStats> {
+        let user = await this.usersRepository.findOne({
+            relations: ["tagStats", "tagStats.tag"],
+            where: { employeeId: employeeId, companyId: companyId } 
+        });
+
+        let userStats: UserStats = {
+            numRecsSent: user.numRecsSent,
+            numRecsReceived: user.numRecsReceived,
+            tagStats: user.tagStats
+        }
+        
+        return userStats;
+    }
+    
+    async createUserMultiple(employeeMultiple: []): Promise <any>{
         let arr_employee = [];
         for (let i = 0; i < employeeMultiple.length; i++) {
             arr_employee.push(await this.createUser(employeeMultiple[i]));
