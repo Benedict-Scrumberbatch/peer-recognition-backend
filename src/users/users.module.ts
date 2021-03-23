@@ -6,9 +6,11 @@ import { Users } from '../entity/users.entity';
 import { Login } from '../entity/login.entity';
 import { Company } from '../entity/company.entity';
 import { TagStats } from '../entity/tagstats.entity';
+import { CompanyModule } from 'src/company/company.module';
+import { Recognition} from '../entity/recognition.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Users, Login, Company, TagStats])],
+  imports: [TypeOrmModule.forFeature([Users, Login, Company, Recognition, TagStats]), CompanyModule],
   providers: [UsersService],
   controllers: [UsersController],
   exports: [UsersService],

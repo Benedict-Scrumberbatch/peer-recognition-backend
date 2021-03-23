@@ -7,5 +7,6 @@
    "database": "peer-recognition",
    "entities": ["dist/**/*.entity{.ts,.js}"],
    "synchronize": true,
-   "logging": "all"
+   "logging": ["query", "error"],
+   "logger": "file"
 }
