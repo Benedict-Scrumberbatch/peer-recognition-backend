@@ -4,6 +4,8 @@ import { DeleteResult, Repository } from 'typeorm';
 import { Users } from '../entity/users.entity';
 import { Login } from '../entity/login.entity';
 import { Company } from '../entity/company.entity';
+import { Recognition } from '../entity/recognition.entity';
+import { Query } from 'typeorm/driver/Query';
 
 
 @Injectable()
@@ -16,7 +18,8 @@ export class UsersService {
         private loginRepo: Repository<Login>,
         @InjectRepository(Company)
         private companyRepository: Repository<Company>,
-
+        @InjectRepository(Recognition)
+        private recognitionRepository: Repository<Recognition>
         
     ){}
 
@@ -79,5 +82,51 @@ export class UsersService {
         await this.loginRepo.save(login);
         
         return user;
+    }
+    async getRockstar( companyId: number): Promise<Users | undefined> {
+        let date: Date = new Date();
+        let prevMonth: number = -1;
+        let year = date.getFullYear()
+        if (date.getMonth() == 1)
+        {
+            prevMonth = 12;
+            year = date.getFullYear() - 1;
+        }
+        else
+        {
+            prevMonth = date.getMonth() - 1
+        }
+        let queryString :string = `SELECT * FROM (SELECT t1."empToEmployeeId", MAX(t1.numRecog) as numRecognitions FROM (select recognition."empToEmployeeId", count(recognition."empToEmployeeId") as numRecog from Recognition where recognition."empToCompanyId" = ${companyId} and extract(Month from recognition."postDate") = ${ prevMonth } and extract(Year from recognition."postDate") = ${ year } group by recognition."empToEmployeeId" ) t1 group by t1."empToEmployeeId") t2, users where t2."empToEmployeeId" = users."employeeId";`
+        let retQuery= await this.recognitionRepository.query(queryString);
+        let maxRecog: number = 0;
+        let maxIndex: number = 0;
+        for (let i = 0; i < retQuery.length;i++ )
+        {
+            if (retQuery[i].max > maxRecog)
+            {
+                maxRecog = retQuery.max;
+                maxIndex = i;
+            }
+        }
+        let rawRockstar = retQuery[maxIndex];
+        let rockstar: Users = new Users();
+        rockstar.company = rawRockstar.companyId;
+        rockstar.employeeId = rawRockstar.employeeId;
+
+        rockstar.firstName = rawRockstar.firstName;
+        rockstar.lastName = rawRockstar.lastName;
+
+        rockstar.isManager = rawRockstar.isManager;
+        rockstar.positionTitle = rawRockstar.positionTitle;
+        rockstar.startDate = new Date(rawRockstar.startDate);
+        rockstar.role = rawRockstar.role;
+
+        rockstar.manager = await this.usersRepository.findOne({where:{employeeId : rawRockstar.managerEmployeeId}})
+
+
+        return rockstar;
+
+        //calculate and return rockstar
+        //recognition module
     }
 } 
