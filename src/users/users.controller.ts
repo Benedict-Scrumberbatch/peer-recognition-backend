@@ -33,14 +33,18 @@ export class UsersController {
     }
 
     @Post('create')
-    async createUser(@Body() createuserDto: Users & Login & {managerId: number}) {
+    async createUser(@Body() createuserDto: Users & Login & {managerId: number} & {companyName: string}) {
         return await this.usersService.createUser(createuserDto);
+    }
+
+    @Post('create_multiple')
+    async createUserMultiple(@Body() employeeMultiple: []) {
+        return await this.usersService.createUserMultiple(employeeMultiple);
     }
 
     @UseGuards(JwtAuthGuard)
     @Get('company/rockstar/:comp_id')
-    async getRockstar(@Param('comp_id') companyId: number)
-    {
+    async getRockstar(@Param('comp_id') companyId: number) {
         return await this.usersService.getRockstar(companyId);
     }
 }
