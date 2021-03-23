@@ -20,7 +20,7 @@ export class UsersService {
         @InjectRepository(Company)
         private companyRepository: Repository<Company>,
         @InjectRepository(Recognition)
-        private recognitionRepository: Repository<Recognition>
+        private recognitionRepository: Repository<Recognition>,
         private companyservice: CompanyService,
     ){}
 
@@ -59,8 +59,12 @@ export class UsersService {
         if (createuserDto.companyId != undefined) {}
             let company = await this.companyRepository.findOne({where:{companyId: createuserDto.companyId}})
             if (!company ) {
-                company = await this.companyservice.createCompany({companyId: createuserDto.companyId, name: createuserDto.companyName, 
-                    tags: undefined, recognitions: undefined})
+                company = await this.companyservice.createCompany({
+                    companyId: createuserDto.companyId, 
+                    name: createuserDto.companyName, 
+                    tags: undefined, recognitions: undefined,
+                    users: [createuserDto]
+                });
             }
             user.company = company
         }
