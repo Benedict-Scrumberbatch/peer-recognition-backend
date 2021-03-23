@@ -27,7 +27,7 @@ export class UsersService {
         @InjectRepository(Company)
         private companyRepository: Repository<Company>,
         @InjectRepository(TagStats)
-        private tagStatsRepo: Repository<TagStats>
+        private tagStatsRepo: Repository<TagStats>,
         @InjectRepository(Recognition)
         private recognitionRepository: Repository<Recognition>,
         private companyservice: CompanyService,
