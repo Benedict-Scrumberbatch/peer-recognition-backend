@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, ManyToMany, Index, PrimaryColumn, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, ManyToMany, Index, PrimaryColumn, OneToMany, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
 import { Company } from './company.entity';
 import { Recognition } from './recognition.entity';
 import { TagStats } from './tagstats.entity';
@@ -26,4 +26,8 @@ export class Tag {
 
     @UpdateDateColumn({type: 'timestamp'})
     updatedAt: Date;
+    
+    @DeleteDateColumn({type: 'timestamp'})
+    deletedAt: Date;
+
 }

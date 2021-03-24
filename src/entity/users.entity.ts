@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryColumn, JoinColumn, OneToMany, ManyToOne, OneToOne, Index, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn, JoinColumn, OneToMany, ManyToOne, OneToOne, Index, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
 import { Company } from "./company.entity";
 import { Login } from './login.entity';
 import { Recognition } from "./recognition.entity";
@@ -73,4 +73,8 @@ export class Users {
 
     @UpdateDateColumn({type: 'timestamp'})
     updatedAt: Date;
+    
+    @DeleteDateColumn({type: 'timestamp'})
+    deletedAt: Date;
+
 }

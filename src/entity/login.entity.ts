@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryColumn, OneToOne, JoinColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn, OneToOne, JoinColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
 import { Users } from "./users.entity";
 
 @Entity({name: "login"})
@@ -18,4 +18,8 @@ export class Login {
 
     @UpdateDateColumn({type: 'timestamp'})
     updatedAt: Date;
+    
+    @DeleteDateColumn({type: 'timestamp'})
+    deletedAt: Date;
+
 }
