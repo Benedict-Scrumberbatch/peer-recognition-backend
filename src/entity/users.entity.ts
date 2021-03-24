@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryColumn, JoinColumn, OneToMany, ManyToOne, OneToOne, Index } from 'typeorm';
+import { Entity, Column, PrimaryColumn, JoinColumn, OneToMany, ManyToOne, OneToOne, Index, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { Company } from "./company.entity";
 import { Login } from './login.entity';
 import { Recognition } from "./recognition.entity";
@@ -67,4 +67,10 @@ export class Users {
 
     @OneToMany(() => TagStats, tagstats => tagstats.employee)
     tagStats: TagStats[];
+    
+    @CreateDateColumn({type: 'timestamp'})
+    createdAt: Date;
+
+    @UpdateDateColumn({type: 'timestamp'})
+    updatedAt: Date;
 }

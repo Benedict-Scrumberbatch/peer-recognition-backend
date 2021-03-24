@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryColumn, OneToMany, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn, OneToMany, JoinColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { Tag } from "./tag.entity";
 import { Recognition } from "./recognition.entity";
 import { Users } from './users.entity';
@@ -20,4 +20,10 @@ export class Company {
 
     @OneToMany(()=>Users, user => user.company)
     users: Users[];
+
+    @CreateDateColumn({type: 'timestamp'})
+    createdAt: Date;
+
+    @UpdateDateColumn({type: 'timestamp'})
+    updatedAt: Date;
 }

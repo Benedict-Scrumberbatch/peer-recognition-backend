@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, ManyToMany, Index, PrimaryColumn, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, ManyToMany, Index, PrimaryColumn, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { Company } from './company.entity';
 import { Recognition } from './recognition.entity';
 import { TagStats } from './tagstats.entity';
@@ -20,4 +20,10 @@ export class Tag {
 
     @OneToMany(() => TagStats, stats => stats.tag)
     tagstats: TagStats[];
+    
+    @CreateDateColumn({type: 'timestamp'})
+    createdAt: Date;
+
+    @UpdateDateColumn({type: 'timestamp'})
+    updatedAt: Date;
 }
