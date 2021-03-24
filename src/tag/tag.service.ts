@@ -25,11 +25,11 @@ export class TagService {
         return tag
      }
 
-    async deleteTag(companyId: number, value: string): Promise<DeleteResult> {
-        const test = await this.tagRepository.findOneOrFail({where: {tagCompanyId: companyId, value: value}})
+    async deleteTag(companyId: number, id: number): Promise<DeleteResult> {
+        const tag = await this.tagRepository.findOneOrFail({where: {tagId: id}})
 
-        if(test != undefined && test.company.companyId == companyId){
-            return this.tagRepository.delete({tagId: test.tagId});
+        if(tag != undefined && tag.company.companyId == companyId){
+            return this.tagRepository.delete({tagId: tag.tagId});
         }
         return null;    //not sure what to return for failure, either this user is in the wrong company or the tag does not exist
     }

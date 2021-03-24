@@ -20,9 +20,9 @@ export class TagController {
 
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(Role.Admin)
-    @Delete(':value')
-    delete(@Request() req, @Param('value') value): Promise<DeleteResult>{
-        return this.tags.deleteTag(req.user.companyId, value);
+    @Delete(':id')
+    delete(@Request() req, @Param('id') id: number): Promise<DeleteResult>{
+        return this.tags.deleteTag(req.user.companyId, id);
     }
 
     @UseGuards(JwtAuthGuard, RolesGuard)
