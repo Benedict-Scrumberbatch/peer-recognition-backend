@@ -5,6 +5,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Role } from '../roles/role.enum';
 import { RolesGuard } from '../roles/roles.guard';
 import { Roles } from 'src/roles/roles.decorator';
+import { DeleteResult } from 'typeorm';
 
 
 @Controller('tag')
@@ -20,7 +21,7 @@ export class TagController {
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(Role.Admin)
     @Delete(':value')
-    delete(@Request() req, @Param('value') value){
+    delete(@Request() req, @Param('value') value): Promise<DeleteResult>{
         return this.tags.deleteTag(req.user.companyId, value);
     }
 
