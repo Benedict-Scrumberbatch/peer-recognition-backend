@@ -23,6 +23,8 @@ export class CompanyService {
         company.recognitions = createcompanyDto.recognitions;
         company.tags = createcompanyDto.tags;
 
+        company.users = createcompanyDto.users;
+
         await this.companyRepository.save(company);
         return company;
     }

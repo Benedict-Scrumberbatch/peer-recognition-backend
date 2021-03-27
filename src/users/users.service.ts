@@ -8,6 +8,7 @@ import { TagStats } from '../entity/tagstats.entity';
 import { CompanyService } from 'src/company/company.service';
 import { Recognition } from '../entity/recognition.entity';
 import { Query } from 'typeorm/driver/Query';
+import { Role } from 'src/roles/role.enum';
 
 
 export interface UserStats {
@@ -58,15 +59,50 @@ export class UsersService {
         await this.loginRepo.delete({employee: user});
         return await this.usersRepository.delete(user);
     }
-    
+    // TEMPORARY ONLY
+    // Create Dummy if Database is empty.
+    // This endpoint will add admin Dummy
+    async createDummy(): Promise<Users> {
+        const user = new Users();
+        user.role = Role.Admin;
+        user.employeeId = 0;
+        user.firstName = 'dummy';
+        user.lastName = 'dummy';
+        user.isManager = true;
+        user.positionTitle = 'dummy';
+        user.startDate = new Date("2014-12-18");
+
+        let company = await this.companyservice.createCompany({
+            companyId: 1, 
+            name: 'dummy', 
+            tags: undefined, recognitions: undefined,
+            users: undefined
+        });
+        user.company = company
+
+        const login = new Login();
+        login.email = 'dummy';
+        login.password = 'dummy';
+        login.employee = await this.usersRepository.save(user);
+        await this.loginRepo.save(login);
+        return user
+    }
+
     async createUser(createuserDto: Users & Login & {managerId: number} & {companyName: string}): Promise<Users> {    
         const user = new Users();
         if (createuserDto.company != undefined) {
             user.company = createuserDto.company;
+
         }
         else{
             if (createuserDto.companyId != undefined) {
                 let company = await this.companyRepository.findOne({where:{companyId: createuserDto.companyId}})
+                // If company.name to companyName if they are not the same
+                if (company.name != createuserDto.companyName){
+                    company.name = createuserDto.companyName; 
+                    await this.companyRepository.save(company)
+                }
+
                 if (!company ) {
                     company = await this.companyservice.createCompany({
                         companyId: createuserDto.companyId, 
@@ -85,7 +121,13 @@ export class UsersService {
         user.firstName = createuserDto.firstName;
         user.lastName = createuserDto.lastName;
 
+        // If isManager = true then set Role to Admin
+        // Will add different level of admin 
         user.isManager = Boolean(createuserDto.isManager);
+        if (user.isManager) {
+            user.role = Role.Admin
+        }
+
         user.positionTitle = createuserDto.positionTitle;
         user.startDate = new Date(createuserDto.startDate);
         
@@ -96,9 +138,10 @@ export class UsersService {
             if (createuserDto.managerId != undefined) {
                 let Manager = await this.usersRepository.findOne({where:{companyId: createuserDto.companyId , 
                     employeeId : createuserDto.managerId}});
-                // If manager status of managerId is false, then set it to true
+                // If manager status of managerId is false, then set it to true and set role to Admin
                 if (Manager != undefined && Manager.isManager == false) {
                     Manager.isManager = true;
+                    Manager.role = Role.Admin;
                     await this.usersRepository.save(Manager);
                 }
                 user.manager = Manager;
