@@ -35,8 +35,8 @@ export class RecognitionService {
         rec.msg = recDto.msg;
         rec.postDate = new Date();
         rec.company = await this.companyRepository.findOne({where:{companyId: recDto.company}});
-        rec.empFrom = await this.userRepository.findOne({where:{employeeId: recDto.employeeFrom}});
-        rec.empTo = await this.userRepository.findOne({where:{employeeId: recDto.employeeTo}});
+        rec.empFrom = await this.userRepository.findOne({where:{employeeId: recDto.employeeFrom, companyId: recDto.company}});
+        rec.empTo = await this.userRepository.findOne({where:{employeeId: recDto.employeeTo, companyId: recDto.company}});
         rec.tags = [];
         if(recDto.tags != undefined){
             for(let i = 0; i < recDto.tags.length;i++){

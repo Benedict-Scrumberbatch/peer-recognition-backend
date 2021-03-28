@@ -21,6 +21,7 @@ export class CompanyService {
         company.name = createcompanyDto.name;
         
         company.recognitions = createcompanyDto.recognitions;
+        //Will need to create tags in the tag table.
         company.tags = createcompanyDto.tags;
 
         await this.companyRepository.save(company);
