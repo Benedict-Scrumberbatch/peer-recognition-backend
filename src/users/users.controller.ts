@@ -18,30 +18,32 @@ export class UsersController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Get(':employ_id/company/:comp_id')
-    async getUser(@Param("employ_id") employee_id: number, @Param("comp_id") company_id: number) {
-        return await this.usersService.getProfile(employee_id, company_id);
+    @Get('employeeId/:employ_id')
+    async getUser(@Param("employ_id") employee_id: number, @Request() req) {
+        return await this.usersService.getProfile(employee_id, req.user.companyId);
     }
 
+    // Not sure if request is needed here
     @UseGuards(JwtAuthGuard)
     @Get('company/:comp_id')
     async getUsersByCompany(@Param("comp_id") company_id: number) {
 	    return await this.usersService.getArrayOfUsers(company_id);
     }
+
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(Role.Admin)
-    @Delete(':employeeId/company/:companyId')
-    async removeUser(@Param('employeeId') employeeId: number, @Param('companyId') companyId: number) {
-        return await this.usersService.removeUser(employeeId, companyId);
+    @Delete(':employeeId')
+    async removeUser(@Param('employeeId') employeeId: number, @Request() req) {
+        return await this.usersService.removeUser(employeeId, req.user.companyId);
     }
 
+    // TEMPORARY ONLY
     // Place holder endpoint if database is empty
     @Post('createDummy')
     async createDummy(){
         return await this.usersService.createDummy();
     }
 
-    //This endpoint should be guarded
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(Role.Admin)
     @Post('create')
@@ -50,19 +52,21 @@ export class UsersController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Get('stats/:employeeId/company/:companyId')
-    getStats(@Param('employeeId') employeeId: number, @Param('companyId') companyId: number) {
-        return this.usersService.userStats(employeeId, companyId);
+    @Get('stats/:employeeId')
+    getStats(@Param('employeeId') employeeId: number, @Request() req) {
+        return this.usersService.userStats(employeeId, req.user.companyId);
     }
-    @UseGuards(JwtAuthGuard)
+
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.Admin)
     @Post('create_multiple')
     async createUserMultiple(@Body() employeeMultiple: []) {
         return await this.usersService.createUserMultiple(employeeMultiple);
     }
 
     @UseGuards(JwtAuthGuard)
-    @Get('company/rockstar/:comp_id')
-    async getRockstar(@Param('comp_id') companyId: number) {
-        return await this.usersService.getRockstar(companyId);
+    @Get('rockstar')
+    async getRockstar(@Request() req) {
+        return await this.usersService.getRockstar(req.user.companyId);
     }
 }

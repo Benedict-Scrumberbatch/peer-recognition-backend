@@ -114,7 +114,6 @@ export class UsersService {
                 user.company = company
             }
         }
-
         user.employeeId = createuserDto.employeeId;
         user.companyId = createuserDto.companyId;
 
@@ -124,8 +123,13 @@ export class UsersService {
         // If isManager = true then set Role to Admin
         // Will add different level of admin 
         user.isManager = Boolean(createuserDto.isManager);
-        if (user.isManager) {
-            user.role = Role.Admin
+        if (createuserDto.role === Role.Admin){
+            user.role = createuserDto.role;
+        }
+        else {
+            if (user.isManager) {
+                user.role = Role.Admin
+            }
         }
 
         user.positionTitle = createuserDto.positionTitle;
