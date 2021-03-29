@@ -142,14 +142,15 @@ export class UsersService {
         let date: Date = new Date();
         let prevMonth: number = -1;
         let year = date.getFullYear()
-        if (date.getMonth() == 1)
+        if (date.getMonth() == 0)
         {
             prevMonth = 12;
             year = date.getFullYear() - 1;
         }
         else
         {
-            prevMonth = date.getMonth() - 1
+            //SQL takes 1 based months but the date object has 0 based months.
+            prevMonth = date.getMonth();
         }
         let queryString :string = `SELECT * FROM (SELECT t1."empToEmployeeId", MAX(t1.numRecog) as numRecognitions FROM (select recognition."empToEmployeeId", count(recognition."empToEmployeeId") as numRecog from Recognition where recognition."empToCompanyId" = ${companyId} and extract(Month from recognition."postDate") = ${ prevMonth } and extract(Year from recognition."postDate") = ${ year } group by recognition."empToEmployeeId" ) t1 group by t1."empToEmployeeId") t2, users where t2."empToEmployeeId" = users."employeeId";`
         let retQuery= await this.recognitionRepository.query(queryString);
