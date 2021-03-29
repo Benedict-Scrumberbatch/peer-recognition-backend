@@ -8,13 +8,7 @@ import { TagStats } from '../dtos/entity/tagstats.entity';
 import { CompanyService } from 'src/company/company.service';
 import { Recognition } from '../dtos/entity/recognition.entity';
 import { Query } from 'typeorm/driver/Query';
-
-
-export interface UserStats {
-    numRecsReceived: number,
-    numRecsSent: number,
-    tagStats: TagStats[]
-}
+import { UserStats } from '../dtos/interface/userstats.interface';
 
 @Injectable()
 export class UsersService {
