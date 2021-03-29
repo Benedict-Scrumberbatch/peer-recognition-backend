@@ -39,4 +39,8 @@ export class Recognition {
     @DeleteDateColumn({type: 'timestamp'})
     deletedAt: Date;
 
+    @ManyToOne(()=> Users, users=>users.recsDeleted)
+    @JoinColumn()
+    deletedBy: Users;
+
 }

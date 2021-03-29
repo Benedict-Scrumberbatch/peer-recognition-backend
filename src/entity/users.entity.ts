@@ -67,6 +67,9 @@ export class Users {
 
     @OneToMany(() => TagStats, tagstats => tagstats.employee)
     tagStats: TagStats[];
+
+    @OneToMany(()=> Recognition, rec=> rec.deletedBy)
+    recsDeleted: Recognition[];
     
     @CreateDateColumn({type: 'timestamp'})
     createdAt: Date;
