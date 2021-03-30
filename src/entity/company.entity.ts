@@ -21,13 +21,13 @@ export class Company {
     @OneToMany(()=>Users, user => user.company)
     users: Users[];
 
-    @CreateDateColumn({default: () => "clock_timestamp()", type: 'timestamp'})
+    @CreateDateColumn({type: 'timestamp'})
     createdAt: Date;
 
-    @UpdateDateColumn({default: () => "clock_timestamp()", type: 'timestamp'})
+    @UpdateDateColumn({type: 'timestamp'})
     updatedAt: Date;
     
-    @DeleteDateColumn({default: () => "null", type: 'timestamp'})
+    @DeleteDateColumn({type: 'timestamp'})
     deletedAt: Date;
 
 }
