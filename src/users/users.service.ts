@@ -68,12 +68,13 @@ export class UsersService {
             if (createuserDto.companyId != undefined) {
                 let company = await this.companyRepository.findOne({where:{companyId: createuserDto.companyId}})
                 if (!company ) {
-                    company = await this.companyservice.createCompany({
-                        companyId: createuserDto.companyId, 
-                        name: createuserDto.companyName, 
-                        tags: undefined, recognitions: undefined,
-                        users: [createuserDto]
-                    });
+                    let createCompany = new Company();
+                    createCompany.companyId = createuserDto.companyId;
+                    createCompany.name = createuserDto.lastName;
+                    createCompany.tags = undefined;
+                    createCompany.recognitions = undefined;
+                    createCompany.users = [createuserDto];
+                    company = await this.companyservice.createCompany(createCompany);
                 }
                 user.company = company
             }
