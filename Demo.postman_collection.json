@@ -225,96 +225,159 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Create Company",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"companyId\": 2,\n    \"name\": \"Test Company\",\n    \"recognitions\": [],\n    \"tags\": [{\n        \"tagId\": 4,\n        \"value\": \"Caring\",\n        \"companyId\": 2\n    },\n    {\n        \"tagId\": 5,\n        \"value\": \"Considerate\",\n        \"companyId\": 2\n    }]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/company/create",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"company",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Many Users",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n   {\n    \"firstName\" : \"User\",\n    \"lastName\" : \"One\",\n    \"companyId\" : 3,\n    \"password\" : \"weaverol\",\n    \"positionTitle\" : \"Engineering Manager\",\n    \"companyName\" : \"Outback Technology\",\n    \"isManager\" : true,\n    \"employeeId\" : 1,\n    \"managerId\" : 1,\n    \"email\" : \"UserOne@outbacktechnology.com\",\n    \"startDate\" : \"2016-07-22\"\n    },\n    {\n    \"firstName\" : \"User\",\n    \"lastName\" : \"Two\",\n    \"companyId\" : 3,\n    \"password\" : \"weaverol\",\n    \"positionTitle\" : \"Engineering Manager\",\n    \"companyName\" : \"Outback Technology\",\n    \"isManager\" : true,\n    \"employeeId\" : 2,\n    \"managerId\" : 1,\n    \"email\" : \"UserTwo@outbacktechnology.com\",\n    \"startDate\" : \"2016-07-22\"\n    },\n    {\n    \"firstName\" : \"User\",\n    \"lastName\" : \"Three\",\n    \"companyId\" : 3,\n    \"password\" : \"weaverol\",\n    \"positionTitle\" : \"Engineering Manager\",\n    \"companyName\" : \"Outback Technology\",\n    \"isManager\" : true,\n    \"employeeId\" : 3,\n    \"managerId\" : 1,\n    \"email\" : \"UserThree@outbacktechnology.com\",\n    \"startDate\" : \"2016-07-22\"\n    }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/users/create_multiple",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"users",
+								"create_multiple"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post Get All",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RAZ21haWwuY29tIiwic3ViIjp7ImVtcGxveWVlSWQiOjEsImNvbXBhbnlJZCI6MTIzLCJyb2xlIjoiZW1wbG95ZWUifSwiaWF0IjoxNjE1OTQ3Mjk3LCJleHAiOjE2MTU5NTA4OTd9.NcmH8mf-9rbI-bERvFWq4BAI1giEXNWU3iJaEdtQIOo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:4200/recognitions/all",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"recognitions",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Stats",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Auth Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:4200/users/stats/1/company/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"users",
+								"stats",
+								"1",
+								"company",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Rockstar",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Auth Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:4200/users/company/rockstar/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"users",
+								"company",
+								"rockstar",
+								"1"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
 		{
-			"name": "Create Company",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"companyId\": 2,\n    \"name\": \"Test Company\",\n    \"recognitions\": [],\n    \"tags\": [{\n        \"tagId\": 4,\n        \"value\": \"Caring\",\n        \"companyId\": 2\n    },\n    {\n        \"tagId\": 5,\n        \"value\": \"Considerate\",\n        \"companyId\": 2\n    }]\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:4200/company/create",
-					"host": [
-						"localhost"
-					],
-					"port": "4200",
-					"path": [
-						"company",
-						"create"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Create Many Users",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "[\n   {\n    \"firstName\" : \"User\",\n    \"lastName\" : \"One\",\n    \"companyId\" : 3,\n    \"password\" : \"weaverol\",\n    \"positionTitle\" : \"Engineering Manager\",\n    \"companyName\" : \"Outback Technology\",\n    \"isManager\" : true,\n    \"employeeId\" : 1,\n    \"managerId\" : 1,\n    \"email\" : \"UserOne@outbacktechnology.com\",\n    \"startDate\" : \"2016-07-22\"\n    },\n    {\n    \"firstName\" : \"User\",\n    \"lastName\" : \"Two\",\n    \"companyId\" : 3,\n    \"password\" : \"weaverol\",\n    \"positionTitle\" : \"Engineering Manager\",\n    \"companyName\" : \"Outback Technology\",\n    \"isManager\" : true,\n    \"employeeId\" : 2,\n    \"managerId\" : 1,\n    \"email\" : \"UserTwo@outbacktechnology.com\",\n    \"startDate\" : \"2016-07-22\"\n    },\n    {\n    \"firstName\" : \"User\",\n    \"lastName\" : \"Three\",\n    \"companyId\" : 3,\n    \"password\" : \"weaverol\",\n    \"positionTitle\" : \"Engineering Manager\",\n    \"companyName\" : \"Outback Technology\",\n    \"isManager\" : true,\n    \"employeeId\" : 3,\n    \"managerId\" : 1,\n    \"email\" : \"UserThree@outbacktechnology.com\",\n    \"startDate\" : \"2016-07-22\"\n    }\n]",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:4200/users/create_multiple",
-					"host": [
-						"localhost"
-					],
-					"port": "4200",
-					"path": [
-						"users",
-						"create_multiple"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Post Get All",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RAZ21haWwuY29tIiwic3ViIjp7ImVtcGxveWVlSWQiOjEsImNvbXBhbnlJZCI6MTIzLCJyb2xlIjoiZW1wbG95ZWUifSwiaWF0IjoxNjE1OTQ3Mjk3LCJleHAiOjE2MTU5NTA4OTd9.NcmH8mf-9rbI-bERvFWq4BAI1giEXNWU3iJaEdtQIOo",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:4200/recognitions/all",
-					"host": [
-						"localhost"
-					],
-					"port": "4200",
-					"path": [
-						"recognitions",
-						"all"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get Stats",
+			"name": "Rockstar Stats",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -329,39 +392,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:4200/users/stats/1/company/1",
-					"host": [
-						"localhost"
-					],
-					"port": "4200",
-					"path": [
-						"users",
-						"stats",
-						"1",
-						"company",
-						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get Rockstar",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{Auth Token}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:4200/users/company/rockstar/1",
+					"raw": "localhost:4200/users/company/rockstar/stats/1",
 					"host": [
 						"localhost"
 					],
@@ -370,6 +401,135 @@
 						"users",
 						"company",
 						"rockstar",
+						"stats",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Rockstar Recognitions",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Auth Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:4200/users/company/rockstar/recognitions/1",
+					"host": [
+						"localhost"
+					],
+					"port": "4200",
+					"path": [
+						"users",
+						"company",
+						"rockstar",
+						"recognitions",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Tags",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Auth Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"value\": \"Tag1\",\n    \"company\": {\n        \"companyId\": \"1\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:4200/tag/create",
+					"host": [
+						"localhost"
+					],
+					"port": "4200",
+					"path": [
+						"tag",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Tags",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Auth Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:4200/tag/",
+					"host": [
+						"localhost"
+					],
+					"port": "4200",
+					"path": [
+						"tag",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Tags",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Auth Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:4200/tag/1",
+					"host": [
+						"localhost"
+					],
+					"port": "4200",
+					"path": [
+						"tag",
 						"1"
 					]
 				}
@@ -384,7 +544,7 @@
 				"type": "text/javascript",
 				"exec": [
 					"pm.sendRequest({",
-					"    url: \"localhost:4200\" + \"/auth/login\",",
+					"    url: \"localhost:4200/auth/login\",",
 					"    method: \"POST\",",
 					"    header: {",
 					"        \"content-type\": \"application/json\",",
