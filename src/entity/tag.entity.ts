@@ -5,7 +5,7 @@ import { TagStats } from './tagstats.entity';
 
 @Entity({name: "tag"})
 export class Tag {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn("increment")
     tagId: number;
 
     @Column()
