@@ -14,7 +14,7 @@ export class TagService {
     ){}
 
     async getCompanyTags(companyId: number): Promise<Tag[]>{
-        return this.tagRepository.find({where:{companyId: companyId}})
+        return this.tagRepository.find({where:{company: companyId}})
     }
 
     async createTag(companyId: number, value: string): Promise<Tag> {
@@ -26,7 +26,7 @@ export class TagService {
      }
 
     async deleteTag(companyId: number, id: number): Promise<DeleteResult> {
-        const tag = await this.tagRepository.findOneOrFail({where: {tagId: id}})
+        const tag = await this.tagRepository.findOneOrFail({relations: ["company"], where: {tagId: id}});
 
         if(tag != undefined && tag.company.companyId == companyId){
             return this.tagRepository.delete({tagId: tag.tagId});
