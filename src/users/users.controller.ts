@@ -6,11 +6,15 @@ import { UsersService } from './users.service';
 import { Roles } from 'src/roles/roles.decorator';
 import { RolesGuard } from 'src/roles/roles.guard';
 import { Role } from '../roles/role.enum'
+import { AuthGuard } from '@nestjs/passport';
+import { AuthService } from '../auth/auth.service';
 
 @Controller('users')
 export class UsersController {
     constructor (private usersService: UsersService) {}
-
+        
+    
+    
     @UseGuards(JwtAuthGuard)
     @Get('profile')
     getProfile(@Request() req) {

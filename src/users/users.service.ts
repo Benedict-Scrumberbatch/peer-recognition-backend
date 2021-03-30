@@ -34,6 +34,9 @@ export class UsersService {
         private companyservice: CompanyService,
     ){}
 
+    async storeRefreshToken(refreshToken:string, email:string, refreshtokenexpires){
+        await this.loginRepo.update(email, {refreshtoken:refreshToken, refreshtokenexpires});
+    }
     //Must hash passwords
     //In reality will grab user information from the database.
 
@@ -98,6 +101,7 @@ export class UsersService {
             if (createuserDto.companyId != undefined) {
                 let company = await this.companyRepository.findOne({where:{companyId: createuserDto.companyId}})
                 // If company.name to companyName if they are not the same
+                // Don't 
                 if (company.name != createuserDto.companyName){
                     company.name = createuserDto.companyName; 
                     await this.companyRepository.save(company)
@@ -126,11 +130,11 @@ export class UsersService {
         if (createuserDto.role === Role.Admin){
             user.role = createuserDto.role;
         }
-        else {
-            if (user.isManager) {
-                user.role = Role.Admin
-            }
-        }
+        // else {
+        //     if (user.isManager) {
+        //         user.role = Role.Admin
+        //     }
+        // }
 
         user.positionTitle = createuserDto.positionTitle;
         user.startDate = new Date(createuserDto.startDate);
