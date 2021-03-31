@@ -72,8 +72,16 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
+## Automated Documentation
+More detailed information on using compodoc can be found [here](https://compodoc.app/guides/getting-started.html).
+```bash
+# generate documentation
+$ npx @compodoc/compodoc -p tsconfig.json -s
+``` 
+Documentation will be generated at http://localhost:8080
+
 ## Docker Notes
-### persistence
+### Persistence
 The database has persistence of information between sessions.  It however does *not* currently have any form of **environmental** persistence, nor does it have direct file support in the repo, instead it has a volume holding the information.
 
 ### Connection
@@ -84,5 +92,4 @@ The database is currently used by connecting to localhost:5432.
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 ## License
 
-TEST
 Nest is [MIT licensed](LICENSE).
