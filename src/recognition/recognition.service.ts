@@ -116,7 +116,7 @@ export class RecognitionService {
                         .andWhere("tagTagId = :tag", {tag: recDto.tags[i]})
                         .execute();
                 }
-                else {
+                else if (increment){
                     await this.tagStatsRepo.createQueryBuilder()
                         .insert()
                         .values([{
@@ -144,7 +144,7 @@ export class RecognitionService {
                         .andWhere("tagTagId = :tag", {tag: recDto.tags[i]})
                         .execute();
                 }
-                else {
+                else if (increment) {
                     await this.tagStatsRepo.createQueryBuilder()
                         .insert()
                         .values([{
