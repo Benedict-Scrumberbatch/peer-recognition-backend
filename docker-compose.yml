@@ -10,7 +10,9 @@ services:
     environment:
       POSTGRES_USER: "peer-recognition-user"
       POSTGRES_PASSWORD: "peer-recognition-password"
-      POSTGRES_DB: "peer-recognition"
-
+      POSTGRES_MULTIPLE_DATABASES: "peer-recognition, peer-recognition-test"
+    env_file:
+      - ./.env-dev
+      - ./.env-test
 volumes:
   database-data: # named volumes can be managed easier using docker-compose
