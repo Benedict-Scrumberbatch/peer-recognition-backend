@@ -37,4 +37,3 @@ jobs:
           target_branch: gh-pages
           # Build directory to deploy
           build_dir: docs
-          echo test, and deploy your project.
