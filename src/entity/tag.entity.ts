@@ -22,12 +22,12 @@ export class Tag {
     tagstats: TagStats[];
     
     @CreateDateColumn({type: 'timestamp'})
-    createdAt: Date;
+    createdAt?: Date;
 
     @UpdateDateColumn({type: 'timestamp'})
-    updatedAt: Date;
+    updatedAt?: Date;
     
     @DeleteDateColumn({type: 'timestamp'})
-    deletedAt: Date;
+    deletedAt?: Date;
 
 }

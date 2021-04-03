@@ -75,7 +75,7 @@ export class RecognitionService {
         let deletor = await this.userRepository.findOne({ where: {companyId: companyId, employeeId: empId} });
         await this.recognitionsRepository.update(id, {deletedBy: deletor});
 
-        return await this.recognitionsRepository.delete({recId:id});
+        return await this.recognitionsRepository.softDelete({recId:id});
     }
 
     private async changeUserStats(recDto: CreateRecDto, increment: boolean) { 

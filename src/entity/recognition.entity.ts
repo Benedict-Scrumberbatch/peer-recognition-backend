@@ -31,16 +31,16 @@ export class Recognition {
     msg: string;
     
     @CreateDateColumn({type: 'timestamp'})
-    createdAt: Date;
+    createdAt?: Date;
 
     @UpdateDateColumn({type: 'timestamp'})
-    updatedAt: Date;
+    updatedAt?: Date;
 
     @DeleteDateColumn({type: 'timestamp'})
-    deletedAt: Date;
+    deletedAt?: Date;
 
     @ManyToOne(()=> Users, users=>users.recsDeleted)
     @JoinColumn()
-    deletedBy: Users;
+    deletedBy?: Users;
 
 }
