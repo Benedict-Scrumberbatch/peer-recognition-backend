@@ -6,9 +6,9 @@ name: CI
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ master, gh-pages-actions ]
+    branches: [ master, hosted-docs ]
   pull_request:
-    branches: [ master, gh-pages-actions ]
+    branches: [ master, hosted-docs ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
