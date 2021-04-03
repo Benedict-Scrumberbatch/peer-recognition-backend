@@ -39,3 +39,5 @@ jobs:
           target_branch: gh-pages
           # Build directory to deploy
           build_dir: docs
+        env:
+          GITHUB_TOKEN: ${{ secrets.REPO_TOKEN_ACTIONS }}
