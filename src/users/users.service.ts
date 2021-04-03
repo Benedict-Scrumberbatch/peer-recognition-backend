@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, Repository } from 'typeorm';
+import { DeleteResult, QueryBuilder, Repository } from 'typeorm';
 import { Users } from '../entity/users.entity';
 import { Login } from '../entity/login.entity';
 import { Company } from '../entity/company.entity';
 import { TagStats } from '../entity/tagstats.entity';
-import { CompanyService } from 'src/company/company.service';
+import { CompanyService } from '../company/company.service';
 import { Recognition } from '../entity/recognition.entity';
 import { Query } from 'typeorm/driver/Query';
 
@@ -142,14 +142,15 @@ export class UsersService {
         let date: Date = new Date();
         let prevMonth: number = -1;
         let year = date.getFullYear()
-        if (date.getMonth() == 1)
+        if (date.getMonth() == 0)
         {
             prevMonth = 12;
             year = date.getFullYear() - 1;
         }
         else
         {
-            prevMonth = date.getMonth() - 1
+            //SQL takes 1 based months but the date object has 0 based months.
+            prevMonth = date.getMonth();
         }
         let queryString :string = `SELECT * FROM (SELECT t1."empToEmployeeId", MAX(t1.numRecog) as numRecognitions FROM (select recognition."empToEmployeeId", count(recognition."empToEmployeeId") as numRecog from Recognition where recognition."empToCompanyId" = ${companyId} and extract(Month from recognition."postDate") = ${ prevMonth } and extract(Year from recognition."postDate") = ${ year } group by recognition."empToEmployeeId" ) t1 group by t1."empToEmployeeId") t2, users where t2."empToEmployeeId" = users."employeeId";`
         let retQuery= await this.recognitionRepository.query(queryString);
@@ -183,5 +184,51 @@ export class UsersService {
 
         //calculate and return rockstar
         //recognition module
+    }
+    async getRockstarRecogs(rockstar: Users): Promise<any[]>{
+        let date: Date = new Date();
+        let prevMonth: number = -1;
+        let year = date.getFullYear()
+        if (date.getMonth() == 1)
+        {
+            prevMonth = 12;
+            year = date.getFullYear() - 1;
+        }
+        else
+        {
+            prevMonth = date.getMonth()
+        }
+        let recogs = await this.recognitionRepository.createQueryBuilder().select("*").where("Recognition.empToCompanyId = :compID", {compID : rockstar.company}).andWhere("Recognition.empToEmployeeId = :empID", {empID: rockstar.employeeId}).andWhere("extract(Month from Recognition.postDate) = :prvMonth",{prvMonth:prevMonth}).andWhere("extract(Year from Recognition.postDate) = :yr",{yr:year}).getRawMany();
+        console.log(recogs);
+        return recogs;
+    }
+    async getRockstarStats(rockstar: Users): Promise<any> {
+        let date: Date = new Date();
+        let prevMonth: number = -1;
+        let year = date.getFullYear()
+        if (date.getMonth() == 1)
+        {
+            prevMonth = 12;
+            year = date.getFullYear() - 1;
+        }
+        else
+        {
+            prevMonth = date.getMonth()
+        }
+        let results = {};
+        let recogs = await this.recognitionRepository.createQueryBuilder().select("*").innerJoin("recognition_tags_tag","test","test.recognitionRecId = Recognition.recId").where("Recognition.empToCompanyId = :compID", {compID : rockstar.company}).andWhere("Recognition.empToEmployeeId = :empID", {empID: rockstar.employeeId}).andWhere("extract(Month from Recognition.postDate) = :prvMonth",{prvMonth:prevMonth}).andWhere("extract(Year from Recognition.postDate) = :yr",{yr:year}).getRawMany();
+        for (let i = 0; i < recogs.length; ++i)
+        {
+            if (!(recogs[i].tagTagID in results))
+            {
+                results[recogs[i].tagTagId]= 1;
+            }
+            else 
+            {
+                let numTag = results[recogs[i].tagTagId];
+                results[recogs[i].tagTagId]= numTag + 1;
+            }
+        }
+        return results;
     }
 } 

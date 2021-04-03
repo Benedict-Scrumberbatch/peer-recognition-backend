@@ -73,12 +73,20 @@ $ npm run test:cov
 ```
 
 ## Automated Documentation
+### compodoc
 More detailed information on using compodoc can be found [here](https://compodoc.app/guides/getting-started.html).
 ```bash
 # generate documentation
 $ npx @compodoc/compodoc -p tsconfig.json -s
 ``` 
 Documentation will be generated at http://localhost:8080
+
+### Swagger
+Nestjs specific docs can be found [here](https://docs.nestjs.com/openapi/introduction).  
+Swagger docs auto generate at http://localhost:4200/api/
+#### Useful swagger related links:
+* https://stackoverflow.com/questions/54802832/is-it-possible-to-add-authentication-to-access-to-nestjs-swagger-explorer
+* https://codeburst.io/integrating-swagger-with-nestjs-9650594ab728
 
 ## Docker Notes
 ### Persistence
