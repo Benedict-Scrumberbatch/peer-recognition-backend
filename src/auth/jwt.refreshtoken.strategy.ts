@@ -27,7 +27,8 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(Strategy,"jwt-refr
     if( new Date() > new Date(user.refreshtokenexpires)){
       throw new UnauthorizedException();
     }
-    return { employeeId: payload.sub.employeeId, role: payload.sub.role, companyId: payload.sub.companyId, email: payload.username };
+    // return { employeeId: payload.sub.employeeId, role: payload.sub.role, companyId: payload.sub.companyId, email: payload.username };
+    return user;
 
 }
 }

@@ -124,7 +124,6 @@ export class UsersService {
         user.firstName = createuserDto.firstName;
         user.lastName = createuserDto.lastName;
 
-        // If isManager = true then set Role to Admin
         // Will add different level of admin 
         user.isManager = Boolean(createuserDto.isManager);
         if (createuserDto.role === Role.Admin){
