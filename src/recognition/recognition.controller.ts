@@ -11,13 +11,14 @@ import { DeleteResult } from 'typeorm';
 @Controller('recognitions')
 export class RecognitionController {
     constructor(private recs: RecognitionService){}
+
     @Get('all')
     findAll(): Promise<Recognition[]>{
         return this.recs.findAll();
     }
     @Post('create')
-        create(@Body() createRecDto: CreateRecDto): Promise<Recognition>{
-            return this.recs.createRec(createRecDto);
+    create(@Body() createRecDto: Recognition): Promise<Recognition>{
+        return this.recs.createRec(createRecDto);
     }
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(Role.Admin)

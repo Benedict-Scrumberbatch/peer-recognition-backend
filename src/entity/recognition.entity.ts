@@ -6,7 +6,7 @@ import { Tag } from "./tag.entity";
 @Entity({name: "recognition"})
 @Index(["company", "postDate"])
 export class Recognition {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn("increment")
     recId: number;
 
     @ManyToOne(()=> Company, company=>company.recognitions)
