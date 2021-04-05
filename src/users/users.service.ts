@@ -9,7 +9,6 @@ import { CompanyService } from '../company/company.service';
 import { Recognition } from '../entity/recognition.entity';
 import { Query } from 'typeorm/driver/Query';
 
-
 export interface UserStats {
     numRecsReceived: number,
     numRecsSent: number,
@@ -33,11 +32,13 @@ export class UsersService {
         private companyservice: CompanyService,
     ){}
 
-    //Must hash passwords
-    //In reality will grab user information from the database.
-
-    async loginUser(username: string): Promise<Login> {
-        return this.loginRepo.findOne( { relations: ["employee"], where: { email: username } });
+    async loginUser(username: string, pass: string): Promise<Login> {
+        const bcrypt = require('bcrypt');
+        const userLogin = await this.loginRepo.findOne( { relations: ["employee"], where: { email: username } });
+        if(bcrypt.compare(pass, userLogin.password)){
+            return userLogin;
+        }
+        return null;
     }
 
     //Function retrieves user profile using their userId.
@@ -107,7 +108,12 @@ export class UsersService {
 
         const login = new Login();
         login.email = createuserDto.email;
-        login.password = createuserDto.password;
+        const bcrypt = require('bcrypt');
+        bcrypt.genSalt(function(err, salt) {
+            bcrypt.hash(createuserDto.password, salt, function(err, hash) {
+                login.password = hash;
+            });
+        });
         login.employee = await this.usersRepository.save(user);
         await this.loginRepo.save(login);
         
