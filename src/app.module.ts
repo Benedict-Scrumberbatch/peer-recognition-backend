@@ -10,9 +10,10 @@ import { Users } from './dtos/entity/users.entity';
 import { Tag } from './dtos/entity/tag.entity';
 import { Company } from './dtos/entity/company.entity';
 import { RecognitionService } from './recognition/recognition.service';
+import { TagModule } from './tag/tag.module';
 
 @Module({
-  imports: [AuthModule, UsersModule, RecognitionModule, CompanyModule, TypeOrmModule.forRoot()],
+  imports: [AuthModule, UsersModule, RecognitionModule, CompanyModule, TagModule, TypeOrmModule.forRoot()],
   controllers: [AppController],
   providers: [AppService],
 

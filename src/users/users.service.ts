@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+<<<<<<< HEAD
 import { DeleteResult, Repository } from 'typeorm';
 import { Users } from '../dtos/entity/users.entity';
 import { Login } from '../dtos/entity/login.entity';
@@ -7,6 +8,15 @@ import { Company } from '../dtos/entity/company.entity';
 import { TagStats } from '../dtos/entity/tagstats.entity';
 import { CompanyService } from 'src/company/company.service';
 import { Recognition } from '../dtos/entity/recognition.entity';
+=======
+import { DeleteResult, QueryBuilder, Repository } from 'typeorm';
+import { Users } from '../entity/users.entity';
+import { Login } from '../entity/login.entity';
+import { Company } from '../entity/company.entity';
+import { TagStats } from '../entity/tagstats.entity';
+import { CompanyService } from '../company/company.service';
+import { Recognition } from '../entity/recognition.entity';
+>>>>>>> master
 import { Query } from 'typeorm/driver/Query';
 import { UserStats } from '../dtos/interface/userstats.interface';
 
@@ -178,5 +188,51 @@ export class UsersService {
 
         //calculate and return rockstar
         //recognition module
+    }
+    async getRockstarRecogs(rockstar: Users): Promise<any[]>{
+        let date: Date = new Date();
+        let prevMonth: number = -1;
+        let year = date.getFullYear()
+        if (date.getMonth() == 1)
+        {
+            prevMonth = 12;
+            year = date.getFullYear() - 1;
+        }
+        else
+        {
+            prevMonth = date.getMonth()
+        }
+        let recogs = await this.recognitionRepository.createQueryBuilder().select("*").where("Recognition.empToCompanyId = :compID", {compID : rockstar.company}).andWhere("Recognition.empToEmployeeId = :empID", {empID: rockstar.employeeId}).andWhere("extract(Month from Recognition.postDate) = :prvMonth",{prvMonth:prevMonth}).andWhere("extract(Year from Recognition.postDate) = :yr",{yr:year}).getRawMany();
+        console.log(recogs);
+        return recogs;
+    }
+    async getRockstarStats(rockstar: Users): Promise<any> {
+        let date: Date = new Date();
+        let prevMonth: number = -1;
+        let year = date.getFullYear()
+        if (date.getMonth() == 1)
+        {
+            prevMonth = 12;
+            year = date.getFullYear() - 1;
+        }
+        else
+        {
+            prevMonth = date.getMonth()
+        }
+        let results = {};
+        let recogs = await this.recognitionRepository.createQueryBuilder().select("*").innerJoin("recognition_tags_tag","test","test.recognitionRecId = Recognition.recId").where("Recognition.empToCompanyId = :compID", {compID : rockstar.company}).andWhere("Recognition.empToEmployeeId = :empID", {empID: rockstar.employeeId}).andWhere("extract(Month from Recognition.postDate) = :prvMonth",{prvMonth:prevMonth}).andWhere("extract(Year from Recognition.postDate) = :yr",{yr:year}).getRawMany();
+        for (let i = 0; i < recogs.length; ++i)
+        {
+            if (!(recogs[i].tagTagID in results))
+            {
+                results[recogs[i].tagTagId]= 1;
+            }
+            else 
+            {
+                let numTag = results[recogs[i].tagTagId];
+                results[recogs[i].tagTagId]= numTag + 1;
+            }
+        }
+        return results;
     }
 } 

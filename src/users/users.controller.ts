@@ -52,4 +52,19 @@ export class UsersController {
     async getRockstar(@Param('comp_id') companyId: number) {
         return await this.usersService.getRockstar(companyId);
     }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('company/rockstar/stats/:comp_ID')
+    async getRockstarStats(@Param('comp_ID') comp_ID: number)
+    {
+        let rockstar: Users = await this.getRockstar(comp_ID)
+        return await this.usersService.getRockstarStats(rockstar);
+    }
+    @UseGuards(JwtAuthGuard)
+    @Get('company/rockstar/recognitions/:comp_ID')
+    async getRockstarRecogs(@Param('comp_ID') comp_ID: number)
+    {
+        let rockstar: Users = await this.getRockstar(comp_ID)
+        return await this.usersService.getRockstarRecogs(rockstar);
+    }
 }
