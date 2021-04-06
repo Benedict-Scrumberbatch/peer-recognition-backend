@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-<<<<<<< HEAD
 import { DeleteResult, Repository } from 'typeorm';
 import { Users } from '../dtos/entity/users.entity';
 import { Login } from '../dtos/entity/login.entity';
@@ -8,15 +7,6 @@ import { Company } from '../dtos/entity/company.entity';
 import { TagStats } from '../dtos/entity/tagstats.entity';
 import { CompanyService } from 'src/company/company.service';
 import { Recognition } from '../dtos/entity/recognition.entity';
-=======
-import { DeleteResult, QueryBuilder, Repository } from 'typeorm';
-import { Users } from '../entity/users.entity';
-import { Login } from '../entity/login.entity';
-import { Company } from '../entity/company.entity';
-import { TagStats } from '../entity/tagstats.entity';
-import { CompanyService } from '../company/company.service';
-import { Recognition } from '../entity/recognition.entity';
->>>>>>> master
 import { Query } from 'typeorm/driver/Query';
 import { UserStats } from '../dtos/interface/userstats.interface';
 
