@@ -10,12 +10,6 @@ export class Login {
     @Column()
     password: string;
 
-    @Column({default: '101'})
-    refreshtoken: string;
-
-    @Column({default: '101'})
-    refreshtokenexpires: string;
-
     @OneToOne(() => Users)
     @JoinColumn()
     employee: Users;

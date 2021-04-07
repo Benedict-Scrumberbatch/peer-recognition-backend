@@ -14,8 +14,8 @@ import { JwtRefreshTokenStrategy } from './jwt.refreshtoken.strategy';
     UsersModule, 
     PassportModule,
     JwtModule.register({
-      secret: jwtConstants.secret,
-      signOptions: { expiresIn: '30s' },  // set to 30s for eaiser demo. Should be 15mins or 1 hour
+      secret: jwtConstants.access_secret,
+      signOptions: { expiresIn: '5m' },  
     }),
   ],
   providers: [AuthService, LocalStrategy, JwtStrategy, JwtRefreshTokenStrategy],

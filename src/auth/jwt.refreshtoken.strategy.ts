@@ -5,31 +5,23 @@ import { UsersService } from '../users/users.service';
 import { jwtConstants } from './constants';
  
 @Injectable()
-export class JwtRefreshTokenStrategy extends PassportStrategy(Strategy,"jwt-refreshtoken") {
-  constructor(private userService:UsersService) {
-    super({
-      jwtFromRequest: ExtractJwt.fromBodyField('access_token'),
-      ignoreExpiration: true,
-      secretOrKey: jwtConstants.secret,
-      passReqToCallback: true,
-    });
-  }
- 
-  async validate(req:any , payload: any) {
-    
-    let user = await this.userService.loginUser(payload.username);
-    let refresh = await this.userService.loginUser(req.body.username);
-    if(!user || !refresh){
-        throw new UnauthorizedException();
+export class JwtRefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-refreshtoken') {
+    constructor() {
+        super({
+            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+            ignoreExpiration: false,
+            secretOrKey: jwtConstants.refresh_secret,
+        });
     }
-    // if(req.body.refreshToken != user.refreshtoken){
-    //     throw new UnauthorizedException();
-    // }
-    // if( new Date() > new Date(user.refreshtokenexpires)){
-    //   throw new UnauthorizedException();
-    // }
-    // return { employeeId: payload.sub.employeeId, role: payload.sub.role, companyId: payload.sub.companyId, email: payload.username };
-    return user;
+  //   async validate(username: string, password:string): Promise<any> {
+  //     const user = await this.authService.validateUser(username, password);
+  //     if (!user) {
+  //         throw new UnauthorizedException();
+  //     }
+  //     return user;
+  // }
+    async validate(payload: any) {
+      return { employeeId: payload.sub.employeeId, role: payload.sub.role, companyId: payload.sub.companyId, email: payload.username };
+  }
 
-}
 }
