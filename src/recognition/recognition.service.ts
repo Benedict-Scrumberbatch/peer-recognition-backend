@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { DeleteResult, getRepository, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Recognition } from '../entity/recognition.entity';
-import { Company } from '../entity/company.entity';
-import { Users } from '../entity/users.entity';
-import { Tag } from '../entity/tag.entity';
-import { TagStats } from '../entity/tagstats.entity';
+import { Recognition } from '../dtos/entity/recognition.entity';
+import { Company } from '../dtos/entity/company.entity';
+import { Users } from '../dtos/entity/users.entity';
+import { Tag } from '../dtos/entity/tag.entity';
+import { TagStats } from '../dtos/entity/tagstats.entity';
 import { CreateRecDto } from './dto/create-rec.dto';
 
 

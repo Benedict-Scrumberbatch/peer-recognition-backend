@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { DeleteResult, getRepository, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import {Tag} from '../entity/tag.entity'
-import {Company} from '../entity/company.entity'
+import {Tag} from '../dtos/entity/tag.entity'
+import {Company} from '../dtos/entity/company.entity'
 
 @Injectable()
 export class TagService {

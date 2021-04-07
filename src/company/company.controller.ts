@@ -1,5 +1,5 @@
 import { Controller, Request, Post, Get, Delete, Param, Body } from '@nestjs/common';
-import { Company } from '../entity/company.entity';
+import { Company } from '../dtos/entity/company.entity';
 import { CompanyService } from './company.service';
 
 @Controller('company')

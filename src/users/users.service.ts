@@ -1,20 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, QueryBuilder, Repository } from 'typeorm';
-import { Users } from '../entity/users.entity';
-import { Login } from '../entity/login.entity';
-import { Company } from '../entity/company.entity';
-import { TagStats } from '../entity/tagstats.entity';
+import { Users } from '../dtos/entity/users.entity';
+import { Login } from '../dtos/entity/login.entity';
+import { Company } from '../dtos/entity/company.entity';
+import { TagStats } from '../dtos/entity/tagstats.entity';
 import { CompanyService } from '../company/company.service';
-import { Recognition } from '../entity/recognition.entity';
+import { Recognition } from '../dtos/entity/recognition.entity';
 import { Query } from 'typeorm/driver/Query';
-
-
-export interface UserStats {
-    numRecsReceived: number,
-    numRecsSent: number,
-    tagStats: TagStats[]
-}
+import { UserStats } from '../dtos/interface/userstats.interface';
 
 @Injectable()
 export class UsersService {

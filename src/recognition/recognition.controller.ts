@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Delete, Body, Param, Request, UseGuards} from '@nestjs/common';
 import {CreateRecDto} from './dto/create-rec.dto'
 import {RecognitionService} from './recognition.service'
-import {Recognition} from '../entity/recognition.entity';
+import {Recognition} from '../dtos/entity/recognition.entity';
 import { DeleteResult } from 'typeorm';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
