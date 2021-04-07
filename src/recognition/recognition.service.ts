@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { DeleteResult, getRepository, Repository } from 'typeorm';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { DeleteResult, getConnection, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Recognition } from '../dtos/entity/recognition.entity';
 import { Company } from '../dtos/entity/company.entity';
@@ -31,7 +31,7 @@ export class RecognitionService {
 
     async findAll(): Promise<Recognition[]>{
         return await this.recognitionsRepository.find();
-     }
+    }
 
     async createRec(recognition: Recognition): Promise<Recognition> {
         recognition.postDate = new Date();
@@ -47,11 +47,15 @@ export class RecognitionService {
         }
         await this.changeUserStats(recDto, true)
         return recognition
-     }
+    }
 
-    async deleteRec(id: number): Promise<DeleteResult> {
-        let rec = await this.recognitionsRepository.findOne({ relations: ["empFrom", "empTo", "company", "tags"], where: { recId: id } });
+    async deleteRec(id: number, companyId: number, empId: number): Promise<DeleteResult> {
         
+        let rec = await this.recognitionsRepository.findOne({ relations: ["empFrom", "empTo", "company", "tags"], where: { recId: id } });
+        if(rec.company.companyId !== companyId){
+            throw new UnauthorizedException();
+        }
+
         let tagArr = [];
         rec.tags.forEach(tag => {tagArr.push(tag.tagId)})
         let recDto: CreateRecDto = {
@@ -64,7 +68,10 @@ export class RecognitionService {
 
         await this.changeUserStats(recDto, false);
 
-        return await this.recognitionsRepository.delete({recId:id});
+        let deletor = await this.userRepository.findOne({ where: {companyId: companyId, employeeId: empId} });
+        await this.recognitionsRepository.update(id, {deletedBy: deletor});
+
+        return await this.recognitionsRepository.softDelete({recId:id});
     }
 
     private async changeUserStats(recDto: CreateRecDto, increment: boolean) { 
