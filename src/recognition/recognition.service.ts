@@ -31,7 +31,7 @@ export class RecognitionService {
 
     async findAll(): Promise<Recognition[]>{
         return await this.recognitionsRepository.find({relations: ['empFrom', 'empTo', 'tags']});
-
+    }
     async createRec(recognition: Recognition): Promise<Recognition> {
         recognition.postDate = new Date();
         await this.recognitionsRepository.save(recognition);

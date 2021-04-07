@@ -13,7 +13,12 @@ export class CompanyService {
 
         
     ){}
-    
+    async getCompany(): Promise<Company[]>{
+        return await this.companyRepository.find({relations:["tags"]});
+    }
+    async getOneCompany(id:number): Promise<Company>{
+        return await this.companyRepository.findOne({relations:["tags"], where:{companyId:id}})
+    }
     async createCompany(createcompanyDto: Company): Promise<Company> {
         const company = new Company();
 
@@ -28,5 +33,9 @@ export class CompanyService {
 
         await this.companyRepository.save(company);
         return company;
+    }
+    
+    async deleteComp(id: number):Promise<DeleteResult>{
+        return await this.companyRepository.delete(id)
     }
 } 
