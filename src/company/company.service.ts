@@ -14,9 +14,11 @@ export class CompanyService {
         
     ){}
     async getCompany(): Promise<Company[]>{
-        return await this.companyRepository.find({relations:["tags","recognitions","users"]});
+        return await this.companyRepository.find({relations:["tags"]});
     }
-
+    async getOneCompany(id:number): Promise<Company>{
+        return await this.companyRepository.findOne({relations:["tags"], where:{companyId:id}})
+    }
     async createCompany(createcompanyDto: Company): Promise<Company> {
         const company = new Company();
 

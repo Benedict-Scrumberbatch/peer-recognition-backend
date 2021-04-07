@@ -1,4 +1,5 @@
-import { Controller, Request, Post, Get, Delete, Param, Body } from '@nestjs/common';
+import { Controller, Request, Post, Get, Delete, Param, Body, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { DeleteResult } from 'typeorm';
 import { Company } from '../entity/company.entity';
 import { CompanyService } from './company.service';
@@ -7,6 +8,15 @@ import { CompanyService } from './company.service';
 export class CompanyController {
     constructor (private companyService: CompanyService) {}
 
+    @UseGuards(JwtAuthGuard)
+    @Get()
+    async getUserCompany(@Request() req): Promise<Company>{
+        return await this.companyService.getOneCompany(req.user.companyId)
+    }
+    @Get(':id')
+    async getOneCompany(@Param('id') id): Promise<Company>{
+        return await this.companyService.getOneCompany(id);
+    }
     @Post('create')
     async createCompany(@Body() createcompanyDto: Company) {
         return await this.companyService.createCompany(createcompanyDto);
