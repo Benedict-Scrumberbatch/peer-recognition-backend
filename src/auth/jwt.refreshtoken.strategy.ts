@@ -11,22 +11,23 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(Strategy,"jwt-refr
       jwtFromRequest: ExtractJwt.fromBodyField('access_token'),
       ignoreExpiration: true,
       secretOrKey: jwtConstants.secret,
-      passReqToCallback: true
+      passReqToCallback: true,
     });
   }
  
-  async validate(req, payload: any) {
+  async validate(req:any , payload: any) {
     
     let user = await this.userService.loginUser(payload.username);
-    if(!user){
+    let refresh = await this.userService.loginUser(req.body.username);
+    if(!user || !refresh){
         throw new UnauthorizedException();
     }
-    if(req.body.refreshToken != user.refreshtoken){
-        throw new UnauthorizedException();
-    }
-    if( new Date() > new Date(user.refreshtokenexpires)){
-      throw new UnauthorizedException();
-    }
+    // if(req.body.refreshToken != user.refreshtoken){
+    //     throw new UnauthorizedException();
+    // }
+    // if( new Date() > new Date(user.refreshtokenexpires)){
+    //   throw new UnauthorizedException();
+    // }
     // return { employeeId: payload.sub.employeeId, role: payload.sub.role, companyId: payload.sub.companyId, email: payload.username };
     return user;
 

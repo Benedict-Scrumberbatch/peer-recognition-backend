@@ -10,7 +10,7 @@ export class AuthService {
     async generateRefreshToken(email):  Promise<string>{
         var refreshToken = randtoken.generate(16);
         var expirydate =new Date();
-        expirydate.setDate(expirydate.getDate() + 7);
+        expirydate.setDate(expirydate.getDate() + 7);   // refreshtoken expires in 7 days
         await this.usersService.storeRefreshToken(refreshToken, email, expirydate);
         return refreshToken
       }
@@ -28,7 +28,8 @@ export class AuthService {
         const payload = { username: user.email, sub: { employeeId: user.employee.employeeId, companyId: user.employee.companyId, role: user.employee.role } };
         return {
             access_token: this.jwtService.sign(payload),
-            refreshToken: await this.generateRefreshToken(user.email),
+            // refreshToken: await this.generateRefreshToken(user.email),
+            refreshToken: this.jwtService.sign(payload, { expiresIn: '3600s'}),
         };
     }
 }
