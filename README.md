@@ -77,13 +77,14 @@ $ npm run test:cov
 More detailed information on using compodoc can be found [here](https://compodoc.app/guides/getting-started.html).
 ```bash
 # generate documentation
-$ npx @compodoc/compodoc -p tsconfig.json -s
+$ npx @compodoc/compodoc -p tsconfig.json -d docs --includes swagger-docs -a swagger-assets -s
 ``` 
-Documentation will be generated at http://localhost:8080
+Documentation will be generated at http://localhost:8080  
+Live docs can be found at https://benedict-scrumberbatch.github.io/peer-recognition-backend
 
 ### Swagger
 Nestjs specific docs can be found [here](https://docs.nestjs.com/openapi/introduction).  
-Swagger docs auto generate at http://localhost:4200/api/
+Swagger docs auto generate at http://localhost:4200/api/ or in the compodoc documentation.
 #### Useful swagger related links:
 * https://stackoverflow.com/questions/54802832/is-it-possible-to-add-authentication-to-access-to-nestjs-swagger-explorer
 * https://codeburst.io/integrating-swagger-with-nestjs-9650594ab728

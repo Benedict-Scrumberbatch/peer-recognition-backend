@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { DeleteResult, getRepository, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import {Tag} from '../entity/tag.entity'
-import {Company} from '../entity/company.entity'
+import {Tag} from '../dtos/entity/tag.entity'
+import {Company} from '../dtos/entity/company.entity'
 
 @Injectable()
 export class TagService {
@@ -28,7 +28,7 @@ export class TagService {
     async deleteTag(companyId: number, id: number): Promise<DeleteResult> {
         const tag = await this.tagRepository.findOneOrFail({relations: ["company"], where: {tagId: id}});
 
-        if(tag != undefined && tag.company.companyId == companyId){
+        if(tag != undefined && tag.company.companyId == companyId) {
             return this.tagRepository.delete({tagId: tag.tagId});
         }
         return null;    //not sure what to return for failure, either this user is in the wrong company or the tag does not exist
