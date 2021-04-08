@@ -1,6 +1,6 @@
 import { Controller, Request, Post, UseGuards, Get, Delete, Param, Body } from '@nestjs/common';
-import { Login } from '../entity/login.entity';
-import { Users } from '../entity/users.entity';
+import { Login } from '../dtos/entity/login.entity';
+import { Users } from '../dtos/entity/users.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UsersService } from './users.service';
 
@@ -51,5 +51,20 @@ export class UsersController {
     @Get('company/rockstar/:comp_id')
     async getRockstar(@Param('comp_id') companyId: number) {
         return await this.usersService.getRockstar(companyId);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('company/rockstar/stats/:comp_ID')
+    async getRockstarStats(@Param('comp_ID') comp_ID: number)
+    {
+        let rockstar: Users = await this.getRockstar(comp_ID)
+        return await this.usersService.getRockstarStats(rockstar);
+    }
+    @UseGuards(JwtAuthGuard)
+    @Get('company/rockstar/recognitions/:comp_ID')
+    async getRockstarRecogs(@Param('comp_ID') comp_ID: number)
+    {
+        let rockstar: Users = await this.getRockstar(comp_ID)
+        return await this.usersService.getRockstarRecogs(rockstar);
     }
 }

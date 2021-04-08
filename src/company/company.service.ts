@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Company } from '../entity/company.entity';
+import { Company } from '../dtos/entity/company.entity';
 
 
 @Injectable()
@@ -21,6 +21,7 @@ export class CompanyService {
         company.name = createcompanyDto.name;
         
         company.recognitions = createcompanyDto.recognitions;
+        //Will need to create tags in the tag table.
         company.tags = createcompanyDto.tags;
 
         await this.companyRepository.save(company);

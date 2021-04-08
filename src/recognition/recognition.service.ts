@@ -1,13 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { DeleteResult, getConnection, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Recognition } from '../entity/recognition.entity';
-import { Company } from '../entity/company.entity';
-import { Users } from '../entity/users.entity';
-import { Tag } from '../entity/tag.entity';
-import { TagStats } from '../entity/tagstats.entity';
-import { CreateRecDto } from './dto/create-rec.dto';
-import { reverse } from 'node:dns';
+import { Recognition } from '../dtos/entity/recognition.entity';
+import { Company } from '../dtos/entity/company.entity';
+import { Users } from '../dtos/entity/users.entity';
+import { Tag } from '../dtos/entity/tag.entity';
+import { TagStats } from '../dtos/entity/tagstats.entity';
+import { CreateRecDto } from '../dtos/dto/create-rec.dto';
 
 
 @Injectable()
@@ -25,37 +24,37 @@ export class RecognitionService {
         private tagStatsRepo: Repository<TagStats>
     ){}
 
-    
+    async findCompRec(id: number): Promise<Recognition[]>{
+     return await this.recognitionsRepository.find({where:{companyCompanyId:id}});
+    }
+
     async findAll(): Promise<Recognition[]>{
-        return this.recognitionsRepository.find();
-     }
-
-    async createRec(recDto: CreateRecDto): Promise<Recognition> {
-        const rec = new Recognition();
-        rec.msg = recDto.msg;
-        rec.postDate = new Date();
-        rec.company = await this.companyRepository.findOne({where:{companyId: recDto.company}});
-        rec.empFrom = await this.userRepository.findOne({where:{employeeId: recDto.employeeFrom}});
-        rec.empTo = await this.userRepository.findOne({where:{employeeId: recDto.employeeTo}});
-        rec.tags = [];
-        if(recDto.tags != undefined){
-            for(let i = 0; i < recDto.tags.length;i++){
-                const tag = await this.tagRepository.findOne({ where: { tagId: recDto.tags[i] } });
-                if(tag != undefined){
-                    rec.tags.push(tag);
-                }
-            }
+        return await this.recognitionsRepository.find({relations: ['empFrom', 'empTo', 'tags']});
+    }
+    
+    async createRec(recognition: Recognition): Promise<Recognition> {
+        recognition.postDate = new Date();
+        await this.recognitionsRepository.save(recognition);
+        let tagArr = [];
+        recognition.tags.forEach(tag => {tagArr.push(tag.tagId)})
+        const recDto: CreateRecDto = {
+            company: recognition.company.companyId,
+            employeeFrom: recognition.empFrom.employeeId,
+            employeeTo: recognition.empTo.employeeId,
+            msg: recognition.msg,
+            tags: tagArr
         }
-        await this.recognitionsRepository.save(rec);
-
         await this.changeUserStats(recDto, true)
+        return recognition
+    }
 
-        return rec
-     }
-
-    async deleteRec(id: number): Promise<DeleteResult> {
-        let rec = await this.recognitionsRepository.findOne({ relations: ["empFrom", "empTo", "company", "tags"], where: { recId: id } });
+    async deleteRec(id: number, companyId: number, empId: number): Promise<DeleteResult> {
         
+        let rec = await this.recognitionsRepository.findOne({ relations: ["empFrom", "empTo", "company", "tags"], where: { recId: id } });
+        if(rec.company.companyId !== companyId){
+            throw new UnauthorizedException();
+        }
+
         let tagArr = [];
         rec.tags.forEach(tag => {tagArr.push(tag.tagId)})
         let recDto: CreateRecDto = {
@@ -68,7 +67,10 @@ export class RecognitionService {
 
         await this.changeUserStats(recDto, false);
 
-        return await this.recognitionsRepository.delete({recId:id});
+        let deletor = await this.userRepository.findOne({ where: {companyId: companyId, employeeId: empId} });
+        await this.recognitionsRepository.update(id, {deletedBy: deletor});
+
+        return await this.recognitionsRepository.softDelete({recId:id});
     }
 
     private async changeUserStats(recDto: CreateRecDto, increment: boolean) { 
@@ -120,7 +122,7 @@ export class RecognitionService {
                         .andWhere("tagTagId = :tag", {tag: recDto.tags[i]})
                         .execute();
                 }
-                else {
+                else if (increment){
                     await this.tagStatsRepo.createQueryBuilder()
                         .insert()
                         .values([{
@@ -148,7 +150,7 @@ export class RecognitionService {
                         .andWhere("tagTagId = :tag", {tag: recDto.tags[i]})
                         .execute();
                 }
-                else {
+                else if (increment) {
                     await this.tagStatsRepo.createQueryBuilder()
                         .insert()
                         .values([{
