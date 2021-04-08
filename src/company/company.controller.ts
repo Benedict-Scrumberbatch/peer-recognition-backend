@@ -9,6 +9,11 @@ export class CompanyController {
     constructor (private companyService: CompanyService) {}
 
     @UseGuards(JwtAuthGuard)
+    
+    @Get('all')
+    async getCompany(){
+        return await this.companyService.getCompany();
+    }
     @Get()
     async getUserCompany(@Request() req): Promise<Company>{
         return await this.companyService.getOneCompany(req.user.companyId)
@@ -21,10 +26,7 @@ export class CompanyController {
     async createCompany(@Body() createcompanyDto: Company) {
         return await this.companyService.createCompany(createcompanyDto);
     }
-    @Get('all')
-    async getCompany(){
-        return await this.companyService.getCompany();
-    }
+    
     @Delete(':id')
     delete(@Param('id') id): Promise<DeleteResult>{
         return this.companyService.deleteComp(id);
