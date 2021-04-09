@@ -29,12 +29,22 @@ export class UsersService {
 
     //Must hash passwords
     //In reality will grab user information from the database.
-
+    /**
+     * Method called by the {@link AuthService} to retrieve the {@link Login} user object associated with the email.
+     * @param username Email to specify the user.
+     * @returns {@link Login} user object.
+     */
     async loginUser(username: string): Promise<Login> {
         return this.loginRepo.findOne( { relations: ["employee"], where: { email: username } });
     }
 
     //Function retrieves user profile using their userId.
+    /**
+     * Returns {@link Users} object with user information and manager relation.
+     * @param userId User's employee ID
+     * @param companyId User's company ID
+     * @returns {@link Users} object with manager relation.
+     */
     async getProfile(userId: number, companyId: number): Promise<Users> {
         return this.usersRepository.findOne( { relations: ["manager"], where: { employeeId: userId, companyId: companyId } } );
     }
