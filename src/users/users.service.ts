@@ -1,20 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Users } from '../dtos/entity/users.entity';
+import { Login } from '../dtos/entity/login.entity';
+import { Company } from '../dtos/entity/company.entity';
+import { TagStats } from '../dtos/entity/tagstats.entity';
+import { CompanyService } from 'src/company/company.service';
+import { Recognition } from '../dtos/entity/recognition.entity';
 import { DeleteResult, QueryBuilder, Repository } from 'typeorm';
-import { Users } from '../entity/users.entity';
-import { Login } from '../entity/login.entity';
-import { Company } from '../entity/company.entity';
-import { TagStats } from '../entity/tagstats.entity';
-import { CompanyService } from '../company/company.service';
-import { Recognition } from '../entity/recognition.entity';
 import { Query } from 'typeorm/driver/Query';
-
-
-export interface UserStats {
-    numRecsReceived: number,
-    numRecsSent: number,
-    tagStats: TagStats[]
-}
+import { UserStats } from '../dtos/interface/userstats.interface';
 
 @Injectable()
 export class UsersService {
@@ -55,8 +49,8 @@ export class UsersService {
 
     async removeUser(employeeId: number, companyId: number): Promise<DeleteResult> {
         const user = await this.usersRepository.findOne({ employeeId: employeeId, companyId: companyId })
-        await this.loginRepo.delete({employee: user});
-        return await this.usersRepository.delete(user);
+        await this.loginRepo.delete({employee: user});  // if delete performs a hard delete, I think this is the behavior we want: removing the email and password record
+        return await this.usersRepository.softDelete(user);
     }
     
     async createUser(createuserDto: Users & Login & {managerId: number} & {companyName: string}): Promise<Users> {    
@@ -68,12 +62,13 @@ export class UsersService {
             if (createuserDto.companyId != undefined) {
                 let company = await this.companyRepository.findOne({where:{companyId: createuserDto.companyId}})
                 if (!company ) {
-                    company = await this.companyservice.createCompany({
-                        companyId: createuserDto.companyId, 
-                        name: createuserDto.companyName, 
-                        tags: undefined, recognitions: undefined,
-                        users: [createuserDto]
-                    });
+                    let createCompany = new Company();
+                    createCompany.companyId = createuserDto.companyId;
+                    createCompany.name = createuserDto.lastName;
+                    createCompany.tags = undefined;
+                    createCompany.recognitions = undefined;
+                    createCompany.users = [createuserDto];
+                    company = await this.companyservice.createCompany(createCompany);
                 }
                 user.company = company
             }

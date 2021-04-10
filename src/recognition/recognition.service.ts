@@ -1,13 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import { DeleteResult, getRepository, Repository } from 'typeorm';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { DeleteResult, getConnection, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Recognition } from '../entity/recognition.entity';
-import { Company } from '../entity/company.entity';
-import { Users } from '../entity/users.entity';
-import { Tag } from '../entity/tag.entity';
-import { TagStats } from '../entity/tagstats.entity';
-import { CreateRecDto } from './dto/create-rec.dto';
-
+import { Recognition } from '../dtos/entity/recognition.entity';
+import { Company } from '../dtos/entity/company.entity';
+import { Users } from '../dtos/entity/users.entity';
+import { Tag } from '../dtos/entity/tag.entity';
+import { TagStats } from '../dtos/entity/tagstats.entity';
+import { CreateRecDto } from '../dtos/dto/create-rec.dto';
 
 
 @Injectable()
@@ -26,13 +25,13 @@ export class RecognitionService {
     ){}
 
     async findCompRec(id: number): Promise<Recognition[]>{
-     return await this.recognitionsRepository.find({where:{companyCompanyId:id}});
+     return await this.recognitionsRepository.find({relations: ['empFrom', 'empTo', 'tags'], where:{companyCompanyId:id}});
     }
 
     async findAll(): Promise<Recognition[]>{
-        return await this.recognitionsRepository.find();
-     }
-
+        return await this.recognitionsRepository.find({relations: ['empFrom', 'empTo', 'tags']});
+    }
+    
     async createRec(recognition: Recognition): Promise<Recognition> {
         recognition.postDate = new Date();
         await this.recognitionsRepository.save(recognition);
@@ -47,11 +46,15 @@ export class RecognitionService {
         }
         await this.changeUserStats(recDto, true)
         return recognition
-     }
+    }
 
-    async deleteRec(id: number): Promise<DeleteResult> {
-        let rec = await this.recognitionsRepository.findOne({ relations: ["empFrom", "empTo", "company", "tags"], where: { recId: id } });
+    async deleteRec(id: number, companyId: number, empId: number): Promise<DeleteResult> {
         
+        let rec = await this.recognitionsRepository.findOne({ relations: ["empFrom", "empTo", "company", "tags"], where: { recId: id } });
+        if(rec.company.companyId !== companyId){
+            throw new UnauthorizedException();
+        }
+
         let tagArr = [];
         rec.tags.forEach(tag => {tagArr.push(tag.tagId)})
         let recDto: CreateRecDto = {
@@ -64,7 +67,10 @@ export class RecognitionService {
 
         await this.changeUserStats(recDto, false);
 
-        return await this.recognitionsRepository.delete({recId:id});
+        let deletor = await this.userRepository.findOne({ where: {companyId: companyId, employeeId: empId} });
+        await this.recognitionsRepository.update(id, {deletedBy: deletor});
+
+        return await this.recognitionsRepository.softDelete({recId:id});
     }
 
     private async changeUserStats(recDto: CreateRecDto, increment: boolean) { 
