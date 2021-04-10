@@ -23,15 +23,26 @@ export class RecognitionService {
         @InjectRepository(TagStats)
         private tagStatsRepo: Repository<TagStats>
     ){}
-
+    /**
+     * Finds the recognitions for given {@link Company}
+     * @param id companyId number
+     * @returns an array of {@link Recognition} objects
+     */
     async findCompRec(id: number): Promise<Recognition[]>{
      return await this.recognitionsRepository.find({where:{companyCompanyId:id}});
     }
-
+    /**
+     * Finds all recognitions in the database
+     * @returns an array of {@link Recognition} objects
+     */
     async findAll(): Promise<Recognition[]>{
         return await this.recognitionsRepository.find({relations: ['empFrom', 'empTo', 'tags']});
     }
-    
+    /**
+     * Adds a new recognition to the database and updates user stats
+     * @param recognition takes in a {@link Recognition} object
+     * @returns a {@link Recognition} object
+     */
     async createRec(recognition: Recognition): Promise<Recognition> {
         recognition.postDate = new Date();
         await this.recognitionsRepository.save(recognition);
@@ -47,7 +58,13 @@ export class RecognitionService {
         await this.changeUserStats(recDto, true)
         return recognition
     }
-
+/**
+ * Confirms a user is valid to delete a post and then deletes post by given id number and changes user stats
+ * @param id RecognitionId of post user wants to delete
+ * @param companyId companyId of logged in user
+ * @param empId employee ID of logged in user
+ * @returns {@link DeleteResult} 
+ */
     async deleteRec(id: number, companyId: number, empId: number): Promise<DeleteResult> {
         
         let rec = await this.recognitionsRepository.findOne({ relations: ["empFrom", "empTo", "company", "tags"], where: { recId: id } });
