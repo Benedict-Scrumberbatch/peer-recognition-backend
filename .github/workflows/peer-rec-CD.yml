@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: CD
 
 # Controls when the action will run. 
 on:
@@ -26,6 +26,8 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.1.5
       - run: npm install
+      - run: git submodule init
+      - run: git submodule update
       - run: npm run build
       - run: npm run docs
 #       - run: npm run test
