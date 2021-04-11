@@ -29,7 +29,7 @@ export class RecognitionService {
      * @returns an array of {@link Recognition} objects
      */
     async findCompRec(id: number): Promise<Recognition[]>{
-     return await this.recognitionsRepository.find({where:{companyCompanyId:id}});
+     return await this.recognitionsRepository.find({relations: ['empFrom', 'empTo', 'tags'], where:{companyCompanyId:id}});
     }
     /**
      * Finds all recognitions in the database

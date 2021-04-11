@@ -16,8 +16,8 @@ export class RecognitionController {
      * @returns an array of {@link Recognition} objects
      */
     @Get('all')
-    findAll(): Promise<Recognition[]>{
-        return this.recs.findAll();
+    findAll(@Request() req): Promise<Recognition[]>{
+        return this.recs.findCompRec(req.user.companyId);
     }
     /**
      * Allows for user to create a new recognition in the database
