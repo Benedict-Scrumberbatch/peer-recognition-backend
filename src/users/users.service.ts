@@ -34,9 +34,6 @@ export class UsersService {
         private companyservice: CompanyService,
     ){}
 
-    async storeRefreshToken(refreshToken:string, email:string, refreshtokenexpires){
-        await this.loginRepo.update(email, {refreshtoken:refreshToken, refreshtokenexpires});
-    }
     //Must hash passwords
     //In reality will grab user information from the database.
 
