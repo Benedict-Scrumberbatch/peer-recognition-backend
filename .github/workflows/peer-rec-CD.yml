@@ -26,9 +26,9 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.1.5
       - run: npm install
-      - run: npm run build
       - run: git submodule init
       - run: git submodule update
+      - run: npm run build
       - run: npm run docs
 #       - run: npm run test
       - name: GitHub Pages
