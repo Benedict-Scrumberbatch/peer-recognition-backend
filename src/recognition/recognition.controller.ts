@@ -21,6 +21,7 @@ export class RecognitionController {
     create(@Body() createRecDto: Recognition): Promise<Recognition>{
         return this.recs.createRec(createRecDto);
     }
+  
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(Role.Admin)
     @Delete(':id')
