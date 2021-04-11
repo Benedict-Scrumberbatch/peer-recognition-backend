@@ -146,11 +146,11 @@ export class UsersService {
                 let Manager = await this.usersRepository.findOne({where:{companyId: createuserDto.companyId , 
                     employeeId : createuserDto.managerId}});
                 // If manager status of managerId is false, then set it to true and set role to Admin
-                if (Manager != undefined && Manager.isManager == false) {
-                    Manager.isManager = true;
-                    Manager.role = Role.Admin;
-                    await this.usersRepository.save(Manager);
-                }
+//                 if (Manager != undefined && Manager.isManager == false) {
+//                     Manager.isManager = true;
+//                     Manager.role = Role.Admin;
+//                     await this.usersRepository.save(Manager);
+//                 }
                 user.manager = Manager;
             }
         }
