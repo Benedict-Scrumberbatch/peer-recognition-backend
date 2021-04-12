@@ -14,9 +14,6 @@ import { TagModule } from './tag/tag.module';
 import { ConfigModule } from '@nestjs/config';
 
 const ENV = process.env.NODE_ENV
-console.log(process.env.NODE_ENV)
-console.log(ENV)
-console.log(!ENV ? '.env-dev': `.env-${ENV}`)
 @Module({
   imports: [ ConfigModule.forRoot({
     envFilePath: !ENV ? '.env-dev': `.env-${ENV}`
