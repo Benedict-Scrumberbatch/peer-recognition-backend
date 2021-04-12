@@ -73,6 +73,8 @@ $ npm run test:cov
 ```
 
 ## Automated Documentation
+Live docs can be found at https://benedict-scrumberbatch.github.io/peer-recognition-backend  
+The sources for the docs are contained in the [`gh-pages`](https://github.com/Benedict-Scrumberbatch/peer-recognition-backend/tree/gh-pages) branch.
 ### compodoc
 More detailed information on using compodoc can be found [here](https://compodoc.app/guides/getting-started.html).
 ```bash
@@ -80,8 +82,6 @@ More detailed information on using compodoc can be found [here](https://compodoc
 $ npx @compodoc/compodoc -p tsconfig.json -d docs --includes swagger-docs -a swagger-assets -s
 ``` 
 Documentation will be generated at http://localhost:8080  
-Live docs can be found at https://benedict-scrumberbatch.github.io/peer-recognition-backend
-
 ### Swagger
 Nestjs specific docs can be found [here](https://docs.nestjs.com/openapi/introduction).  
 Swagger docs auto generate at http://localhost:4200/api/ or in the compodoc documentation.

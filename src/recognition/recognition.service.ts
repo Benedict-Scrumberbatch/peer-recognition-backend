@@ -25,7 +25,7 @@ export class RecognitionService {
     ){}
 
     async findCompRec(id: number): Promise<Recognition[]>{
-     return await this.recognitionsRepository.find({where:{companyCompanyId:id}});
+     return await this.recognitionsRepository.find({relations: ['empFrom', 'empTo', 'tags'], where:{companyCompanyId:id}});
     }
 
     async findAll(): Promise<Recognition[]>{

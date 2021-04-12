@@ -12,14 +12,16 @@ import { Role } from 'src/dtos/enum/role.enum';
 export class RecognitionController {
     constructor(private recs: RecognitionService){}
 
+    @UseGuards(JwtAuthGuard)
     @Get('all')
-    findAll(): Promise<Recognition[]>{
-        return this.recs.findAll();
+    findAll(@Request() req): Promise<Recognition[]>{
+        return this.recs.findCompRec(req.user.companyId);
     }
     @Post('create')
     create(@Body() createRecDto: Recognition): Promise<Recognition>{
         return this.recs.createRec(createRecDto);
     }
+  
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(Role.Admin)
     @Delete(':id')
