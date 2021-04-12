@@ -169,6 +169,35 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Delete Company By ID (URL parameter).",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Auth Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:4200/company/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"company",
+								"1"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -482,7 +511,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Tags",
+			"name": "Get All Tags",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -541,6 +570,93 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Get User Companies (From JWT Token)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Auth Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:4200/company/",
+					"host": [
+						"localhost"
+					],
+					"port": "4200",
+					"path": [
+						"company",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Companies",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Auth Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:4200/company/all",
+					"host": [
+						"localhost"
+					],
+					"port": "4200",
+					"path": [
+						"company",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Company By ID (URL Parameter)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Auth Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:4200/company/1",
+					"host": [
+						"localhost"
+					],
+					"port": "4200",
+					"path": [
+						"company",
+						"1"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
@@ -578,18 +694,22 @@
 	],
 	"variable": [
 		{
+			"id": "5dcd1037-b511-4229-abeb-dbbf1f6f59b0",
 			"key": "Auth Token",
 			"value": ""
 		},
 		{
+			"id": "f9e6a97b-48ce-4cde-a2fa-10b4ca924542",
 			"key": "apiPath",
 			"value": "localhost:4200/"
 		},
 		{
+			"id": "1eda1438-69e5-41f5-ba66-0268977685b4",
 			"key": "username",
 			"value": "Olga_Weaver@outbacktechnology.com"
 		},
 		{
+			"id": "29e6b1e0-e4b8-4f91-a72f-fe604a6ec3f2",
 			"key": "password",
 			"value": "weaverol"
 		}
