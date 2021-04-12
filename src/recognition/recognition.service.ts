@@ -90,6 +90,11 @@ export class RecognitionService {
         return await this.recognitionsRepository.softDelete({recId:id});
     }
 
+    /**
+     * Increment or decrement user tag stats and recognition stats.
+     * @param recDto Info about the recognition. (This will be changed to use the {@link Recognition} entity)
+     * @param increment `boolean` value that specifies whether we are incrementing or decrementing the recognition and tag stats.
+     */
     private async changeUserStats(recDto: CreateRecDto, increment: boolean) { 
         let sign = '-';
         if (increment)
