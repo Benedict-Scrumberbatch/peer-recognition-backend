@@ -10,6 +10,9 @@ import { DeleteResult, QueryBuilder, Repository } from 'typeorm';
 import { Query } from 'typeorm/driver/Query';
 import { UserStats } from '../dtos/interface/userstats.interface';
 
+/**
+ * Service for {@link UsersController}. Functional logic is kept here.
+ */
 @Injectable()
 export class UsersService {
 

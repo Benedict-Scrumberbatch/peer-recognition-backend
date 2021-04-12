@@ -3,17 +3,28 @@ import { Login } from '../dtos/entity/login.entity';
 import { Users } from '../dtos/entity/users.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UsersService } from './users.service';
-
+/**
+ * Controller for users.
+ * Require JWT access token from {@link auth/login} for authentication
+ */
 @Controller('users')
 export class UsersController {
     constructor (private usersService: UsersService) {}
-
+    /**
+     * `GET` endpoint to look up profile
+     * @param req `Request` userId and companyId
+     * @returns  user information except login information
+     */
     @UseGuards(JwtAuthGuard)
     @Get('profile')
     getProfile(@Request() req) {
         return this.usersService.getProfile(req.user.employeeId, req.user.companyId);
     }
-
+    /**
+     * `GET` endpoint to look up other user information 
+     * @param employee_id 
+     * @returns  user information except login information
+     */
     @UseGuards(JwtAuthGuard)
     @Get(':employ_id/company/:comp_id')
     async getUser(@Param("employ_id") employee_id: number, @Param("comp_id") company_id: number) {
@@ -30,6 +41,14 @@ export class UsersController {
     async removeUser(@Param('employeeId') employeeId: number, @Param('companyId') companyId: number) {
         return await this.usersService.removeUser(employeeId, companyId);
     }
+    /**
+     * testing
+     * @param Users
+     * @param Login
+     * @param managerId
+     * @param companyName
+     * @returns  no way
+     */
     //This endpoint should be guarded
     @Post('create')
     async createUser(@Body() createuserDto: Users & Login & {managerId: number} & {companyName: string}) {
