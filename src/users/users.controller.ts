@@ -68,24 +68,4 @@ export class UsersController {
         return await this.usersService.createUserMultiple(employeeMultiple);
     }
 
-    @UseGuards(JwtAuthGuard)
-    @Get('rockstar')
-    async getRockstar(@Request() req) {
-        return await this.usersService.getRockstar(req.user.companyId);
-    }
-
-    @UseGuards(JwtAuthGuard)
-    @Get('company/rockstar/stats/:comp_ID')
-    async getRockstarStats(@Param('comp_ID') comp_ID: number)
-    {
-        let rockstar: Users = await this.getRockstar(comp_ID)
-        return await this.usersService.getRockstarStats(rockstar);
-    }
-    @UseGuards(JwtAuthGuard)
-    @Get('company/rockstar/recognitions/:comp_ID')
-    async getRockstarRecogs(@Param('comp_ID') comp_ID: number)
-    {
-        let rockstar: Users = await this.getRockstar(comp_ID)
-        return await this.usersService.getRockstarRecogs(rockstar);
-    }
 }

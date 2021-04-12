@@ -1,5 +1,6 @@
 import {RecognitionService} from './recognition.service';
 import {Recognition} from '../dtos/entity/recognition.entity';
+import {Report} from '../dtos/entity/report.entity';
 import { Controller, Get, Post, Delete, Body, Param, Request, UseGuards} from '@nestjs/common';
 import { DeleteResult } from 'typeorm';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -24,6 +25,13 @@ export class RecognitionController {
     @Delete(':id')
     delete(@Request() req, @Param('id') id): Promise<DeleteResult>{
         return this.recs.deleteRec(id, req.user.companyId, req.user.employeeId);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('report/:id')
+    getTable(@Request() req, @Param('id') id): Promise<Report>
+    {
+        return this.recs.reportRec(id, req.user);
     }
 
 }

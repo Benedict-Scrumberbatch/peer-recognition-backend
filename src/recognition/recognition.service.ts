@@ -7,7 +7,9 @@ import { Users } from '../dtos/entity/users.entity';
 import { Tag } from '../dtos/entity/tag.entity';
 import { TagStats } from '../dtos/entity/tagstats.entity';
 import { CreateRecDto } from '../dtos/dto/create-rec.dto';
+import {Report} from '../dtos/entity/report.entity';
 import { reverse } from 'node:dns';
+
 
 
 @Injectable()
@@ -22,8 +24,12 @@ export class RecognitionService {
         @InjectRepository(Recognition)
         private recognitionsRepository: Repository<Recognition>,
         @InjectRepository(TagStats)
-        private tagStatsRepo: Repository<TagStats>
-    ){}
+        private tagStatsRepo: Repository<TagStats>,
+        @InjectRepository(Report)
+        private reportRepo: Repository<Report>
+
+    ){} 
+
 
     async findCompRec(id: number): Promise<Recognition[]>{
      return await this.recognitionsRepository.find({where:{companyCompanyId:id}});
@@ -68,7 +74,7 @@ export class RecognitionService {
         await this.changeUserStats(recDto, false);
 
         let deletor = await this.userRepository.findOne({ where: {companyId: companyId, employeeId: empId} });
-        await this.recognitionsRepository.update(id, {deletedBy: deletor});
+        /await this.recognitionsRepository.update(id, {deletedBy: deletor});/
 
         return await this.recognitionsRepository.softDelete({recId:id});
     }
@@ -163,5 +169,16 @@ export class RecognitionService {
                 
             }
         }
+    }
+    async reportRec(rec_id: number, reporter: Users)
+    {
+        let recog = await this.recognitionsRepository.findOne( {  where: { recId: rec_id }} );
+
+        let report = new Report();
+        report.employeeFrom = reporter;
+        report.recognition = recog;
+        await this.reportRepo.save(report);
+
+        return report;
     }
 }
