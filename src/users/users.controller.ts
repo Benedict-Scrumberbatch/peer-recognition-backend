@@ -11,9 +11,11 @@ import { UsersService } from './users.service';
 export class UsersController {
     constructor (private usersService: UsersService) {}
     /**
-     * `GET` endpoint to look up profile
+     * `GET` endpoint to look up profile.
+     * 
+     * Return {@link Users} object without {@link Login} information.
      * @param req `Request` userId and companyId
-     * @returns  user information except login information
+     * @returns  
      */
     @UseGuards(JwtAuthGuard)
     @Get('profile')
@@ -21,9 +23,11 @@ export class UsersController {
         return this.usersService.getProfile(req.user.employeeId, req.user.companyId);
     }
     /**
-     * `GET` endpoint to look up other user information 
+     * `GET` endpoint to look up given employeeId profile.
+     * 
+     * Returns {@link Users} object without showing {@link Login} information.
      * @param employee_id 
-     * @returns  user information except login information
+     * @returns 
      */
     @UseGuards(JwtAuthGuard)
     @Get(':employ_id/company/:comp_id')
@@ -41,13 +45,15 @@ export class UsersController {
     async removeUser(@Param('employeeId') employeeId: number, @Param('companyId') companyId: number) {
         return await this.usersService.removeUser(employeeId, companyId);
     }
+
     /**
-     * testing
-     * @param Users
-     * @param Login
-     * @param managerId
-     * @param companyName
-     * @returns  no way
+     * `POST` endpoint to create user.
+     * 
+     * `Body`: {@link createuuserDto}: {@link Users} {@link Login} {@link managerId} {@link companyNames}
+     * 
+     * Return: {@link Users} object
+     * @param createuserDto include Users, Login, managerId, companyName
+     * @returns adding user to Database 
      */
     //This endpoint should be guarded
     @Post('create')
@@ -60,12 +66,26 @@ export class UsersController {
     getStats(@Param('employeeId') employeeId: number, @Param('companyId') companyId: number) {
         return this.usersService.userStats(employeeId, companyId);
     }
-  
+    /**
+     * `POST` endpoint to create multiple user.
+     * 
+     * `Body`: {@link createuuserDto}[ ]: {@link Users}, {@link Login}, {@link managerId}, {@link companyNames}[ ]
+     * 
+     * Return: {@link Users}[ ] 
+     * @param employeeMultiple 
+     * @returns adding multiple users to Database 
+     */
     @Post('create_multiple')
     async createUserMultiple(@Body() employeeMultiple: []) {
         return await this.usersService.createUserMultiple(employeeMultiple);
     }
-
+    /**
+     * `GET` endpoint to get Rockstar of the month.
+     * 
+     * Return: {@link Users} object 
+     * @param companyId 
+     * @returns 
+     */
     @UseGuards(JwtAuthGuard)
     @Get('company/rockstar/:comp_id')
     async getRockstar(@Param('comp_id') companyId: number) {
