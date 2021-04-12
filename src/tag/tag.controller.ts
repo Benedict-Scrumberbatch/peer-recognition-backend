@@ -25,8 +25,8 @@ export class TagController {
 
     /**
      * An Admin can delete only tags for their own company
-     * @param req passed by the JWT token, contains logged-in user information
-     * @param id The id of the tag to be deleted
+     * @param req passed by the JWT auth token, contains logged-in user information
+     * @param id The id of the {@link Tag} to be deleted
      * @returns a DeleteResult, or null if the tags is not found / does not belong to the user's company
      */
     @UseGuards(JwtAuthGuard, RolesGuard)
@@ -40,7 +40,7 @@ export class TagController {
      * An Admin can create tags for their company
      * @param req passed by the JWT token, contains logged-in user information
      * @param tagData an object containing a string that is the core value to be added to this company's core value tags
-     * @returns the tag that was added
+     * @returns The {@link Tag} that was added
      */
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(Role.Admin)
