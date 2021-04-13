@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
 import { Users } from '../entity/users.entity';
@@ -9,6 +9,7 @@ import { CompanyService } from 'src/company/company.service';
 import { Recognition } from '../entity/recognition.entity';
 import { Query } from 'typeorm/driver/Query';
 import { Role } from 'src/roles/role.enum';
+import { throwError } from 'rxjs';
 
 
 export interface UserStats {
@@ -97,19 +98,12 @@ export class UsersService {
         else{
             if (createuserDto.companyId != undefined) {
                 let company = await this.companyRepository.findOne({where:{companyId: createuserDto.companyId}})
-                // If company.name to companyName if they are not the same
-                // Don't 
-                if (company.name != createuserDto.companyName){
-                    company.name = createuserDto.companyName; 
-                    await this.companyRepository.save(company)
-                }
-
                 if (!company ) {
                     company = await this.companyservice.createCompany({
                         companyId: createuserDto.companyId, 
                         name: createuserDto.companyName, 
                         tags: undefined, recognitions: undefined,
-                        users: [createuserDto]
+                        users: [createuserDto]  
                     });
                 }
                 user.company = company
@@ -123,14 +117,7 @@ export class UsersService {
 
         // Will add different level of admin 
         user.isManager = Boolean(createuserDto.isManager);
-        if (createuserDto.role === Role.Admin){
-            user.role = createuserDto.role;
-        }
-        // else {
-        //     if (user.isManager) {
-        //         user.role = Role.Admin
-        //     }
-        // }
+        user.role = createuserDto.role;
 
         user.positionTitle = createuserDto.positionTitle;
         user.startDate = new Date(createuserDto.startDate);
@@ -142,12 +129,9 @@ export class UsersService {
             if (createuserDto.managerId != undefined) {
                 let Manager = await this.usersRepository.findOne({where:{companyId: createuserDto.companyId , 
                     employeeId : createuserDto.managerId}});
-                // If manager status of managerId is false, then set it to true and set role to Admin
-//                 if (Manager != undefined && Manager.isManager == false) {
-//                     Manager.isManager = true;
-//                     Manager.role = Role.Admin;
-//                     await this.usersRepository.save(Manager);
-//                 }
+                if (Manager.isManager == false){
+                    throw new BadRequestException('Invalid Manager')
+                }
                 user.manager = Manager;
             }
         }
