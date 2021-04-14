@@ -1,8 +1,10 @@
-import { Controller, Request, Post, UseGuards, Get, Delete, Param, Body } from '@nestjs/common';
+import { Controller, Request, Post, UseGuards, Get, Delete, Param, Body, Query } from '@nestjs/common';
 import { Login } from '../dtos/entity/login.entity';
 import { Users } from '../dtos/entity/users.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UsersService } from './users.service';
+import { Pagination } from 'nestjs-typeorm-paginate';
+import { Observable } from 'rxjs';
 
 @Controller('users')
 export class UsersController {
@@ -66,5 +68,18 @@ export class UsersController {
     {
         let rockstar: Users = await this.getRockstar(comp_ID)
         return await this.usersService.getRockstarRecogs(rockstar);
+    }
+
+    @Get('search')
+    async index(
+        @Query('page') page: number = 1,
+        @Query('limit') limit: number = 10,
+        @Query('firstName') firstName: string,
+        @Query('lastName') lastName: string
+    ): Promise<Observable<Pagination<Users>>> {
+        limit = limit > 100 ? 100: limit
+        return this.usersService.paginate_username(
+            {page: Number(page), limit: Number(limit), route: 'http://localhost:4200/users/search'},
+            firstName, lastName);
     }
 }
