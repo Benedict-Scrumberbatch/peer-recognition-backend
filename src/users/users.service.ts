@@ -237,8 +237,8 @@ export class UsersService {
     async paginate(options: IPaginationOptions): Promise<Pagination<Users>> {
         return paginate<Users>(this.usersRepository, options);
     }
-    
-    async paginate_username(options: IPaginationOptions, firstName: string, lastName: string): Promise<Observable<Pagination<Users>>> {
+    // Back up search user in case the main endpoint doesn't work properly!
+    async paginate_backup(options: IPaginationOptions, firstName: string, lastName: string): Promise<Observable<Pagination<Users>>> {
         return from (this.usersRepository.findAndCount({
             take: Number(options.limit) || 10,  // Only take 10 first results or firs number of limit
             order: {firstName: 'ASC'},          // result follows ASC order (alphabetical)
@@ -261,12 +261,21 @@ export class UsersService {
                         itemCount: users.length,
                         itemsPerPage: Number(options.limit),
                         totalItems: totalUsers,
-                        totalPages: Math.ceil(totalUsers / Number(options.limit))
+                        totalPages: totalUsers / Number(options.limit)
                     }
                 };
                 return usersPageable;
             })
-        )
-            
+        )       
     }
+    async paginate_username(options: IPaginationOptions, firstName: string, lastName: string): Promise<Pagination<Users>> {
+        const queryBuilder = this.usersRepository.createQueryBuilder('user');
+        queryBuilder.where([
+            {firstName: Like(`%${firstName}%`)},
+            {lastName: Like(`%${lastName}%`)}
+        ]);
+        // queryBuilder.orWhere({lastName: Like(`%${lastName}%`)});
+        return paginate<Users>(queryBuilder, options);
+    }
+    
 } 

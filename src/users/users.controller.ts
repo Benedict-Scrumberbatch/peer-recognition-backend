@@ -69,14 +69,14 @@ export class UsersController {
         let rockstar: Users = await this.getRockstar(comp_ID)
         return await this.usersService.getRockstarRecogs(rockstar);
     }
-
+    @UseGuards(JwtAuthGuard)
     @Get('search')
     async index(
         @Query('page') page: number = 1,
         @Query('limit') limit: number = 10,
         @Query('firstName') firstName: string,
         @Query('lastName') lastName: string
-    ): Promise<Observable<Pagination<Users>>> {
+    ): Promise<Pagination<Users>> {
         limit = limit > 100 ? 100: limit
         return this.usersService.paginate_username(
             {page: Number(page), limit: Number(limit), route: 'http://localhost:4200/users/search'},
