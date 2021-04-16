@@ -34,13 +34,26 @@ export class UsersController {
     async getUser(@Param("employ_id") employee_id: number, @Param("comp_id") company_id: number) {
         return await this.usersService.getProfile(employee_id, company_id);
     }
-
+    /**
+     * `GET` endpoint to get all user in company
+     * 
+     * Returns {@link Users}[ ]
+     * @param company_id 
+     * @returns 
+     */
     @UseGuards(JwtAuthGuard)
     @Get('company/:comp_id')
     async getUsersByCompany(@Param("comp_id") company_id: number) {
 	    return await this.usersService.getArrayOfUsers(company_id);
     }
 
+    /**
+     * `DELETE` endpoint to soft delete user
+     * 
+     * @param employeeId 
+     * @param companyId 
+     * @returns 
+     */
     @Delete(':employeeId/company/:companyId')
     async removeUser(@Param('employeeId') employeeId: number, @Param('companyId') companyId: number) {
         return await this.usersService.removeUser(employeeId, companyId);
@@ -61,6 +74,13 @@ export class UsersController {
         return await this.usersService.createUser(createuserDto);
     }
 
+    /**
+     * `GET` endpoint to get user stat
+     * `Param` employeeId
+     * @param employeeId 
+     * @param companyId 
+     * @returns returns stat of given employeeId
+     */
     @UseGuards(JwtAuthGuard)
     @Get('stats/:employeeId/company/:companyId')
     getStats(@Param('employeeId') employeeId: number, @Param('companyId') companyId: number) {
@@ -91,7 +111,12 @@ export class UsersController {
     async getRockstar(@Param('comp_id') companyId: number) {
         return await this.usersService.getRockstar(companyId);
     }
-
+    /**
+     * `GET` endpoint to get Rockstar of the month stat
+     * 
+     * @param comp_ID 
+     * @returns 
+     */
     @UseGuards(JwtAuthGuard)
     @Get('company/rockstar/stats/:comp_ID')
     async getRockstarStats(@Param('comp_ID') comp_ID: number)
@@ -99,6 +124,14 @@ export class UsersController {
         let rockstar: Users = await this.getRockstar(comp_ID)
         return await this.usersService.getRockstarStats(rockstar);
     }
+
+    /**
+     * `GET` endpoint to get Rock star of the month recognitions
+     * 
+     * Returns: array of recognitions
+     * @param comp_ID 
+     * @returns 
+     */
     @UseGuards(JwtAuthGuard)
     @Get('company/rockstar/recognitions/:comp_ID')
     async getRockstarRecogs(@Param('comp_ID') comp_ID: number)

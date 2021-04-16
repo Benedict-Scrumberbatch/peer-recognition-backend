@@ -51,7 +51,11 @@ export class UsersService {
     async getProfile(userId: number, companyId: number): Promise<Users> {
         return this.usersRepository.findOne( { relations: ["manager"], where: { employeeId: userId, companyId: companyId } } );
     }
-
+    /**
+     * Returns {@link Users}[ ] object array with user information and manager relation.
+     * @param companyId 
+     * @returns object array with manager relation
+     */
     //Function retrieves range of user profiles using companyID
     async getArrayOfUsers(companyId: number){
 	    // I'm not sure this will work
@@ -60,12 +64,24 @@ export class UsersService {
 	    return profileArray;
     }
 
+    /**
+     * Softdelete {@link Users} object.
+     * @param employeeId 
+     * @param companyId 
+     * @returns 
+     */
     async removeUser(employeeId: number, companyId: number): Promise<DeleteResult> {
         const user = await this.usersRepository.findOne({ employeeId: employeeId, companyId: companyId })
         await this.loginRepo.delete({employee: user});  // if delete performs a hard delete, I think this is the behavior we want: removing the email and password record
         return await this.usersRepository.softDelete(user);
     }
-    
+    /**
+     * Method to create user: 
+     * 
+     * Required {@link Users} object, {@link Login} object, {@link managerId} number, {@link companyName} string
+     * @param createuserDto 
+     * @returns {@link Users} user is added to Database  
+     */
     async createUser(createuserDto: Users & Login & {managerId: number} & {companyName: string}): Promise<Users> {    
         const user = new Users();
         if (createuserDto.company != undefined) {
@@ -122,7 +138,12 @@ export class UsersService {
         return user;
     }
 
-
+    /**
+     * Method to get user stats
+     * @param employeeId 
+     * @param companyId 
+     * @returns {@link UserStats}
+     */
     async userStats(employeeId: number, companyId: number): Promise<UserStats> {
         let user = await this.usersRepository.findOne({
             relations: ["tagStats", "tagStats.tag"],
@@ -138,6 +159,11 @@ export class UsersService {
         return userStats;
     }
     
+    /**
+     * Method to create array of {@link Users} object 
+     * @param employeeMultiple 
+     * @returns Array of {@link Users} object 
+     */
     async createUserMultiple(employeeMultiple: []): Promise <any>{
         let arr_employee = [];
         for (let i = 0; i < employeeMultiple.length; i++) {
@@ -146,6 +172,13 @@ export class UsersService {
         return arr_employee;
     }
 
+    /**
+     * Method to get Rockstar of the month
+     * 
+     * Returns {@link Users} object
+     * @param companyId 
+     * @returns 
+     */
     async getRockstar( companyId: number): Promise<Users | undefined> {
         let date: Date = new Date();
         let prevMonth: number = -1;
@@ -193,6 +226,14 @@ export class UsersService {
         //calculate and return rockstar
         //recognition module
     }
+
+    /**
+     * Method to get Rockstar of the month recognitions
+     * 
+     * Returns: array of recognition 
+     * @param rockstar 
+     * @returns 
+     */
     async getRockstarRecogs(rockstar: Users): Promise<any[]>{
         let date: Date = new Date();
         let prevMonth: number = -1;
@@ -210,6 +251,14 @@ export class UsersService {
         console.log(recogs);
         return recogs;
     }
+
+    /**
+     * Method to get Rockstar of the month stats
+     * 
+     * Returns: stats
+     * @param rockstar 
+     * @returns 
+     */
     async getRockstarStats(rockstar: Users): Promise<any> {
         let date: Date = new Date();
         let prevMonth: number = -1;
