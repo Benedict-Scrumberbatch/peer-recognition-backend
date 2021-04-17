@@ -1,6 +1,7 @@
 on: 
-  push:
-    branches: [ devops ]
+#   push:
+#     branches: [ devops ]
+  workflow_dispatch:
 
 jobs:
   check-quality:
