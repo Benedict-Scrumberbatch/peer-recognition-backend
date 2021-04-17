@@ -71,11 +71,11 @@ jobs:
           # AWS Session Token when using temporary security credentials such as when assuming a role in AWS through STS
           aws_session_token: # optional
           # AWS Region
-          region: <aws_region>
+          region: us-east-1
           # Beanstalk application name
-          application_name: <app-name>
+          application_name: Peer-Rec-Backend
           # Beanstalk environment name. If empty a version will be created but not deployed anywhere.
-          environment_name: <beanstalk-env-name>
+          environment_name: Test-env
           # Version label for new Beanstalk version
           version_label: "my-app-${{ steps.format-time.outputs.replaced }}"
           # Zip file with the version to deploy. If skipped the action will deploy existing version.
