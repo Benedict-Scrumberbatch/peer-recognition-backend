@@ -68,12 +68,10 @@ jobs:
           aws_access_key: ${{secrets.AWS_ACCESS_KEY}}
           # AWS Secret Key
           aws_secret_key: ${{secrets.AWS_SECRET_KEY}}
-          # AWS Session Token when using temporary security credentials such as when assuming a role in AWS through STS
-          aws_session_token: # optional
           # AWS Region
           region: us-east-1
           # Beanstalk application name
-          application_name: Peer-Rec-Backend
+          application_name: Test
           # Beanstalk environment name. If empty a version will be created but not deployed anywhere.
           environment_name: Test-env
           # Version label for new Beanstalk version
