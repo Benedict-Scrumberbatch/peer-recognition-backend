@@ -37,19 +37,7 @@ export class RockstarController {
             prevMonth = date.getMonth();
         }
         //gets the rockstar user object
-        let rockstarUser = await this.rockstarService.getRockstar(req.user.companyId, prevMonth, year);
-        //gets the rockstar's tag stats for the month
-        let stats =  await this.rockstarService.getRockstarStats(rockstarUser, prevMonth, year);
-        //gets the rockstar's recognitions for the month
-        let recognitions = await this.rockstarService.getRockstarRecogs(rockstarUser, prevMonth, year);
-        let rockstar = new Rockstar();
-        //assigns in all the info gathered to the rockstar entity
-        rockstar.month = prevMonth;
-        rockstar.year = year;
-        rockstar.stats = stats;
-        rockstar.recognitions = recognitions;
-        rockstar.rockstar = rockstarUser;
-        
+        let rockstar = await this.rockstarService.getRockstar(req.user.companyId, prevMonth, year);
         return rockstar;
     }
 }
