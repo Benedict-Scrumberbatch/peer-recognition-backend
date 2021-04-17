@@ -65,9 +65,9 @@ jobs:
         uses: einaregilsson/beanstalk-deploy@v16
         with:
           # AWS Access Key
-          aws_access_key: 
+          aws_access_key: ${{secrets.AWS_ACCESS_KEY}}
           # AWS Secret Key
-          aws_secret_key: 
+          aws_secret_key: ${{secrets.AWS_SECRET_KEY}}
           # AWS Session Token when using temporary security credentials such as when assuming a role in AWS through STS
           aws_session_token: # optional
           # AWS Region
