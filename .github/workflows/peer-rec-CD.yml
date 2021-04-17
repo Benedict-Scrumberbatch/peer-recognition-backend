@@ -81,5 +81,5 @@ jobs:
           # Zip file with the version to deploy. If skipped the action will deploy existing version.
           deployment_package: deploy.zip
         
-        - name: Deployed successfully!
-          run: echo App deployed to ELB
+      - name: Deployed successfully!
+        run: echo App deployed to ELB
