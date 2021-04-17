@@ -12,6 +12,7 @@ import { Company } from './dtos/entity/company.entity';
 import { RecognitionService } from './recognition/recognition.service';
 import { TagModule } from './tag/tag.module';
 import { ConfigModule } from '@nestjs/config';
+import { LoggerOptions } from 'typeorm';
 
 const ENV = process.env.NODE_ENV
 @Module({
@@ -25,10 +26,10 @@ const ENV = process.env.NODE_ENV
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
-    entities: ["dist/**/*.entity{.ts,.js}"],
+    entities: [process.env.DB_ENTITIES],
     synchronize: true,
-    logging: "all"
- }),],
+    logging: process.env.DB_LOGGING as LoggerOptions
+ })],
   controllers: [AppController],
   providers: [AppService],
 

@@ -7,7 +7,7 @@ import { ROLES_KEY } from './roles.decorator';
  * Roles guard is responsible for verifying if a user should be allowed to access the endpoint.
  * 
  * @example```
-  import { Roles } from 'src/roles/roles.decorator';
+  import { Roles } from '../roles/roles.decorator';
   import { JwtAuthGuard } from '../auth/jwt-auth.guard';
   import { UsersService } from './users.service';
   import { Role } from '../roles/role.enum';

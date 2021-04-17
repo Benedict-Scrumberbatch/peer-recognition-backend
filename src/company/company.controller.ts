@@ -1,6 +1,6 @@
 
 import { Controller, Request, Post, Get, Delete, Param, Body, UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { DeleteResult } from 'typeorm';
 import { Company } from '../dtos/entity/company.entity';
 
