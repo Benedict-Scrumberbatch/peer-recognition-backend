@@ -42,3 +42,33 @@ jobs:
           build_dir: docs
         env:
           GITHUB_TOKEN: ${{ secrets.REPO_TOKEN_ACTIONS }}
+          
+      - name: Beanstalk Deploy
+        # You may pin to the exact commit or the version.
+        # uses: einaregilsson/beanstalk-deploy@ebe3476a4ce991d54336935e75e78dd9d86f9408
+        uses: einaregilsson/beanstalk-deploy@v16
+        with:
+          # AWS Access Key
+          aws_access_key: 
+          # AWS Secret Key
+          aws_secret_key: 
+          # AWS Session Token when using temporary security credentials such as when assuming a role in AWS through STS
+          aws_session_token: # optional
+          # AWS Region
+          region: 
+          # Beanstalk application name
+          application_name: 
+          # Beanstalk environment name. If empty a version will be created but not deployed anywhere.
+          environment_name: # optional
+          # Version label for new Beanstalk version
+          version_label: 
+          # Version description for the new Beanstalk version
+          version_description: # optional
+          # Zip file with the version to deploy. If skipped the action will deploy existing version.
+          deployment_package: # optional
+          # If set to "true" then the action will deploy an existing version with the given version_label if it already exists, but otherwise create the version and deploy it.
+          use_existing_version_if_available: # optional
+          # Whether the action should wait for the deployment to finish and log status messages during the wait. Default is "true". If set to "false" the action will start the deployment on Beanstalk and then exit.
+          wait_for_deployment: # optional
+          # How many seconds to wait for the environment to return to Green state after deployment is finished. Default is 30 seconds.
+          wait_for_environment_recovery: # optional
