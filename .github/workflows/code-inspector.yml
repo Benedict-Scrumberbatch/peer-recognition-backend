@@ -1,6 +1,9 @@
+name: Code Scanning
+
 on: 
 #   push:
 #     branches: [ devops ]
+  #This is a work in progress so it can only run manually for now.
   workflow_dispatch:
 
 jobs:
