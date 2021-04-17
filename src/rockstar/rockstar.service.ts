@@ -1,5 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { DeleteResult, getConnection, Repository } from 'typeorm';
+import { DeleteResult, getConnection, Repository, Transaction, getManager } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Recognition } from '../dtos/entity/recognition.entity';
 import { Company } from '../dtos/entity/company.entity';
@@ -9,6 +9,8 @@ import { TagStats } from '../dtos/entity/tagstats.entity';
 import { CreateRecDto } from '../dtos/dto/create-rec.dto';
 import {Report} from '../dtos/entity/report.entity';
 import { reverse } from 'node:dns';
+import { Rockstar } from 'src/dtos/entity/rockstar.entity';
+import { exception } from 'node:console';
 
 
 
@@ -26,56 +28,54 @@ export class RockstarService {
         @InjectRepository(TagStats)
         private tagStatsRepo: Repository<TagStats>,
         @InjectRepository(Report)
-        private reportRepo: Repository<Report>
+        private reportRepo: Repository<Report>,
+        @InjectRepository(Rockstar)
+        private rockstarRepo: Repository<Rockstar>
     ){} 
 
-    async getRockstar( companyId: number, prevMonth: number, year: number): Promise<Users | undefined> {
+    async getRockstar( companyId: number, prevMonth: number, year: number): Promise<Rockstar> {
         //gets a list of recognitions for the given month and year
-        let queryString :string = `SELECT * FROM (SELECT t1."empToEmployeeId", MAX(t1.numRecog) as numRecognitions FROM (select recognition."empToEmployeeId", count(recognition."empToEmployeeId") as numRecog from Recognition where recognition."empToCompanyId" = ${companyId} and extract(Month from recognition."postDate") = ${ prevMonth } and extract(Year from recognition."postDate") = ${ year } group by recognition."empToEmployeeId" ) t1 group by t1."empToEmployeeId") t2, users where t2."empToEmployeeId" = users."employeeId";`
-        let retQuery= await this.recognitionRepository.query(queryString);
-        let maxRecog: number = 0;
-        let maxIndex: number = 0;
-        //finds the user with the most recognitions for that month
-        for (let i = 0; i < retQuery.length;i++ )
+        let prevRockstar = await this.rockstarRepo.findOne({where:{year : year, month:prevMonth, compID:companyId}})
+        if (prevRockstar.compID == companyId)
         {
-            if (retQuery[i].max > maxRecog)
-            {
-                maxRecog = retQuery.max;
-                maxIndex = i;
-            }
+            return prevRockstar;
         }
-        let rawRockstar = retQuery[maxIndex];
+
+        let queryString :string = `SELECT t1.empID, t1.numRecog FROM (select recognition."empToEmployeeId" as empID, count(recognition."empToEmployeeId") as numRecog from Recognition where recognition."empToCompanyId" = ${companyId} and extract(Month from recognition."postDate") = ${ prevMonth } and extract(Year from recognition."postDate") = ${ year } group by recognition."empToEmployeeId" ) t1 group by t1.empID;`
+        let retQuery= await this.recognitionRepository.query(queryString);
+        if (retQuery.length < 1)
+        {
+            throw new exception("No recognitions found for that month");
+        }
+        else if (retQuery.length > 1)
+        {
+            throw new exception("Too many users returned");
+        }
+
+        let rawRockstar = retQuery;
         //creates the user object for that user, assigning in all the needed info
-        let rockstar: Users = new Users();
-        rockstar.company = rawRockstar.companyId;
-        rockstar.employeeId = rawRockstar.employeeId;
 
-        rockstar.firstName = rawRockstar.firstName;
-        rockstar.lastName = rawRockstar.lastName;
+        //one function - done
+        //use insert for rockstar
+        //one transaction
+        //calc rockstar on DB end - done
+        let rockstarUser: Users = new Users();
+        rockstarUser.company = rawRockstar.companyId;
+        rockstarUser.employeeId = rawRockstar.employeeId;
 
-        rockstar.isManager = rawRockstar.isManager;
-        rockstar.positionTitle = rawRockstar.positionTitle;
-        rockstar.startDate = new Date(rawRockstar.startDate);
-        rockstar.role = rawRockstar.role;
+        rockstarUser.firstName = rawRockstar.firstName;
+        rockstarUser.lastName = rawRockstar.lastName;
 
-        rockstar.manager = await this.usersRepository.findOne({where:{employeeId : rawRockstar.managerEmployeeId}})
+        rockstarUser.isManager = rawRockstar.isManager;
+        rockstarUser.positionTitle = rawRockstar.positionTitle;
+        rockstarUser.startDate = new Date(rawRockstar.startDate);
+        rockstarUser.role = rawRockstar.role;
 
+        rockstarUser.manager = await this.usersRepository.findOne({where:{employeeId : rawRockstar.managerEmployeeId}})
 
-        return rockstar;
-
-        //calculate and return rockstar
-        //recognition module
-    }
-    async getRockstarRecogs(rockstar: Users, prevMonth: number, year: number): Promise<any[]>{
-        //gets recognitions for that user and month
-        let recogs = await this.recognitionRepository.createQueryBuilder().select("*").where("Recognition.empToCompanyId = :compID", {compID : rockstar.company}).andWhere("Recognition.empToEmployeeId = :empID", {empID: rockstar.employeeId}).andWhere("extract(Month from Recognition.postDate) = :prvMonth",{prvMonth:prevMonth}).andWhere("extract(Year from Recognition.postDate) = :yr",{yr:year}).getRawMany();
-        console.log(recogs);
-        return recogs;
-    }
-    async getRockstarStats(rockstar: Users, prevMonth: number, year: number): Promise<any> {
+        //gets recognitions for this rockstar
+        let recogs = await this.recognitionRepository.createQueryBuilder().select("*").innerJoin("recognition_tags_tag","test","test.recognitionRecId = Recognition.recId").where("Recognition.empToCompanyId = :compID", {compID : rockstarUser.company}).andWhere("Recognition.empToEmployeeId = :empID", {empID: rockstarUser.employeeId}).andWhere("extract(Month from Recognition.postDate) = :prvMonth",{prvMonth:prevMonth}).andWhere("extract(Year from Recognition.postDate) = :yr",{yr:year}).getRawMany();
         let results = {};
-        let recogs = await this.recognitionRepository.createQueryBuilder().select("*").innerJoin("recognition_tags_tag","test","test.recognitionRecId = Recognition.recId").where("Recognition.empToCompanyId = :compID", {compID : rockstar.company}).andWhere("Recognition.empToEmployeeId = :empID", {empID: rockstar.employeeId}).andWhere("extract(Month from Recognition.postDate) = :prvMonth",{prvMonth:prevMonth}).andWhere("extract(Year from Recognition.postDate) = :yr",{yr:year}).getRawMany();
-        //tabulates all the tags the rockstar has received for the given month
         for (let i = 0; i < recogs.length; ++i)
         {
             if (!(recogs[i].tagTagID in results))
@@ -88,7 +88,19 @@ export class RockstarService {
                 results[recogs[i].tagTagId]= numTag + 1;
             }
         }
-        //returns an array of the number of each tag
-        return results;
+
+        let rockstar:Rockstar = new Rockstar();
+        rockstar.month = prevMonth;
+        rockstar.year = year;
+        rockstar.stats = results;
+        rockstar.recognitions = recogs;
+        rockstar.rockstar = rockstarUser;
+        rockstar.compID = rockstarUser.companyId;
+
+        await this.rockstarRepo.create
+        return rockstar;
+
+        //calculate and return rockstar
+        //recognition module
     }
 }
