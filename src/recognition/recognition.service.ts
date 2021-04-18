@@ -7,7 +7,7 @@ import { Users } from '../dtos/entity/users.entity';
 import { Tag } from '../dtos/entity/tag.entity';
 import { TagStats } from '../dtos/entity/tagstats.entity';
 import { CreateRecDto } from '../dtos/dto/create-rec.dto';
-import { Role } from 'src/dtos/enum/role.enum';
+import { Role } from '../dtos/enum/role.enum';
 
 
 @Injectable()
