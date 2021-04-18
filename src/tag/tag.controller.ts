@@ -12,12 +12,23 @@ import { DeleteResult } from 'typeorm';
 export class TagController {
     constructor(private tags: TagService){}
 
+    /**
+     * Gets the core values tags for the company of the user that is logged in
+     * @param req passed by the JWT token, contains logged-in user information
+     * @returns An array of the tags for the user's company, not including any deleted tags
+     */
     @UseGuards(JwtAuthGuard)
     @Get()
     getCompanyTags(@Request() req): Promise<Tag[]>{
         return this.tags.getCompanyTags(req.user.companyId);
     }
 
+    /**
+     * An Admin can delete only tags for their own company
+     * @param req passed by the JWT auth token, contains logged-in user information
+     * @param id The id of the {@link Tag} to be deleted
+     * @returns a DeleteResult, or null if the tags is not found / does not belong to the user's company
+     */
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(Role.Admin)
     @Delete(':id')
@@ -25,6 +36,12 @@ export class TagController {
         return this.tags.deleteTag(req.user.companyId, id);
     }
 
+    /**
+     * An Admin can create tags for their company
+     * @param req passed by the JWT token, contains logged-in user information
+     * @param tagData an object containing a string that is the core value to be added to this company's core value tags
+     * @returns The {@link Tag} that was added
+     */
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(Role.Admin)
     @Post('create')

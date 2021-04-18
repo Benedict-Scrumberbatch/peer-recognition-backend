@@ -24,15 +24,27 @@ export class RecognitionService {
         @InjectRepository(TagStats)
         private tagStatsRepo: Repository<TagStats>
     ){}
-
+    /**
+     * Finds the recognitions for given {@link Company}
+     * @param id companyId number
+     * @returns an array of {@link Recognition} objects
+     */
     async findCompRec(id: number): Promise<Recognition[]>{
      return await this.recognitionsRepository.find({relations: ['empFrom', 'empTo', 'tags'], where:{companyCompanyId:id}});
     }
-
+    /**
+     * Finds all recognitions in the database
+     * @returns an array of {@link Recognition} objects
+     */
     async findAll(): Promise<Recognition[]>{
         return await this.recognitionsRepository.find({relations: ['empFrom', 'empTo', 'tags']});
     }
-    
+
+   /**
+     * Adds a new recognition to the database and updates user stats
+     * @param recognition takes in a {@link Recognition} object and the current's user's ID number
+     * @returns a {@link Recognition} object
+     */    
     async createRec(recognition: Recognition, empId: number): Promise<Recognition> {
         if(recognition.empFrom.employeeId !== empId || recognition.empTo.employeeId === empId){
             throw new UnauthorizedException();
@@ -51,9 +63,16 @@ export class RecognitionService {
         await this.changeUserStats(recDto, true)
         return recognition
     }
-
-    async deleteRec(id: number, companyId: number, empId: number, role: Role): Promise<DeleteResult> {
-        
+  
+  /**
+ * Confirms a user is valid to delete a post and then deletes post by given id number and changes user stats
+ * @param id RecognitionId of post user wants to delete
+ * @param companyId companyId of logged in user
+ * @param empId employee ID of logged in user
+ * @param role the role of the logged in user
+ * @returns {@link DeleteResult} 
+ */
+    async deleteRec(id: number, companyId: number, empId: number, role: Role): Promise<DeleteResult> {        
         let rec = await this.recognitionsRepository.findOne({ relations: ["empFrom", "empTo", "company", "tags"], where: { recId: id } });
         if(rec.empFrom.employeeId !== empId && rec.empTo.employeeId !== empId && role !== 'admin'){
             throw new UnauthorizedException();
@@ -77,6 +96,11 @@ export class RecognitionService {
         return await this.recognitionsRepository.softDelete({recId:id});
     }
 
+    /**
+     * Increment or decrement user tag stats and recognition stats.
+     * @param recDto Info about the recognition. (This will be changed to use the {@link Recognition} entity)
+     * @param increment `boolean` value that specifies whether we are incrementing or decrementing the recognition and tag stats.
+     */
     private async changeUserStats(recDto: CreateRecDto, increment: boolean) { 
         let sign = '-';
         if (increment)

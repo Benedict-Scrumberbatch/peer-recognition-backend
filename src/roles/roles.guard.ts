@@ -6,29 +6,30 @@ import { ROLES_KEY } from './roles.decorator';
 /**
  * Roles guard is responsible for verifying if a user should be allowed to access the endpoint.
  * 
- * @example```
-  import { Roles } from 'src/roles/roles.decorator';
-  import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-  import { UsersService } from './users.service';
-  import { Role } from '../roles/role.enum';
-  import { RolesGuard } from '../roles/roles.guard';
-  @Controller('users')
-  export class UsersController {
-      constructor (private usersService: UsersService) {}
-      @UseGuards(JwtAuthGuard, RolesGuard)
-      @Roles(Role.Admin, Role.Employee)
-      @Get('profile')
-      getProfile(@Request() req) {
-          return this.usersService.getProfile(req.user.employeeId, req.user.companyId);
-      }
-  }```
+ * @example
+ * import { Roles } from 'src/roles/roles.decorator';
+ * import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+ * import { UsersService } from './users.service';
+ * import { Role } from '../roles/role.enum';
+ * import { RolesGuard } from '../roles/roles.guard';
+ * ＠Controller('users')
+ * export class UsersController {
+ *                   constructor (private usersService: UsersService) {}
+ *                   ＠UseGuards(JwtAuthGuard, RolesGuard)
+ *                   ＠Roles(Role.Admin, Role.Employee)
+ *                   ＠Get('profile')
+ *                   getProfile(＠Request() req) {
+ *                       return this.usersService.getProfile(req.user.employeeId, req.user.companyId);
+ *                   }
+ * }
+ * 
  */
 @Injectable()
 export class RolesGuard implements CanActivate {
     constructor (private reflector: Reflector) {}
 
     /**
-     * This method verifies the user role.
+     * This method verifies the user role. Validation is done using the {@link Role} enum.
      * @param context This parameter is passed automatically by nest.
      * @returns True if user role matches the restriction, false otherwise.
      */
