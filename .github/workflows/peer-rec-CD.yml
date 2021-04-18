@@ -42,9 +42,9 @@ jobs:
           build_dir: docs
         env:
           GITHUB_TOKEN: ${{ secrets.REPO_TOKEN_ACTIONS }}
-      
+
       - name: Generate deployment package
-        run: git archive HEAD -o deploy.zip
+        run: zip -r deploy.zip * -x "**node_modules**"
 
       - name: Get timestamp
         uses: gerred/actions/current-time@master
