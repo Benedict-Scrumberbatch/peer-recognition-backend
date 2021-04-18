@@ -17,16 +17,16 @@ export class RecognitionController {
     findAll(@Request() req): Promise<Recognition[]>{
         return this.recs.findCompRec(req.user.companyId);
     }
+    @UseGuards(JwtAuthGuard)
     @Post('create')
-    create(@Body() createRecDto: Recognition): Promise<Recognition>{
-        return this.recs.createRec(createRecDto);
+    create(@Request() req, @Body() recognition: Recognition): Promise<Recognition>{
+        return this.recs.createRec(recognition, req.user.empId);
     }
   
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles(Role.Admin)
+    @UseGuards(JwtAuthGuard)
     @Delete(':id')
     delete(@Request() req, @Param('id') id): Promise<DeleteResult>{
-        return this.recs.deleteRec(id, req.user.companyId, req.user.employeeId);
+        return this.recs.deleteRec(id, req.user.companyId, req.user.employeeId, req.user.role);
     }
 
 }

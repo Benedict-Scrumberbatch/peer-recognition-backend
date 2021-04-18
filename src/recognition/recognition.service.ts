@@ -7,6 +7,7 @@ import { Users } from '../dtos/entity/users.entity';
 import { Tag } from '../dtos/entity/tag.entity';
 import { TagStats } from '../dtos/entity/tagstats.entity';
 import { CreateRecDto } from '../dtos/dto/create-rec.dto';
+import { Role } from 'src/dtos/enum/role.enum';
 
 
 @Injectable()
@@ -32,7 +33,10 @@ export class RecognitionService {
         return await this.recognitionsRepository.find({relations: ['empFrom', 'empTo', 'tags']});
     }
     
-    async createRec(recognition: Recognition): Promise<Recognition> {
+    async createRec(recognition: Recognition, empId: number): Promise<Recognition> {
+        if(recognition.empFrom.employeeId !== empId || recognition.empTo.employeeId === empId){
+            throw new UnauthorizedException();
+        }
         recognition.postDate = new Date();
         await this.recognitionsRepository.save(recognition);
         let tagArr = [];
@@ -48,10 +52,10 @@ export class RecognitionService {
         return recognition
     }
 
-    async deleteRec(id: number, companyId: number, empId: number): Promise<DeleteResult> {
+    async deleteRec(id: number, companyId: number, empId: number, role: Role): Promise<DeleteResult> {
         
         let rec = await this.recognitionsRepository.findOne({ relations: ["empFrom", "empTo", "company", "tags"], where: { recId: id } });
-        if(rec.company.companyId !== companyId){
+        if(rec.empFrom.employeeId !== empId && rec.empTo.employeeId !== empId && role !== 'admin'){
             throw new UnauthorizedException();
         }
 
