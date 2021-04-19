@@ -47,10 +47,16 @@ export class UsersService {
 	    return profileArray;
     }
 
-    async removeUser(employeeId: number, companyId: number): Promise<DeleteResult> {
-        const user = await this.usersRepository.findOne({ employeeId: employeeId, companyId: companyId })
-        await this.loginRepo.delete({employee: user});  // if delete performs a hard delete, I think this is the behavior we want: removing the email and password record
-        return await this.usersRepository.softDelete(user);
+    async removeUser(employeeId: number, companyId: number): Promise<Users[]> {
+        const user = await this.usersRepository.find({ employeeId: employeeId, companyId: companyId });
+        // const login = await this.loginRepo.find({where: {"employeeCompanyId": companyId, "employeeEmployeeId": employeeId}});
+        // const recsSent = await this.recognitionRepository.find({where: {"companyCompanyId":companyId, "empFromEmployeeId": employeeId}})
+        // const recsReceived = await this.recognitionRepository.find({where: {"companyId": companyId, "empToEmployeeId": employeeId}});
+        // softRemove deletes multiple entries
+        // if(recsSent.length > 0) {await this.recognitionRepository.softRemove(recsSent)}
+        // if(recsReceived.length > 0) {await this.recognitionRepository.softRemove(recsReceived)}
+        // await this.loginRepo.softRemove(login);
+        return await this.usersRepository.softRemove(user);
     }
     
     async createUser(createuserDto: Users & Login & {managerId: number} & {companyName: string}): Promise<Users> {    
