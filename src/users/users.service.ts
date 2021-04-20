@@ -65,15 +65,15 @@ export class UsersService {
     }
 
     /**
-     * Softdelete {@link Users} object.
+     * Performs a soft delete on the specified user and their login information, but does not affect other relations (i.e. recs)
      * @param employeeId 
      * @param companyId 
-     * @returns 
+     * @returns an array containing the user that was deleted
      */
-    async removeUser(employeeId: number, companyId: number): Promise<DeleteResult> {
-        const user = await this.usersRepository.findOne({ employeeId: employeeId, companyId: companyId })
-        await this.loginRepo.delete({employee: user});  // if delete performs a hard delete, I think this is the behavior we want: removing the email and password record
-        return await this.usersRepository.softDelete(user);
+    async removeUser(employeeId: number, companyId: number): Promise<Users[]> {
+        const user = await this.usersRepository.findOne({ employeeId: employeeId, companyId: companyId });
+        await this.loginRepo.softDelete({employee: user});
+        return await this.usersRepository.softRemove([user]);
     }
     /**
      * Method to create user: 
