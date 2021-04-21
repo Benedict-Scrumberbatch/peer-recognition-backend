@@ -3,7 +3,7 @@ import { CreateRecDto } from '../dtos/dto/create-rec.dto';
 import {RecognitionService} from './recognition.service'
 import {Recognition} from '../dtos/entity/recognition.entity';
 import { DeleteResult } from 'typeorm';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../roles/roles.guard';
 import { Roles } from '../roles/roles.decorator';
 import { Role } from '../dtos/enum/role.enum';
