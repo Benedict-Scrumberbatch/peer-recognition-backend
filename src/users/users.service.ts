@@ -1,14 +1,24 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from '../dtos/entity/users.entity';
 import { Login } from '../dtos/entity/login.entity';
 import { Company } from '../dtos/entity/company.entity';
 import { TagStats } from '../dtos/entity/tagstats.entity';
-import { CompanyService } from 'src/company/company.service';
+import { CompanyService } from '../company/company.service';
 import { Recognition } from '../dtos/entity/recognition.entity';
-import { DeleteResult, QueryBuilder, Repository } from 'typeorm';
+import { DeleteResult, Like, QueryBuilder, Repository } from 'typeorm';
 import { Query } from 'typeorm/driver/Query';
+import { Role } from '../dtos/enum/role.enum';
+import { throwError } from 'rxjs';
 import { UserStats } from '../dtos/interface/userstats.interface';
+import {
+    paginate,
+    Pagination,
+    IPaginationOptions,
+  } from 'nestjs-typeorm-paginate';
+import { from, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';    
+
 
 /**
  * Service for {@link UsersController}. Functional logic is kept here.
@@ -65,16 +75,45 @@ export class UsersService {
     }
 
     /**
-     * Softdelete {@link Users} object.
+     * Performs a soft delete on the specified user and their login information, but does not affect other relations (i.e. recs)
      * @param employeeId 
      * @param companyId 
-     * @returns 
+     * @returns an array containing the user that was deleted
      */
-    async removeUser(employeeId: number, companyId: number): Promise<DeleteResult> {
-        const user = await this.usersRepository.findOne({ employeeId: employeeId, companyId: companyId })
-        await this.loginRepo.delete({employee: user});  // if delete performs a hard delete, I think this is the behavior we want: removing the email and password record
-        return await this.usersRepository.softDelete(user);
+    async removeUser(employeeId: number, companyId: number): Promise<Users[]> {
+        const user = await this.usersRepository.findOne({ employeeId: employeeId, companyId: companyId });
+        await this.loginRepo.softDelete({employee: user});
+        return await this.usersRepository.softRemove([user]);
     }
+    // TEMPORARY ONLY
+    // Create Dummy if Database is empty.
+    // This endpoint will add admin Dummy
+    async createDummy(): Promise<Users> {
+        const user = new Users();
+        user.role = Role.Admin;
+        user.employeeId = 0;
+        user.firstName = 'dummy';
+        user.lastName = 'dummy';
+        user.isManager = true;
+        user.positionTitle = 'dummy';
+        user.startDate = new Date("2014-12-18");
+
+        let company = await this.companyservice.createCompany({
+            companyId: 1, 
+            name: 'dummy', 
+            tags: undefined, recognitions: undefined,
+            users: undefined
+        });
+        user.company = company
+
+        const login = new Login();
+        login.email = 'dummy';
+        login.password = 'dummy';
+        login.employee = await this.usersRepository.save(user);
+        await this.loginRepo.save(login);
+        return user
+    }
+
     /**
      * Method to create user: 
      * 
@@ -86,6 +125,7 @@ export class UsersService {
         const user = new Users();
         if (createuserDto.company != undefined) {
             user.company = createuserDto.company;
+
         }
         else{
             if (createuserDto.companyId != undefined) {
@@ -102,14 +142,16 @@ export class UsersService {
                 user.company = company
             }
         }
-
         user.employeeId = createuserDto.employeeId;
         user.companyId = createuserDto.companyId;
 
         user.firstName = createuserDto.firstName;
         user.lastName = createuserDto.lastName;
 
+        // Will add different level of admin 
         user.isManager = Boolean(createuserDto.isManager);
+        user.role = createuserDto.role;
+
         user.positionTitle = createuserDto.positionTitle;
         user.startDate = new Date(createuserDto.startDate);
         
@@ -120,10 +162,8 @@ export class UsersService {
             if (createuserDto.managerId != undefined) {
                 let Manager = await this.usersRepository.findOne({where:{companyId: createuserDto.companyId , 
                     employeeId : createuserDto.managerId}});
-                // If manager status of managerId is false, then set it to true
-                if (Manager != undefined && Manager.isManager == false) {
-                    Manager.isManager = true;
-                    await this.usersRepository.save(Manager);
+                if (Manager.isManager == false){
+                    throw new BadRequestException('Invalid Manager')
                 }
                 user.manager = Manager;
             }
@@ -288,4 +328,48 @@ export class UsersService {
         }
         return results;
     }
+    async paginate(options: IPaginationOptions): Promise<Pagination<Users>> {
+        return paginate<Users>(this.usersRepository, options);
+    }
+    // Back up search user in case the main endpoint doesn't work properly!
+    async paginate_backup(options: IPaginationOptions, firstName: string, lastName: string): Promise<Observable<Pagination<Users>>> {
+        return from (this.usersRepository.findAndCount({
+            take: Number(options.limit) || 10,  // Only take 10 first results or firs number of limit
+            order: {firstName: 'ASC'},          // result follows ASC order (alphabetical)
+            where: [
+                {firstName: Like(`%${firstName}%`)},
+                {lastName: Like(`%${lastName}%`)}
+            ]
+        })).pipe(
+            map(([users, totalUsers]) => {
+                const usersPageable: Pagination<Users> = {
+                    items: users,
+                    links: {
+                        first: options.route + `?limit=${options.limit}`,
+                        previous: options.route + ``,
+                        next: options.route + `?limit=${options.limit}&page=${Number(options.page) + 1}`,
+                        last: options.route + `?limit=${options.limit}&page=${totalUsers / Number(options.page)}`
+                    },
+                    meta: {
+                        currentPage: Number(options.page),
+                        itemCount: users.length,
+                        itemsPerPage: Number(options.limit),
+                        totalItems: totalUsers,
+                        totalPages: totalUsers / Number(options.limit)
+                    }
+                };
+                return usersPageable;
+            })
+        )       
+    }
+    async paginate_username(options: IPaginationOptions, firstName: string, lastName: string): Promise<Pagination<Users>> {
+        const queryBuilder = this.usersRepository.createQueryBuilder('user');
+        queryBuilder.where([
+            {firstName: Like(`%${firstName}%`)},
+            {lastName: Like(`%${lastName}%`)}
+        ]);
+        // queryBuilder.orWhere({lastName: Like(`%${lastName}%`)});
+        return paginate<Users>(queryBuilder, options);
+    }
+    
 } 

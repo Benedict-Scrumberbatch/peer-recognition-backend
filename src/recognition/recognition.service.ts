@@ -7,6 +7,7 @@ import { Users } from '../dtos/entity/users.entity';
 import { Tag } from '../dtos/entity/tag.entity';
 import { TagStats } from '../dtos/entity/tagstats.entity';
 import { CreateRecDto } from '../dtos/dto/create-rec.dto';
+import { Role } from '../dtos/enum/role.enum';
 
 
 @Injectable()
@@ -38,12 +39,16 @@ export class RecognitionService {
     async findAll(): Promise<Recognition[]>{
         return await this.recognitionsRepository.find({relations: ['empFrom', 'empTo', 'tags']});
     }
-    /**
+
+   /**
      * Adds a new recognition to the database and updates user stats
-     * @param recognition takes in a {@link Recognition} object
+     * @param recognition takes in a {@link Recognition} object and the current's user's ID number
      * @returns a {@link Recognition} object
-     */
-    async createRec(recognition: Recognition): Promise<Recognition> {
+     */    
+    async createRec(recognition: Recognition, empId: number): Promise<Recognition> {
+        if(recognition.empFrom.employeeId !== empId || recognition.empTo.employeeId === empId){
+            throw new UnauthorizedException();
+        }
         recognition.postDate = new Date();
         await this.recognitionsRepository.save(recognition);
         let tagArr = [];
@@ -58,17 +63,18 @@ export class RecognitionService {
         await this.changeUserStats(recDto, true)
         return recognition
     }
-/**
+  
+  /**
  * Confirms a user is valid to delete a post and then deletes post by given id number and changes user stats
  * @param id RecognitionId of post user wants to delete
  * @param companyId companyId of logged in user
  * @param empId employee ID of logged in user
+ * @param role the role of the logged in user
  * @returns {@link DeleteResult} 
  */
-    async deleteRec(id: number, companyId: number, empId: number): Promise<DeleteResult> {
-        
+    async deleteRec(id: number, companyId: number, empId: number, role: Role): Promise<DeleteResult> {        
         let rec = await this.recognitionsRepository.findOne({ relations: ["empFrom", "empTo", "company", "tags"], where: { recId: id } });
-        if(rec.company.companyId !== companyId){
+        if(rec.empFrom.employeeId !== empId && rec.empTo.employeeId !== empId && role !== 'admin'){
             throw new UnauthorizedException();
         }
 
