@@ -18,11 +18,6 @@ import { Observable } from 'rxjs';
 @Controller('users')
 export class UsersController {
     constructor (private usersService: UsersService) {}
-<<<<<<< HEAD
-        
-    
-    
-=======
     /**
      * `GET` endpoint to look up profile.
      * 
@@ -30,7 +25,6 @@ export class UsersController {
      * @param req `Request` userId and companyId
      * @returns  
      */
->>>>>>> master
     @UseGuards(JwtAuthGuard)
     @Get('profile')
     getProfile(@Request() req) {
@@ -48,10 +42,6 @@ export class UsersController {
     async getUser(@Param("employ_id") employee_id: number, @Request() req) {
         return await this.usersService.getProfile(employee_id, req.user.companyId);
     }
-<<<<<<< HEAD
-
-    // Not sure if request is needed here
-=======
     /**
      * `GET` endpoint to get all user in company
      * 
@@ -59,20 +49,13 @@ export class UsersController {
      * @param company_id 
      * @returns 
      */
->>>>>>> master
     @UseGuards(JwtAuthGuard)
     @Get('company/:comp_id')
     async getUsersByCompany(@Param("comp_id") company_id: number) {
 	    return await this.usersService.getArrayOfUsers(company_id);
     }
 
-<<<<<<< HEAD
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles(Role.Admin)
-    @Delete(':employeeId')
-    async removeUser(@Param('employeeId') employeeId: number, @Request() req) {
-        return await this.usersService.removeUser(employeeId, req.user.companyId);
-    }
+  
 
     // TEMPORARY ONLY
     // Place holder endpoint if database is empty
@@ -83,7 +66,6 @@ export class UsersController {
 
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(Role.Admin)
-=======
     /**
      * `DELETE` endpoint to soft delete user
      * 
@@ -91,10 +73,12 @@ export class UsersController {
      * @param companyId 
      * @returns 
      */
-    @Delete(':employeeId/company/:companyId')
-    async removeUser(@Param('employeeId') employeeId: number, @Param('companyId') companyId: number) {
-        return await this.usersService.removeUser(employeeId, companyId);
-    }
+     @UseGuards(JwtAuthGuard, RolesGuard)
+     @Roles(Role.Admin)
+     @Delete(':employeeId')
+     async removeUser(@Param('employeeId') employeeId: number, @Request() req) {
+         return await this.usersService.removeUser(employeeId, req.user.companyId);
+     }
 
     /**
      * `POST` endpoint to create user.
@@ -106,7 +90,6 @@ export class UsersController {
      * @returns adding user to Database 
      */
     //This endpoint should be guarded
->>>>>>> master
     @Post('create')
     async createUser(@Body() createuserDto: Users & Login & {managerId: number} & {companyName: string}) {
         return await this.usersService.createUser(createuserDto);
@@ -124,12 +107,6 @@ export class UsersController {
     getStats(@Param('employeeId') employeeId: number, @Request() req) {
         return this.usersService.userStats(employeeId, req.user.companyId);
     }
-<<<<<<< HEAD
-
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles(Role.Admin)
-    @Post('create_many')
-=======
     /**
      * `POST` endpoint to create multiple user.
      * 
@@ -139,8 +116,9 @@ export class UsersController {
      * @param employeeMultiple 
      * @returns adding multiple users to Database 
      */
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.Admin)
     @Post('create_multiple')
->>>>>>> master
     async createUserMultiple(@Body() employeeMultiple: []) {
         return await this.usersService.createUserMultiple(employeeMultiple);
     }
