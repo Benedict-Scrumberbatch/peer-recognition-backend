@@ -21,7 +21,7 @@ const ENV = process.env.NODE_ENV
   }),
   AuthModule, UsersModule, RecognitionModule, CompanyModule, TagModule, TypeOrmModule.forRoot({
     type: "postgres",
-    host: "localhost",
+    host: "database",
     port: 5432,
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASS,
