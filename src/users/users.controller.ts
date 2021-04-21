@@ -3,6 +3,11 @@ import { Login } from '../dtos/entity/login.entity';
 import { Users } from '../dtos/entity/users.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UsersService } from './users.service';
+import { Roles } from '../roles/roles.decorator';
+import { RolesGuard } from '../roles/roles.guard';
+import { Role } from '../dtos/enum/role.enum'
+import { AuthGuard } from '@nestjs/passport';
+import { AuthService } from '../auth/auth.service';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { Observable } from 'rxjs';
 
@@ -33,9 +38,9 @@ export class UsersController {
      * @returns 
      */
     @UseGuards(JwtAuthGuard)
-    @Get(':employ_id/company/:comp_id')
-    async getUser(@Param("employ_id") employee_id: number, @Param("comp_id") company_id: number) {
-        return await this.usersService.getProfile(employee_id, company_id);
+    @Get('employeeId/:employ_id')
+    async getUser(@Param("employ_id") employee_id: number, @Request() req) {
+        return await this.usersService.getProfile(employee_id, req.user.companyId);
     }
     /**
      * `GET` endpoint to get all user in company
@@ -50,6 +55,17 @@ export class UsersController {
 	    return await this.usersService.getArrayOfUsers(company_id);
     }
 
+  
+
+    // TEMPORARY ONLY
+    // Place holder endpoint if database is empty
+    @Post('createDummy')
+    async createDummy(){
+        return await this.usersService.createDummy();
+    }
+
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.Admin)
     /**
      * `DELETE` endpoint to soft delete user
      * 
@@ -57,10 +73,12 @@ export class UsersController {
      * @param companyId 
      * @returns 
      */
-    @Delete(':employeeId/company/:companyId')
-    async removeUser(@Param('employeeId') employeeId: number, @Param('companyId') companyId: number) {
-        return await this.usersService.removeUser(employeeId, companyId);
-    }
+     @UseGuards(JwtAuthGuard, RolesGuard)
+     @Roles(Role.Admin)
+     @Delete(':employeeId')
+     async removeUser(@Param('employeeId') employeeId: number, @Request() req) {
+         return await this.usersService.removeUser(employeeId, req.user.companyId);
+     }
 
     /**
      * `POST` endpoint to create user.
@@ -85,9 +103,9 @@ export class UsersController {
      * @returns returns stat of given employeeId
      */
     @UseGuards(JwtAuthGuard)
-    @Get('stats/:employeeId/company/:companyId')
-    getStats(@Param('employeeId') employeeId: number, @Param('companyId') companyId: number) {
-        return this.usersService.userStats(employeeId, companyId);
+    @Get('stats/:employeeId')
+    getStats(@Param('employeeId') employeeId: number, @Request() req) {
+        return this.usersService.userStats(employeeId, req.user.companyId);
     }
     /**
      * `POST` endpoint to create multiple user.
@@ -98,6 +116,8 @@ export class UsersController {
      * @param employeeMultiple 
      * @returns adding multiple users to Database 
      */
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.Admin)
     @Post('create_multiple')
     async createUserMultiple(@Body() employeeMultiple: []) {
         return await this.usersService.createUserMultiple(employeeMultiple);
@@ -110,9 +130,9 @@ export class UsersController {
      * @returns 
      */
     @UseGuards(JwtAuthGuard)
-    @Get('company/rockstar/:comp_id')
-    async getRockstar(@Param('comp_id') companyId: number) {
-        return await this.usersService.getRockstar(companyId);
+    @Get('rockstar')
+    async getRockstar(@Request() req) {
+        return await this.usersService.getRockstar(req.user.companyId);
     }
     /**
      * `GET` endpoint to get Rockstar of the month stat

@@ -8,12 +8,12 @@ import { jwtConstants } from './constants';
  * This strategy is used to validate the JWT token when the {@link JwtAuthGuard} is used.
  */
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     constructor() {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
-            secretOrKey: jwtConstants.secret,
+            secretOrKey: jwtConstants.access_secret,
         });
     }
 

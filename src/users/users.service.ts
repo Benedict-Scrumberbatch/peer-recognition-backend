@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from '../dtos/entity/users.entity';
 import { Login } from '../dtos/entity/login.entity';
@@ -8,6 +8,8 @@ import { CompanyService } from '../company/company.service';
 import { Recognition } from '../dtos/entity/recognition.entity';
 import { DeleteResult, Like, QueryBuilder, Repository } from 'typeorm';
 import { Query } from 'typeorm/driver/Query';
+import { Role } from '../dtos/enum/role.enum';
+import { throwError } from 'rxjs';
 import { UserStats } from '../dtos/interface/userstats.interface';
 import {
     paginate,
@@ -83,6 +85,35 @@ export class UsersService {
         await this.loginRepo.softDelete({employee: user});
         return await this.usersRepository.softRemove([user]);
     }
+    // TEMPORARY ONLY
+    // Create Dummy if Database is empty.
+    // This endpoint will add admin Dummy
+    async createDummy(): Promise<Users> {
+        const user = new Users();
+        user.role = Role.Admin;
+        user.employeeId = 0;
+        user.firstName = 'dummy';
+        user.lastName = 'dummy';
+        user.isManager = true;
+        user.positionTitle = 'dummy';
+        user.startDate = new Date("2014-12-18");
+
+        let company = await this.companyservice.createCompany({
+            companyId: 1, 
+            name: 'dummy', 
+            tags: undefined, recognitions: undefined,
+            users: undefined
+        });
+        user.company = company
+
+        const login = new Login();
+        login.email = 'dummy';
+        login.password = 'dummy';
+        login.employee = await this.usersRepository.save(user);
+        await this.loginRepo.save(login);
+        return user
+    }
+
     /**
      * Method to create user: 
      * 
@@ -94,6 +125,7 @@ export class UsersService {
         const user = new Users();
         if (createuserDto.company != undefined) {
             user.company = createuserDto.company;
+
         }
         else{
             if (createuserDto.companyId != undefined) {
@@ -110,14 +142,16 @@ export class UsersService {
                 user.company = company
             }
         }
-
         user.employeeId = createuserDto.employeeId;
         user.companyId = createuserDto.companyId;
 
         user.firstName = createuserDto.firstName;
         user.lastName = createuserDto.lastName;
 
+        // Will add different level of admin 
         user.isManager = Boolean(createuserDto.isManager);
+        user.role = createuserDto.role;
+
         user.positionTitle = createuserDto.positionTitle;
         user.startDate = new Date(createuserDto.startDate);
         
@@ -128,10 +162,8 @@ export class UsersService {
             if (createuserDto.managerId != undefined) {
                 let Manager = await this.usersRepository.findOne({where:{companyId: createuserDto.companyId , 
                     employeeId : createuserDto.managerId}});
-                // If manager status of managerId is false, then set it to true
-                if (Manager != undefined && Manager.isManager == false) {
-                    Manager.isManager = true;
-                    await this.usersRepository.save(Manager);
+                if (Manager.isManager == false){
+                    throw new BadRequestException('Invalid Manager')
                 }
                 user.manager = Manager;
             }

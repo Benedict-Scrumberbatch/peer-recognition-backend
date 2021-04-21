@@ -49,6 +49,8 @@ export class CompanyService {
         //Will need to create tags in the tag table.
         company.tags = createcompanyDto.tags;
 
+        company.users = createcompanyDto.users;
+
         await this.companyRepository.save(company);
         return company;
     }
