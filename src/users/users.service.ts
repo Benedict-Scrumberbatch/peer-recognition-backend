@@ -6,9 +6,17 @@ import { Company } from '../dtos/entity/company.entity';
 import { TagStats } from '../dtos/entity/tagstats.entity';
 import { CompanyService } from '../company/company.service';
 import { Recognition } from '../dtos/entity/recognition.entity';
-import { DeleteResult, QueryBuilder, Repository } from 'typeorm';
+import { DeleteResult, Like, QueryBuilder, Repository } from 'typeorm';
 import { Query } from 'typeorm/driver/Query';
 import { UserStats } from '../dtos/interface/userstats.interface';
+import {
+    paginate,
+    Pagination,
+    IPaginationOptions,
+  } from 'nestjs-typeorm-paginate';
+import { from, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';    
+
 
 /**
  * Service for {@link UsersController}. Functional logic is kept here.
@@ -288,4 +296,48 @@ export class UsersService {
         }
         return results;
     }
+    async paginate(options: IPaginationOptions): Promise<Pagination<Users>> {
+        return paginate<Users>(this.usersRepository, options);
+    }
+    // Back up search user in case the main endpoint doesn't work properly!
+    async paginate_backup(options: IPaginationOptions, firstName: string, lastName: string): Promise<Observable<Pagination<Users>>> {
+        return from (this.usersRepository.findAndCount({
+            take: Number(options.limit) || 10,  // Only take 10 first results or firs number of limit
+            order: {firstName: 'ASC'},          // result follows ASC order (alphabetical)
+            where: [
+                {firstName: Like(`%${firstName}%`)},
+                {lastName: Like(`%${lastName}%`)}
+            ]
+        })).pipe(
+            map(([users, totalUsers]) => {
+                const usersPageable: Pagination<Users> = {
+                    items: users,
+                    links: {
+                        first: options.route + `?limit=${options.limit}`,
+                        previous: options.route + ``,
+                        next: options.route + `?limit=${options.limit}&page=${Number(options.page) + 1}`,
+                        last: options.route + `?limit=${options.limit}&page=${totalUsers / Number(options.page)}`
+                    },
+                    meta: {
+                        currentPage: Number(options.page),
+                        itemCount: users.length,
+                        itemsPerPage: Number(options.limit),
+                        totalItems: totalUsers,
+                        totalPages: totalUsers / Number(options.limit)
+                    }
+                };
+                return usersPageable;
+            })
+        )       
+    }
+    async paginate_username(options: IPaginationOptions, firstName: string, lastName: string): Promise<Pagination<Users>> {
+        const queryBuilder = this.usersRepository.createQueryBuilder('user');
+        queryBuilder.where([
+            {firstName: Like(`%${firstName}%`)},
+            {lastName: Like(`%${lastName}%`)}
+        ]);
+        // queryBuilder.orWhere({lastName: Like(`%${lastName}%`)});
+        return paginate<Users>(queryBuilder, options);
+    }
+    
 } 
