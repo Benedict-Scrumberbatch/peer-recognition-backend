@@ -4,7 +4,7 @@ import { Users } from '../dtos/entity/users.entity';
 import { Login } from '../dtos/entity/login.entity';
 import { Company } from '../dtos/entity/company.entity';
 import { TagStats } from '../dtos/entity/tagstats.entity';
-import { CompanyService } from 'src/company/company.service';
+import { CompanyService } from '../company/company.service';
 import { Recognition } from '../dtos/entity/recognition.entity';
 import { DeleteResult, Like, QueryBuilder, Repository } from 'typeorm';
 import { Query } from 'typeorm/driver/Query';
@@ -18,6 +18,9 @@ import { from, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';    
 
 
+/**
+ * Service for {@link UsersController}. Functional logic is kept here.
+ */
 @Injectable()
 export class UsersService {
 
@@ -37,16 +40,30 @@ export class UsersService {
 
     //Must hash passwords
     //In reality will grab user information from the database.
-
+    /**
+     * Method called by the {@link AuthService} to retrieve the {@link Login} user object associated with the email.
+     * @param username Email to specify the user.
+     * @returns {@link Login} user object.
+     */
     async loginUser(username: string): Promise<Login> {
         return this.loginRepo.findOne( { relations: ["employee"], where: { email: username } });
     }
 
     //Function retrieves user profile using their userId.
+    /**
+     * Returns {@link Users} object with user information and manager relation.
+     * @param userId User's employee ID
+     * @param companyId User's company ID
+     * @returns {@link Users} object with manager relation.
+     */
     async getProfile(userId: number, companyId: number): Promise<Users> {
         return this.usersRepository.findOne( { relations: ["manager"], where: { employeeId: userId, companyId: companyId } } );
     }
-
+    /**
+     * Returns {@link Users}[ ] object array with user information and manager relation.
+     * @param companyId 
+     * @returns object array with manager relation
+     */
     //Function retrieves range of user profiles using companyID
     async getArrayOfUsers(companyId: number){
 	    // I'm not sure this will work
@@ -55,12 +72,24 @@ export class UsersService {
 	    return profileArray;
     }
 
-    async removeUser(employeeId: number, companyId: number): Promise<DeleteResult> {
-        const user = await this.usersRepository.findOne({ employeeId: employeeId, companyId: companyId })
-        await this.loginRepo.delete({employee: user});  // if delete performs a hard delete, I think this is the behavior we want: removing the email and password record
-        return await this.usersRepository.softDelete(user);
+    /**
+     * Performs a soft delete on the specified user and their login information, but does not affect other relations (i.e. recs)
+     * @param employeeId 
+     * @param companyId 
+     * @returns an array containing the user that was deleted
+     */
+    async removeUser(employeeId: number, companyId: number): Promise<Users[]> {
+        const user = await this.usersRepository.findOne({ employeeId: employeeId, companyId: companyId });
+        await this.loginRepo.softDelete({employee: user});
+        return await this.usersRepository.softRemove([user]);
     }
-    
+    /**
+     * Method to create user: 
+     * 
+     * Required {@link Users} object, {@link Login} object, {@link managerId} number, {@link companyName} string
+     * @param createuserDto 
+     * @returns {@link Users} user is added to Database  
+     */
     async createUser(createuserDto: Users & Login & {managerId: number} & {companyName: string}): Promise<Users> {    
         const user = new Users();
         if (createuserDto.company != undefined) {
@@ -117,7 +146,12 @@ export class UsersService {
         return user;
     }
 
-
+    /**
+     * Method to get user stats
+     * @param employeeId 
+     * @param companyId 
+     * @returns {@link UserStats}
+     */
     async userStats(employeeId: number, companyId: number): Promise<UserStats> {
         let user = await this.usersRepository.findOne({
             relations: ["tagStats", "tagStats.tag"],
@@ -133,6 +167,11 @@ export class UsersService {
         return userStats;
     }
     
+    /**
+     * Method to create array of {@link Users} object 
+     * @param employeeMultiple 
+     * @returns Array of {@link Users} object 
+     */
     async createUserMultiple(employeeMultiple: []): Promise <any>{
         let arr_employee = [];
         for (let i = 0; i < employeeMultiple.length; i++) {
@@ -141,6 +180,13 @@ export class UsersService {
         return arr_employee;
     }
 
+    /**
+     * Method to get Rockstar of the month
+     * 
+     * Returns {@link Users} object
+     * @param companyId 
+     * @returns 
+     */
     async getRockstar( companyId: number): Promise<Users | undefined> {
         let date: Date = new Date();
         let prevMonth: number = -1;
@@ -188,6 +234,14 @@ export class UsersService {
         //calculate and return rockstar
         //recognition module
     }
+
+    /**
+     * Method to get Rockstar of the month recognitions
+     * 
+     * Returns: array of recognition 
+     * @param rockstar 
+     * @returns 
+     */
     async getRockstarRecogs(rockstar: Users): Promise<any[]>{
         let date: Date = new Date();
         let prevMonth: number = -1;
@@ -205,6 +259,14 @@ export class UsersService {
         console.log(recogs);
         return recogs;
     }
+
+    /**
+     * Method to get Rockstar of the month stats
+     * 
+     * Returns: stats
+     * @param rockstar 
+     * @returns 
+     */
     async getRockstarStats(rockstar: Users): Promise<any> {
         let date: Date = new Date();
         let prevMonth: number = -1;
