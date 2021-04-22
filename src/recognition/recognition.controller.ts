@@ -30,7 +30,7 @@ export class RecognitionController {
         return this.recs.deleteRec(id, req.user.companyId, req.user.employeeId);
     }
 
-    // @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard)
     @Get('search')
     async index(
         @Query('page') page: number = 1,
