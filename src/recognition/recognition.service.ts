@@ -1,5 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { DeleteResult, getConnection, Repository } from 'typeorm';
+import { DeleteResult, getConnection, Like, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Recognition } from '../dtos/entity/recognition.entity';
 import { Company } from '../dtos/entity/company.entity';
@@ -7,6 +7,7 @@ import { Users } from '../dtos/entity/users.entity';
 import { Tag } from '../dtos/entity/tag.entity';
 import { TagStats } from '../dtos/entity/tagstats.entity';
 import { CreateRecDto } from '../dtos/dto/create-rec.dto';
+import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
 
 
 @Injectable()
@@ -163,5 +164,31 @@ export class RecognitionService {
                 
             }
         }
+    }
+
+    async paginate_post(options: IPaginationOptions, 
+        firstName_to: string, 
+        lastName_to: string,
+        firstName_from: string,
+        lastName_from: string,
+        search: string,
+        msg: string): Promise<Pagination<Recognition>> {
+        const queryBuilder = this.recognitionsRepository.createQueryBuilder('rec');
+        queryBuilder.leftJoinAndSelect('rec.empTo', 'empTo').leftJoinAndSelect('rec.empFrom', 'empFrom')
+        
+        .where("empTo.firstName like :firstName_to", {firstName_to: '%' + firstName_to + '%'})
+        .orWhere("empTo.firstName like :search", {search: '%' + search + '%'})
+
+        .orWhere("empTo.lastName like :lastName_to", {lastName_to: '%' + lastName_to + '%'})
+        .orWhere("empTo.lastName like :search", {search: '%' + search + '%'})
+
+        .orWhere("empFrom.firstName like :firstName_from", {firstName_from: '%' + firstName_from + '%'})
+        .orWhere("empFrom.firstName like :search", {search: '%' + search + '%'})
+
+        .orWhere("empFrom.lastName like :lastName_from", {lastName_from: '%' + lastName_from + '%'})
+        .orWhere("empFrom.lastName like :search", {search: '%' + search + '%'})
+
+        .orWhere("msg like :msg", {msg: '%' + msg + '%'});
+        return paginate<Recognition>(queryBuilder, options);
     }
 }
