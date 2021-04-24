@@ -85,35 +85,7 @@ export class UsersService {
         await this.loginRepo.softDelete({employee: user});
         return await this.usersRepository.softRemove([user]);
     }
-    // TEMPORARY ONLY
-    // Create Dummy if Database is empty.
-    // This endpoint will add admin Dummy
-    async createDummy(): Promise<Users> {
-        const user = new Users();
-        user.role = Role.Admin;
-        user.employeeId = 0;
-        user.firstName = 'dummy';
-        user.lastName = 'dummy';
-        user.isManager = true;
-        user.positionTitle = 'dummy';
-        user.startDate = new Date("2014-12-18");
-
-        let company = await this.companyservice.createCompany({
-            companyId: 1, 
-            name: 'dummy', 
-            tags: undefined, recognitions: undefined,
-            users: undefined
-        });
-        user.company = company
-
-        const login = new Login();
-        login.email = 'dummy';
-        login.password = 'dummy';
-        login.employee = await this.usersRepository.save(user);
-        await this.loginRepo.save(login);
-        return user
-    }
-
+    
     /**
      * Method to create user: 
      * 

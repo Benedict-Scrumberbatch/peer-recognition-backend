@@ -5,6 +5,9 @@ import { DeleteResult } from 'typeorm';
 import { Company } from '../dtos/entity/company.entity';
 
 import { CompanyService } from './company.service';
+import { Role } from 'src/dtos/enum/role.enum';
+import { RolesGuard } from 'src/roles/roles.guard';
+import { Roles } from 'src/roles/roles.decorator';
 
 @Controller('company')
 export class CompanyController {
@@ -46,6 +49,8 @@ export class CompanyController {
      * @param createcompanyDto Company object with information about the new company to add.
      * @returns {@link Company} object which was created in the database.
      */
+    // @UseGuards(JwtAuthGuard, RolesGuard)
+    // @Roles(Role.Admin)
     @Post('create')
     async createCompany(@Body() createcompanyDto: Company) {
         return await this.companyService.createCompany(createcompanyDto);

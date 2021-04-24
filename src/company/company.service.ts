@@ -2,10 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
 import { Company } from '../dtos/entity/company.entity';
+import { Users } from '../dtos/entity/users.entity';
+import { Role } from '../dtos/enum/role.enum';
+import { Login } from '../dtos/entity/login.entity';
+import {Tag} from '../dtos/entity/tag.entity';
+import { TagService } from 'src/tag/tag.service';
+import { create } from 'node:domain';
+
 
 @Injectable()
 export class CompanyService {
-
     /**
      * Constructor is called automatically by Nest.
      * @param companyRepository 
@@ -13,8 +19,15 @@ export class CompanyService {
     constructor(
         @InjectRepository(Company)
         private companyRepository: Repository<Company>,
+        @InjectRepository(Users)
+        private usersRepository: Repository<Users>,
+        @InjectRepository(Login)
+        private loginRepo: Repository<Login>,
+        @InjectRepository(Tag)
+        private tagRepository: Repository<Tag>, 
 
-        
+        private tagservice: TagService,
+    
     ){}
 
     /**
@@ -46,12 +59,44 @@ export class CompanyService {
         company.name = createcompanyDto.name;
         
         company.recognitions = createcompanyDto.recognitions;
-        //Will need to create tags in the tag table.
+
         company.tags = createcompanyDto.tags;
+        if (createcompanyDto.tags != null && createcompanyDto.tags != undefined){
+            for (let i = 0; i < createcompanyDto.tags.length; i++){ 
+                let tag = await this.tagRepository.findOne({where:{tagId: createcompanyDto.tags[i].tagId}})
+                if (!tag ) {
+                    await this.tagservice.createTag(createcompanyDto.companyId, createcompanyDto.tags[i].value);
+                }
+            }
+        }
+        // if there is no initial employee 
+        if (createcompanyDto.users == undefined || createcompanyDto.users == null) {
+            // Create a default admin account when create empty company 
+            const user = new Users();
+            user.role = Role.Admin;
+            user.employeeId = 0;
+            user.firstName = 'Admin';
+            user.lastName = 'Admin';
+            user.isManager = true;
+            user.positionTitle = 'Admin';
+            user.startDate = new Date("2014-12-18");
+            user.company = company;
+            user.companyId = createcompanyDto.companyId;
 
-        company.users = createcompanyDto.users;
+            const login = new Login();
+            login.email = 'Admin';
+            login.password = 'Admin';
 
-        await this.companyRepository.save(company);
+            // company.users = [user];
+
+            await this.companyRepository.save(company)
+            login.employee = await this.usersRepository.save(user);
+            await this.loginRepo.save(login);
+        }
+        else {
+            company.users = createcompanyDto.users;
+            await this.companyRepository.save(company);
+        }
         return company;
     }
     

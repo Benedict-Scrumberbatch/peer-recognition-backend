@@ -55,15 +55,6 @@ export class UsersController {
 	    return await this.usersService.getArrayOfUsers(company_id);
     }
 
-  
-
-    // TEMPORARY ONLY
-    // Place holder endpoint if database is empty
-    @Post('createDummy')
-    async createDummy(){
-        return await this.usersService.createDummy();
-    }
-
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(Role.Admin)
     /**
