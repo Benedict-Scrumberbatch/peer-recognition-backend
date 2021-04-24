@@ -14,6 +14,7 @@ import {
     Pagination,
     IPaginationOptions,
   } from 'nestjs-typeorm-paginate';
+import { create } from 'node:domain';
 
 
 
@@ -105,10 +106,6 @@ export class UsersService {
                 }
                 user.manager = Manager;
             }
-        }
-
-        if (createuserDto.role != undefined || createuserDto.role != null){
-            user.role = createuserDto.role;
         }
 
         const login = new Login();
