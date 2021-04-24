@@ -107,6 +107,10 @@ export class UsersService {
             }
         }
 
+        if (createuserDto.role != undefined || createuserDto.role != null){
+            user.role = createuserDto.role;
+        }
+
         const login = new Login();
         login.email = createuserDto.email;
         login.password = createuserDto.password;

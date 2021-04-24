@@ -69,7 +69,7 @@ export class UsersController {
         let rockstar: Users = await this.getRockstar(comp_ID)
         return await this.usersService.getRockstarRecogs(rockstar);
     }
-    @UseGuards(JwtAuthGuard)
+    // @UseGuards(JwtAuthGuard)
     @Get('search')
     async index(
         @Query('page') page: number = 1,
