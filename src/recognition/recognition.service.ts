@@ -176,17 +176,17 @@ export class RecognitionService {
         const queryBuilder = this.recognitionsRepository.createQueryBuilder('rec');
         queryBuilder.leftJoinAndSelect('rec.empTo', 'empTo').leftJoinAndSelect('rec.empFrom', 'empFrom')
         
-        .where("empTo.firstName like :firstName_to", {firstName_to: '%' + firstName_to + '%'})
-        .orWhere("empTo.firstName like :search", {search: '%' + search + '%'})
+        .where("empTo.firstName ilike :firstName_to", {firstName_to: '%' + firstName_to + '%'})
+        .orWhere("empTo.firstName ilike :search", {search: '%' + search + '%'})
 
-        .orWhere("empTo.lastName like :lastName_to", {lastName_to: '%' + lastName_to + '%'})
-        .orWhere("empTo.lastName like :search", {search: '%' + search + '%'})
+        .orWhere("empTo.lastName ilike :lastName_to", {lastName_to: '%' + lastName_to + '%'})
+        .orWhere("empTo.lastName ilike :search", {search: '%' + search + '%'})
 
-        .orWhere("empFrom.firstName like :firstName_from", {firstName_from: '%' + firstName_from + '%'})
-        .orWhere("empFrom.firstName like :search", {search: '%' + search + '%'})
+        .orWhere("empFrom.firstName ilike :firstName_from", {firstName_from: '%' + firstName_from + '%'})
+        .orWhere("empFrom.firstName ilike :search", {search: '%' + search + '%'})
 
-        .orWhere("empFrom.lastName like :lastName_from", {lastName_from: '%' + lastName_from + '%'})
-        .orWhere("empFrom.lastName like :search", {search: '%' + search + '%'})
+        .orWhere("empFrom.lastName ilike :lastName_from", {lastName_from: '%' + lastName_from + '%'})
+        .orWhere("empFrom.lastName ilike :search", {search: '%' + search + '%'})
 
         .orWhere("msg like :msg", {msg: '%' + msg + '%'});
         return paginate<Recognition>(queryBuilder, options);

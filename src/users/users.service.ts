@@ -6,7 +6,7 @@ import { Company } from '../dtos/entity/company.entity';
 import { TagStats } from '../dtos/entity/tagstats.entity';
 import { CompanyService } from 'src/company/company.service';
 import { Recognition } from '../dtos/entity/recognition.entity';
-import { DeleteResult, Like, QueryBuilder, Repository } from 'typeorm';
+import { DeleteResult, Like, ILike, QueryBuilder, Repository } from 'typeorm';
 import { Query } from 'typeorm/driver/Query';
 import { UserStats } from '../dtos/interface/userstats.interface';
 import {
@@ -238,11 +238,11 @@ export class UsersService {
         const queryBuilder = this.usersRepository.createQueryBuilder('user');
         queryBuilder.orderBy('user.firstName', 'ASC')
         queryBuilder.where([
-            {firstName: Like(`%${firstName}%`)},
-            {lastName: Like(`%${lastName}%`)},
+            {firstName: ILike(`%${firstName}%`)},
+            {lastName: ILike(`%${lastName}%`)},
 
-            {firstName: Like(`%${search}%`)},
-            {lastName: Like(`%${search}%`)},
+            {firstName: ILike(`%${search}%`)},
+            {lastName: ILike(`%${search}%`)},
         ]);
         return paginate<Users>(queryBuilder, options);
     }
