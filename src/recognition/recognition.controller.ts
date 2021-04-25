@@ -30,25 +30,23 @@ export class RecognitionController {
         return this.recs.deleteRec(id, req.user.companyId, req.user.employeeId);
     }
 
-    @UseGuards(JwtAuthGuard)
+    // @UseGuards(JwtAuthGuard)
     @Get('search')
     async index(
         @Query('page') page: number = 1,
         @Query('limit') limit: number = 10,
-        @Query('firstName_to') firstName_to: string,
-        @Query('lastName_to') lastName_to: string,
-        @Query('fistName_from') firstName_from: string,
-        @Query('lastName_from') lastName_from: string,
+        @Query('firstName_t') firstName_t: string,
+        @Query('lastName_t') lastName_t: string,
+        @Query('firstName_f') firstName_f: string,
+        @Query('lastName_f') lastName_f: string,
         @Query('search') search: string,
         @Query('msg') msg: string,   
-        @Query('fromId') fromId: number,
-        @Query('toId') toId: number
     ): Promise<Pagination<Recognition>> {
         limit = limit > 100 ? 100: limit
         return this.recs.paginate_post(
             {page: Number(page), limit: Number(limit), route: 'http://localhost:4200/recognitions/search'},
-            firstName_to, lastName_to,
-            firstName_from, lastName_from,
+            firstName_t, lastName_t,
+            firstName_f, lastName_f,
             search,
             msg);
     }

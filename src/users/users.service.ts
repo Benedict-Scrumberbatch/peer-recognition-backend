@@ -6,7 +6,7 @@ import { Company } from '../dtos/entity/company.entity';
 import { TagStats } from '../dtos/entity/tagstats.entity';
 import { CompanyService } from 'src/company/company.service';
 import { Recognition } from '../dtos/entity/recognition.entity';
-import { DeleteResult, Like, ILike, QueryBuilder, Repository } from 'typeorm';
+import { DeleteResult, Like, ILike, QueryBuilder, Repository, Brackets } from 'typeorm';
 import { Query } from 'typeorm/driver/Query';
 import { UserStats } from '../dtos/interface/userstats.interface';
 import {
@@ -238,13 +238,13 @@ export class UsersService {
     async paginate_username(options: IPaginationOptions, firstName: string, lastName: string, search: string): Promise<Pagination<Users>> {
         const queryBuilder = this.usersRepository.createQueryBuilder('user');
         queryBuilder.orderBy('user.firstName', 'ASC')
-        queryBuilder.where([
-            {firstName: ILike(`%${firstName}%`)},
-            {lastName: ILike(`%${lastName}%`)},
+        // Must specify both firstname and lastname
+        .where("user.firstName ilike :firstName", {firstName: '%'+firstName+'%'})
+        .andWhere("user.lastName ilike :lastName", {lastName: '%'+lastName+'%'})
 
-            {firstName: ILike(`%${search}%`)},
-            {lastName: ILike(`%${search}%`)},
-        ]);
+        // search: string return users with similar firstname and lastname
+        .orWhere("user.firstName ilike :search", {search: '%'+search+'%'})
+        .orWhere("user.lastName ilike :search", {search: '%'+search+'%'});
         return paginate<Users>(queryBuilder, options);
     }
 

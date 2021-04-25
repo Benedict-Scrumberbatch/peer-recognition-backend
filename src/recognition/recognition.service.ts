@@ -1,5 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { DeleteResult, getConnection, Like, Repository } from 'typeorm';
+import { Brackets, DeleteResult, getConnection, Like, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Recognition } from '../dtos/entity/recognition.entity';
 import { Company } from '../dtos/entity/company.entity';
@@ -167,25 +167,28 @@ export class RecognitionService {
     }
 
     async paginate_post(options: IPaginationOptions, 
-        firstName_to: string, 
-        lastName_to: string,
-        firstName_from: string,
-        lastName_from: string,
+        firstName_t: string, 
+        lastName_t: string,
+        firstName_f: string,
+        lastName_f: string,
         search: string,
         msg: string): Promise<Pagination<Recognition>> {
         const queryBuilder = this.recognitionsRepository.createQueryBuilder('rec');
         queryBuilder.leftJoinAndSelect('rec.empTo', 'empTo').leftJoinAndSelect('rec.empFrom', 'empFrom')
         
-        .where("empTo.firstName ilike :firstName_to", {firstName_to: '%' + firstName_to + '%'})
-        .orWhere("empTo.firstName ilike :search", {search: '%' + search + '%'})
+        .where(new Brackets(qb => {
+            qb.where("empTo.firstName ilike :firstName_t", {firstName_t: '%' + firstName_t + '%'})
+            .andWhere("empTo.lastName ilike :lastName_t", {lastName_t: '%' + lastName_t + '%'})
+        }))
 
-        .orWhere("empTo.lastName ilike :lastName_to", {lastName_to: '%' + lastName_to + '%'})
+        .orWhere(new Brackets(qb => {
+            qb.where("empFrom.firstName ilike :firstName_f", {firstName_f: '%' + firstName_f + '%'})
+            .andWhere("empFrom.lastName ilike :lastName_f", {lastName_f: '%' + lastName_f + '%'})
+        }))
+
         .orWhere("empTo.lastName ilike :search", {search: '%' + search + '%'})
-
-        .orWhere("empFrom.firstName ilike :firstName_from", {firstName_from: '%' + firstName_from + '%'})
+        .orWhere("empTo.firstName ilike :search", {search: '%' + search + '%'})
         .orWhere("empFrom.firstName ilike :search", {search: '%' + search + '%'})
-
-        .orWhere("empFrom.lastName ilike :lastName_from", {lastName_from: '%' + lastName_from + '%'})
         .orWhere("empFrom.lastName ilike :search", {search: '%' + search + '%'})
 
         .orWhere("msg like :msg", {msg: '%' + msg + '%'});
