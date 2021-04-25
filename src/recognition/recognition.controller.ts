@@ -30,7 +30,7 @@ export class RecognitionController {
         return this.recs.deleteRec(id, req.user.companyId, req.user.employeeId);
     }
 
-    // @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard)
     @Get('search')
     async index(
         @Query('page') page: number = 1,
@@ -39,6 +39,8 @@ export class RecognitionController {
         @Query('lastName_t') lastName_t: string,
         @Query('firstName_f') firstName_f: string,
         @Query('lastName_f') lastName_f: string,
+        @Query('empTo_id') empTo_id: number,
+        @Query('empFrom_id') empFrom_id: number,
         @Query('search') search: string,
         @Query('msg') msg: string,   
     ): Promise<Pagination<Recognition>> {
@@ -47,6 +49,7 @@ export class RecognitionController {
             {page: Number(page), limit: Number(limit), route: 'http://localhost:4200/recognitions/search'},
             firstName_t, lastName_t,
             firstName_f, lastName_f,
+            empTo_id, empFrom_id,
             search,
             msg);
     }

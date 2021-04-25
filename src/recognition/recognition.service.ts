@@ -171,6 +171,8 @@ export class RecognitionService {
         lastName_t: string,
         firstName_f: string,
         lastName_f: string,
+        empTo_id: number,
+        empFrom_id: number,
         search: string,
         msg: string): Promise<Pagination<Recognition>> {
         const queryBuilder = this.recognitionsRepository.createQueryBuilder('rec');
@@ -178,14 +180,18 @@ export class RecognitionService {
         
         .where(new Brackets(qb => {
             qb.where("empTo.firstName ilike :firstName_t", {firstName_t: '%' + firstName_t + '%'})
-            .andWhere("empTo.lastName ilike :lastName_t", {lastName_t: '%' + lastName_t + '%'})
+            .andWhere("empTo.lastName ilike :lastName_t", {lastName_t: '%' + lastName_t + '%'});
         }))
 
         .orWhere(new Brackets(qb => {
             qb.where("empFrom.firstName ilike :firstName_f", {firstName_f: '%' + firstName_f + '%'})
-            .andWhere("empFrom.lastName ilike :lastName_f", {lastName_f: '%' + lastName_f + '%'})
+            .andWhere("empFrom.lastName ilike :lastName_f", {lastName_f: '%' + lastName_f + '%'});
         }))
-
+        .orWhere(new Brackets(qb => {
+            qb.where("empTo.employeeId = :empTo_id", {empTo_id: empTo_id})
+            .andWhere("empFrom.employeeId = :empFrom_id", {empFrom_id: empFrom_id});
+        }))
+        
         .orWhere("empTo.lastName ilike :search", {search: '%' + search + '%'})
         .orWhere("empTo.firstName ilike :search", {search: '%' + search + '%'})
         .orWhere("empFrom.firstName ilike :search", {search: '%' + search + '%'})
