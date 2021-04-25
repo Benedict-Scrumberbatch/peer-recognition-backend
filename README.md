@@ -46,6 +46,11 @@ $ docker-compose up
 $ npm install
 ```
 
+## Initialize submodules
+```bash
+$ git submodule update --init --recursive
+```
+
 ## Running the app
 
 ```bash
