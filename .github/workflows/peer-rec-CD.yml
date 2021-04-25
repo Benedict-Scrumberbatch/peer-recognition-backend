@@ -35,8 +35,6 @@ jobs:
       - run: npm run docs
       
       # Push docker image to github packages
-      - name: Check out the repo
-        uses: actions/checkout@v2
       - name: Push to GitHub Packages
         uses: docker/build-push-action@v1
         with:
