@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
+import { jwtConstants } from './constants';
 import { Login } from '../dtos/entity/login.entity';
 
 /**
@@ -34,8 +35,24 @@ export class AuthService {
      */
     async login(user: any) {
         const payload = { username: user.email, sub: { employeeId: user.employee.employeeId, companyId: user.employee.companyId, role: user.employee.role } };
+        const accessTokenExpireDate = new Date();
+        const refreshTokenExpireDate = new Date();
+        accessTokenExpireDate.setMinutes(accessTokenExpireDate.getMinutes() + 5)
+        refreshTokenExpireDate.setDate(refreshTokenExpireDate.getDate() + 7)
         return {
             access_token: this.jwtService.sign(payload),
+            refresh_token: this.jwtService.sign(payload, { expiresIn: '7d', secret: jwtConstants.refresh_secret }),
+            accessTokenExpire: accessTokenExpireDate,   // expire in 5 minutes
+            refreshTokenExpire: refreshTokenExpireDate   // expire in 7 days 
+        };
+    }
+    async refresh(user: any) {
+        const payload = { username: user.email, sub: { employeeId: user.employeeId, companyId: user.companyId, role: user.role } };
+        const accessTokenExpireDate = new Date();
+        accessTokenExpireDate.setMinutes(accessTokenExpireDate.getMinutes() + 5)
+        return {
+            access_token: this.jwtService.sign(payload),
+            accessTokenExpire: accessTokenExpireDate,   // expire in 5 minutes
         };
     }
 }
