@@ -37,8 +37,8 @@ jobs:
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-          registry: docker.pkg.github.com
-          repository: benedict-scrumberbatch/peer-recognition-backend/deployment-image
+          registry: ghcr.io
+          repository: benedict-scrumberbatch/peer-recognition-backend-deployment-image
           tag_with_ref: true
 
 #       - run: npm run test
