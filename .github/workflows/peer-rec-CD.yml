@@ -14,9 +14,12 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  build-deploy:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    services:
+      packages: write
+      contents: read
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -30,6 +33,19 @@ jobs:
       - run: git submodule update
       - run: npm run build
       - run: npm run docs
+      
+      # Push docker image to github packages
+      - name: Check out the repo
+        uses: actions/checkout@v2
+      - name: Push to GitHub Packages
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.pkg.github.com
+          repository: benedict-scrumberbatch/peer-recognition-backend/deployment-image
+          tag_with_ref: true
+
 #       - run: npm run test
       - name: GitHub Pages
         # You may pin to the exact commit or the version.
@@ -42,22 +58,4 @@ jobs:
           build_dir: docs
         env:
           GITHUB_TOKEN: ${{ secrets.REPO_TOKEN_ACTIONS }}
-    
-  # Push docker image to GitHub Packages
-  push_to_registry:
-    name: Push Docker image to GitHub Packages
-    runs-on: ubuntu-latest
-    services:
-      packages: write
-      contents: read
-    steps:
-      - name: Check out the repo
-        uses: actions/checkout@v2
-      - name: Push to GitHub Packages
-        uses: docker/build-push-action@v1
-        with:
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          registry: docker.pkg.github.com
-          repository: benedict-scrumberbatch/peer-recognition-backend/deployment-image
-          tag_with_ref: true
+      
