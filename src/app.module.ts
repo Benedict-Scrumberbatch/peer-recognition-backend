@@ -26,12 +26,13 @@ let typeormConfig: TypeOrmModuleOptions = {
   synchronize: true,
   logging: process.env.DB_LOGGING as LoggerOptions
 };
-if (process.env.DATABASE_URL) {
+if (process.env.DATABASE_URL && ENV.startsWith('prod')) {
   typeormConfig = {
     type: "postgres",
     url: process.env.DATABASE_URL,
     entities: [process.env.DB_ENTITIES],
     synchronize: true,
+    ssl: true,
     logging: process.env.DB_LOGGING as LoggerOptions
   }
 }
