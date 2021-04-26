@@ -14,7 +14,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  build-deploy:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -30,6 +30,17 @@ jobs:
       - run: git submodule update
       - run: npm run build
       - run: npm run docs
+      
+      # Push docker image to github packages
+      - name: Push to GitHub Packages
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ghcr.io
+          repository: benedict-scrumberbatch/peer-recognition-backend-deployment-image
+          tag_with_ref: true
+
 #       - run: npm run test
       - name: GitHub Pages
         # You may pin to the exact commit or the version.
@@ -42,3 +53,4 @@ jobs:
           build_dir: docs
         env:
           GITHUB_TOKEN: ${{ secrets.REPO_TOKEN_ACTIONS }}
+      
