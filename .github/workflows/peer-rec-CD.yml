@@ -67,9 +67,9 @@ jobs:
         with:
           context: ./
           push: true
-          registry: ghcr.io
-          repository: benedict-scrumberbatch/peer-recognition-backend-deployment-image
-          tag_with_ref: true
+          # registry: ghcr.io
+          # repository: benedict-scrumberbatch/peer-recognition-backend-deployment-image
+          tags: peer-recognition-backend:latest
 
   docker-database-github-packages:
     runs-on: ubuntu-latest
@@ -81,9 +81,9 @@ jobs:
         with:
           context: ./docker-db-build
           push: true
-          registry: ghcr.io
-          repository: benedict-scrumberbatch/peer-recognition-database-deployment-image
-          tag_with_ref: true
+          # registry: ghcr.io
+          # repository: benedict-scrumberbatch/peer-recognition-database-deployment-image
+          tags: peer-recognition-database:latest
 
   # Push docker image to heroku
   docker-heroku:
