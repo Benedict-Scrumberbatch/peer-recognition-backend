@@ -73,7 +73,7 @@ jobs:
       - name: Push to GitHub Packages
         uses: docker/build-push-action@v2
         with:
-          context: ./
+          context: .
           file: ./Dockerfile 
           push: true
           # target: ghcr.io/benedict-scrumberbatch/peer-recognition-backend-docker-image
@@ -96,8 +96,8 @@ jobs:
       - name: Push to GitHub Packages
         uses: docker/build-push-action@v2
         with:
-          context: ./docker-db-build
-          file: ./Dockerfile 
+          context: .
+          file: ./docker-db-build/Dockerfile 
           push: true
           # target: ghcr.io/benedict-scrumberbatch/peer-recognition-database-docker-image
           tags: peer-recognition-database:latest
