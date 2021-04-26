@@ -99,7 +99,7 @@ jobs:
           context: .
           file: ./docker-db-build/Dockerfile 
           push: true
-          tags: ghcr.io/benedict-scrumberbatch/peer-recognition-database-deployment-image:latest
+          tags: ghcr.io/benedict-scrumberbatch/peer-recognition-database-docker-image:latest
 
   # Push app docker image to heroku
   app-docker-heroku:
