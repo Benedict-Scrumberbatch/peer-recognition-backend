@@ -62,25 +62,38 @@ jobs:
       - run: git submodule init
       - run: git submodule update     
       - uses: c-hive/gha-npm-cache@v1
+      -name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Push to GitHub Packages
         uses: docker/build-push-action@v2
         with:
           context: ./
           push: true
-          target: ghcr.io/benedict-scrumberbatch/peer-recognition-backend-docker-image
+          # target: ghcr.io/benedict-scrumberbatch/peer-recognition-backend-docker-image
           tags: peer-recognition-backend:latest
 
   docker-database-github-packages:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2 
+        uses: actions/checkout@v2  
+      -name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Push to GitHub Packages
         uses: docker/build-push-action@v2
         with:
           context: ./docker-db-build
           push: true
-          target: ghcr.io/benedict-scrumberbatch/peer-recognition-database-docker-image
+          # target: ghcr.io/benedict-scrumberbatch/peer-recognition-database-docker-image
           tags: peer-recognition-database:latest
 
   # Push docker image to heroku
