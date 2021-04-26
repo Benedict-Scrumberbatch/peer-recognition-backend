@@ -31,6 +31,7 @@ let typeormConfig: TypeOrmModuleOptions = {
     password: process.env.DATABASE_URL && ENV.startsWith('prod') ? undefined : process.env.DB_PASS,
     database: process.env.DATABASE_URL && ENV.startsWith('prod') ? undefined : process.env.DB_NAME,
     entities: [process.env.DB_ENTITIES],
+    ssl: process.env.DATABASE_URL && ENV.startsWith('prod') ? { rejectUnauthorized: false } : false,
     synchronize: true,
     logging: process.env.DB_LOGGING as LoggerOptions
  })],
