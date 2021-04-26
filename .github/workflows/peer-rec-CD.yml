@@ -66,6 +66,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ./
+          push: true
           registry: ghcr.io
           repository: benedict-scrumberbatch/peer-recognition-backend-deployment-image
           tag_with_ref: true
@@ -79,6 +80,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ./docker-db-build
+          push: true
           registry: ghcr.io
           repository: benedict-scrumberbatch/peer-recognition-database-deployment-image
           tag_with_ref: true
