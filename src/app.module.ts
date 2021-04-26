@@ -16,31 +16,24 @@ import { LoggerOptions } from 'typeorm';
 
 const ENV = process.env.NODE_ENV
 let typeormConfig: TypeOrmModuleOptions = {
-  type: "postgres",
-  host: "localhost",
-  port: 5432,
-  username: process.env.DB_USERNAME,
-  password: process.env.DB_PASS,
-  database: process.env.DB_NAME,
-  entities: [process.env.DB_ENTITIES],
-  synchronize: true,
-  logging: process.env.DB_LOGGING as LoggerOptions
-};
-if (process.env.DATABASE_URL && ENV.startsWith('prod')) {
-  typeormConfig = {
-    type: "postgres",
-    url: process.env.DATABASE_URL,
-    entities: [process.env.DB_ENTITIES],
-    synchronize: true,
-    ssl: true,
-    logging: process.env.DB_LOGGING as LoggerOptions
-  }
+  
 }
 @Module({
   imports: [ ConfigModule.forRoot({
     envFilePath: !ENV ? '.env-dev': `.env-${ENV}`
   }),
-  AuthModule, UsersModule, RecognitionModule, CompanyModule, TagModule, TypeOrmModule.forRoot(typeormConfig)],
+  AuthModule, UsersModule, RecognitionModule, CompanyModule, TagModule, TypeOrmModule.forRoot({
+    type: "postgres",
+    url: process.env.DATABASE_URL && ENV.startsWith('prod') ? process.env.DATABASE_URL : undefined,
+    host: process.env.DATABASE_URL && ENV.startsWith('prod') ? undefined : "localhost",
+    port: process.env.DATABASE_URL && ENV.startsWith('prod') ? undefined : 5432,
+    username: process.env.DATABASE_URL && ENV.startsWith('prod') ? undefined : process.env.DB_USERNAME,
+    password: process.env.DATABASE_URL && ENV.startsWith('prod') ? undefined : process.env.DB_PASS,
+    database: process.env.DATABASE_URL && ENV.startsWith('prod') ? undefined : process.env.DB_NAME,
+    entities: [process.env.DB_ENTITIES],
+    synchronize: true,
+    logging: process.env.DB_LOGGING as LoggerOptions
+ })],
   controllers: [AppController],
   providers: [AppService],
 
