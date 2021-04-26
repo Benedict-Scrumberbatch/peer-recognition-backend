@@ -10,8 +10,8 @@ COPY package*.json ./
 RUN npm install
 # Copy our app
 COPY . .
-RUN npm run build
+RUN npm run build:aws
 # Expose port to access server
 EXPOSE 4200
 # Command to run our app
-CMD [ "npm", "run", "start:prod"]
+CMD [ "npm", "run", "start:prod:aws"]
