@@ -63,10 +63,9 @@ jobs:
       - run: git submodule update     
       - uses: c-hive/gha-npm-cache@v1
       - name: Push to GitHub Packages
-        uses: docker/build-push-action@v1
+        uses: docker/build-push-action@v2
         with:
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          context: ./
           registry: ghcr.io
           repository: benedict-scrumberbatch/peer-recognition-backend-deployment-image
           tag_with_ref: true
@@ -76,14 +75,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2 
-      - run: cd ./docker-db-build    
+      - run: 
       - name: Push to GitHub Packages
-        uses: docker/build-push-action@v1
+        uses: docker/build-push-action@v2
         with:
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          context: ./docker-db-build
           registry: ghcr.io
-          repository: benedict-scrumberbatch/peer-recognition-backend-deployment-image
+          repository: benedict-scrumberbatch/peer-recognition-database-deployment-image
           tag_with_ref: true
 
   # Push docker image to heroku
