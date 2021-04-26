@@ -50,11 +50,11 @@ jobs:
         uses: actions/setup-node@v2.1.5   
       - uses: c-hive/gha-npm-cache@v1
       - run: npm install
-      - run: docker-compose up
-      - run: npm run test:e2e
+      # - run: docker-compose up
+      # - run: npm run test:e2e
 
   # Push docker image to github packages
-  docker-github-packages:
+  docker-app-github-packages:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -62,6 +62,21 @@ jobs:
       - run: git submodule init
       - run: git submodule update     
       - uses: c-hive/gha-npm-cache@v1
+      - name: Push to GitHub Packages
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ghcr.io
+          repository: benedict-scrumberbatch/peer-recognition-backend-deployment-image
+          tag_with_ref: true
+
+  docker-database-github-packages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2 
+      - run: cd ./docker-db-build    
       - name: Push to GitHub Packages
         uses: docker/build-push-action@v1
         with:

@@ -5,6 +5,8 @@ RUN mkdir -p /usr/src/app
 RUN mkdir -p /usr/src/app/backend
 # Set working directory so that all subsequent command runs in this folder
 WORKDIR /usr/src/app/backend
+ARG PORT
+ENV PORT=$PORT
 # Copy package json and install dependencies
 COPY package*.json ./
 RUN npm install
@@ -12,6 +14,6 @@ RUN npm install
 COPY . .
 RUN npm run build:aws
 # Expose port to access server
-EXPOSE 4200
+EXPOSE $PORT
 # Command to run our app
 CMD [ "npm", "run", "start:prod:aws"]
