@@ -15,6 +15,7 @@ export class RecognitionController {
      * Returns a list of all recognitions in the database for the current user's company
      * @returns an array of {@link Recognition} objects
      */
+    @UseGuards(JwtAuthGuard)
     @Get('all')
     findAll(@Request() req): Promise<Recognition[]>{
         return this.recs.findCompRec(req.user.companyId);
