@@ -7,7 +7,7 @@ const fs = require('fs');
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: {
-      origin: [process.env.FRONTEND_URL],
+      origin: ["localhost:3000", "http://ec2-18-207-97-175.compute-1.amazonaws.com:3000/"],
     },
   });
 
