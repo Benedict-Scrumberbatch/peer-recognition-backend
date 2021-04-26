@@ -77,8 +77,7 @@ jobs:
           file: ./Dockerfile 
           push: true
           # target: ghcr.io/benedict-scrumberbatch/peer-recognition-backend-docker-image
-          tags: peer-recognition-backend:latest
-
+          tags: benedict-scrumberbatch/peer-recognition-backend-deployment-image:latest
   docker-database-github-packages:
     runs-on: ubuntu-latest
     steps:
@@ -100,7 +99,7 @@ jobs:
           file: ./docker-db-build/Dockerfile 
           push: true
           # target: ghcr.io/benedict-scrumberbatch/peer-recognition-database-docker-image
-          tags: peer-recognition-database:latest
+          tags: benedict-scrumberbatch/peer-recognition-database-deployment-image:latest
 
   # Push docker image to heroku
   docker-heroku:
