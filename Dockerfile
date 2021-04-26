@@ -10,7 +10,8 @@ COPY package*.json ./
 RUN npm install
 # Copy our app
 COPY . .
+RUN npm run build
 # Expose port to access server
 EXPOSE 4200
 # Command to run our app
-CMD [ "npm", "start"]
+CMD [ "npm", "run", "start:prod"]
