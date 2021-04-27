@@ -1,6 +1,6 @@
 {
     "ipcMode": null,
-    "executionRoleArn": "arn:aws:iam::080364686338:role/ecsTaskExecutionRole",
+    "executionRoleArn": "ecsTaskExecutionRole",
     "containerDefinitions": [
       {
         "dnsSearchDomains": null,
@@ -25,12 +25,7 @@
         "command": null,
         "linuxParameters": null,
         "cpu": 340,
-        "environment": [
-          {
-            "name": "NPM_RUN_SCRIPT",
-            "value": "start:prod:aws"
-          }
-        ],
+        "environment": [],
         "resourceRequirements": null,
         "ulimits": null,
         "dnsServers": null,
@@ -89,20 +84,7 @@
         "command": null,
         "linuxParameters": null,
         "cpu": 340,
-        "environment": [
-          {
-            "name": "POSTGRES_DB",
-            "value": " peer-recognition"
-          },
-          {
-            "name": "POSTGRES_PASSWORD",
-            "value": "peer-recognition-password"
-          },
-          {
-            "name": "POSTGRES_USER ",
-            "value": "peer-recognition-user"
-          }
-        ],
+        "environment": [],
         "resourceRequirements": null,
         "ulimits": null,
         "dnsServers": null,
@@ -195,7 +177,7 @@
     ],
     "placementConstraints": [],
     "memory": "900",
-    "taskRoleArn": "arn:aws:iam::080364686338:role/ecsTaskExecutionRole",
+    "taskRoleArn": "ecsTaskExecutionRole",
     "family": "ECS-EC2-FullStack-Deployment",
     "pidMode": null,
     "requiresCompatibilities": [
