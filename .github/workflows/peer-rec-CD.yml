@@ -54,7 +54,7 @@ jobs:
       # - run: npm run test:e2e
 
   # Push docker image for app to github packages
-  docker-app-github-packages:
+  docker-app-localhost-github-packages:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -74,10 +74,43 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
+          build-args: |
+            PORT=4200
+            NPM_BUILD_SCRIPT=build
+            NPM_RUN_SCRIPT=start:prod
           file: ./Dockerfile 
           push: true
-          tags: ghcr.io/benedict-scrumberbatch/peer-recognition-backend-docker-image:latest
+          tags: ghcr.io/benedict-scrumberbatch/peer-recognition-backend-localhost-docker-image:latest
   
+  # Push docker image for app to github packages
+  docker-app-aws-github-packages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - run: git submodule init
+      - run: git submodule update --init --recursive      
+      - uses: c-hive/gha-npm-cache@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: Benedict-Scrumberbatch
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Push to GitHub Packages
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          build-args: |
+            PORT=4200
+            NPM_BUILD_SCRIPT=build:aws
+            NPM_RUN_SCRIPT=start:prod:aws
+          file: ./Dockerfile 
+          push: true
+          tags: ghcr.io/benedict-scrumberbatch/peer-recognition-backend-aws-docker-image:latest
+
   # Push docker image for database to github packages
   docker-database-github-packages:
     runs-on: ubuntu-latest
