@@ -6,7 +6,7 @@ import { Users } from '../dtos/entity/users.entity';
 import { Role } from '../dtos/enum/role.enum';
 import { Login } from '../dtos/entity/login.entity';
 import {Tag} from '../dtos/entity/tag.entity';
-import { TagService } from 'src/tag/tag.service';
+import { TagService } from '../tag/tag.service';
 import { create } from 'node:domain';
 
 
@@ -112,15 +112,13 @@ export class CompanyService {
         .leftJoinAndSelect('company.users', 'users')
         .leftJoinAndSelect('users.login', 'login')
         .getOne();
+    
 
-        let logins = [];
-        for (let i = 0; i < company.users.length; i++) {
-            logins.push(company.users[i].login);
-        }
-        console.log(logins);
+        const logins = company.users.map(user => user.login)
         await this.loginRepo.softRemove(logins); 
         await this.usersRepository.softRemove(company.users);
-        return await this.companyRepository.softRemove([company]);
+        return await this.companyRepository.softRemove([company], {});
+        return null;
     }
  
     async removeUser(employeeId: number, companyId: number): Promise<Users[]> {
