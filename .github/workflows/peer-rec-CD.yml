@@ -50,8 +50,8 @@ jobs:
         uses: actions/setup-node@v2.1.5   
       - uses: c-hive/gha-npm-cache@v1
       - run: npm install
-      # - run: docker-compose up
-      # - run: npm run test:e2e
+      - run: docker-compose up -d
+      - run: npm run test:e2e
 
   # Push docker image for app to github packages
   docker-app-localhost-github-packages:
