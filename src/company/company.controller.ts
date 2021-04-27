@@ -62,7 +62,7 @@ export class CompanyController {
      * @returns {@link DeleteResult} object.
      */
     @Delete(':id')
-    delete(@Param('id') id): Promise<DeleteResult>{
+    delete(@Param('id') id): Promise<Company[]>{
         return this.companyService.deleteComp(id);
     }
 }

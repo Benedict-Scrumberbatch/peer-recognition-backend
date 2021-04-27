@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from '../dtos/entity/users.entity';
 import { Login } from '../dtos/entity/login.entity';
@@ -95,21 +95,24 @@ export class UsersService {
      */
     async createUser(createuserDto: Users & Login & {managerId: number} & {companyName: string}): Promise<Users> {    
         const user = new Users();
-        if (createuserDto.company != undefined) {
-            user.company = createuserDto.company;
-
+        if (createuserDto.companyName != undefined) {
+            let company = await this.companyRepository.findOne({name: createuserDto.companyName})
+            user.company = company;
         }
         else{
             if (createuserDto.companyId != undefined) {
-                let company = await this.companyRepository.findOne({where:{companyId: createuserDto.companyId}})
-                if (!company ) {
-                    let createCompany = new Company();
-                    createCompany.companyId = createuserDto.companyId;
-                    createCompany.name = createuserDto.lastName;
-                    createCompany.tags = undefined;
-                    createCompany.recognitions = undefined;
-                    createCompany.users = [createuserDto];
-                    company = await this.companyservice.createCompany(createCompany);
+                let company = await this.companyRepository.findOne({companyId: createuserDto.companyId})
+                // if (!company ) {
+                //     let createCompany = new Company();
+                //     createCompany.companyId = createuserDto.companyId;
+                //     createCompany.name = createuserDto.lastName;
+                //     createCompany.tags = undefined;
+                //     createCompany.recognitions = undefined;
+                //     createCompany.users = [createuserDto];
+                //     company = await this.companyservice.createCompany(createCompany);
+                // }
+                if (!company) {
+                    throw new HttpException({error: 'Company does not exist'}, HttpStatus.FORBIDDEN);
                 }
                 user.company = company
             }
@@ -122,6 +125,7 @@ export class UsersService {
 
         // Will add different level of admin 
         user.isManager = Boolean(createuserDto.isManager);
+        // if (createuserDto.role > )
         user.role = createuserDto.role;
 
         user.positionTitle = createuserDto.positionTitle;
@@ -146,8 +150,9 @@ export class UsersService {
         login.password = createuserDto.password;
         login.employee = await this.usersRepository.save(user);
         await this.loginRepo.save(login);
+        // user.login = await this.loginRepo.save(login);
         
-        return user;
+        return await this.usersRepository.save(user);
     }
 
     /**

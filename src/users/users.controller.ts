@@ -64,7 +64,7 @@ export class UsersController {
      * @param companyId 
      * @returns 
      */
-     @UseGuards(JwtAuthGuard, RolesGuard)
+     @UseGuards(JwtAuthGuard)
      @Roles(Role.Admin)
      @Delete(':employeeId')
      async removeUser(@Param('employeeId') employeeId: number, @Request() req) {
@@ -107,8 +107,8 @@ export class UsersController {
      * @param employeeMultiple 
      * @returns adding multiple users to Database 
      */
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles(Role.Admin)
+    // @UseGuards(JwtAuthGuard, RolesGuard)
+    // @Roles(Role.Admin)
     @Post('create_multiple')
     async createUserMultiple(@Body() employeeMultiple: []) {
         return await this.usersService.createUserMultiple(employeeMultiple);

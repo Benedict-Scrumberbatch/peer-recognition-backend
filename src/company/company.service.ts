@@ -59,7 +59,7 @@ export class CompanyService {
         company.name = createcompanyDto.name;
         
         company.recognitions = createcompanyDto.recognitions;
-
+        // Create tags if tags do not exist in DB
         company.tags = createcompanyDto.tags;
         if (createcompanyDto.tags != null && createcompanyDto.tags != undefined){
             for (let i = 0; i < createcompanyDto.tags.length; i++){ 
@@ -84,8 +84,8 @@ export class CompanyService {
             user.companyId = createcompanyDto.companyId;
 
             const login = new Login();
-            login.email = 'Admin';
-            login.password = 'Admin';
+            login.email = 'Admin';  // @company.com
+            login.password = 'password';
 
             // company.users = [user];
 
@@ -100,13 +100,32 @@ export class CompanyService {
         return company;
     }
     
-
+    // Soft Delete Company 
     /**
      * Deletes a company from the database.
      * @param id specifies the id of the company that should be deleted.
      * @returns {@link DeleteResult} object.
      */
-    async deleteComp(id: number):Promise<DeleteResult>{
-        return await this.companyRepository.delete(id)
+    async deleteComp(id: number): Promise<Company[]>{
+        const company = await this.companyRepository.createQueryBuilder('company')
+        .where('company.companyId = :id', {id: id})
+        .leftJoinAndSelect('company.users', 'users')
+        .leftJoinAndSelect('users.login', 'login')
+        .getOne();
+
+        let logins = [];
+        for (let i = 0; i < company.users.length; i++) {
+            logins.push(company.users[i].login);
+        }
+        console.log(logins);
+        await this.loginRepo.softRemove(logins); 
+        await this.usersRepository.softRemove(company.users);
+        return await this.companyRepository.softRemove([company]);
+    }
+ 
+    async removeUser(employeeId: number, companyId: number): Promise<Users[]> {
+        const user = await this.usersRepository.findOne({ employeeId: employeeId, companyId: companyId });
+        await this.loginRepo.softDelete({employee: user});
+        return await this.usersRepository.softRemove([user]);
     }
 } 
