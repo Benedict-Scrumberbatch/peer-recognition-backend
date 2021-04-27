@@ -22,4 +22,4 @@ RUN npm run $NPM_BUILD_SCRIPT
 # Expose port to access server
 EXPOSE $PORT
 # Command to run our app
-CMD [ "npm", "run", $NPM_RUN_SCRIPT]
+CMD [ "npm", "run", $NPM_RUN_SCRIPT ]
