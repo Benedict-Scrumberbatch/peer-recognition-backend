@@ -31,14 +31,14 @@ export class RecognitionController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Get('reports/:recID')
+    @Get(':recID/reports')
     getReports(@Request() req, @Param('recID') rec_id): Promise<Report[] | Error>
     {
         return this.recs.getReports(rec_id, req.user);
     }
 
     @UseGuards(JwtAuthGuard)
-    @Post('report/:recID')
+    @Post(':recID/report')
     addReport(@Request() req, @Param('recID') rec_id): Promise<Report>
     {
         return this.recs.reportRec(rec_id, req.user);
@@ -47,28 +47,28 @@ export class RecognitionController {
 0
 
     @UseGuards(JwtAuthGuard)
-    @Get('comments/:recID')
+    @Get(':recID/comments')
     getComments(@Request() req, @Param('recID') rec_id): Promise<Comment[] | Error>
     {
         return this.recs.getComments(rec_id, req.user);
     }
 
     @UseGuards(JwtAuthGuard)
-    @Post('comment/:recID')
+    @Post(':recID/comment')
     addComment(@Request() req, @Param('redID') rec_id, @Body() text: string): Promise<Comment| Error>
     {
         return this.recs.addComment(rec_id, text, req.user);
     }
 
     @UseGuards(JwtAuthGuard)
-    @Get('reactions/:recID')
-    getLikes(@Request() req, @Param('recID') rec_id): Promise<Reaction[] | Error>
+    @Get(':recID/reactions')
+    getReaction(@Request() req, @Param('recID') rec_id): Promise<Reaction[] | Error>
     {
         return this.recs.getReactions(rec_id, req.user);
     }
 
     @UseGuards(JwtAuthGuard)
-    @Post('reaction/:recID')
+    @Post(':recID/reaction')
     addReaction(@Request() req, @Param('recID') rec_id, @Body() type: ReactType) : Promise<Reaction| Error>
     {
         return this.recs.addReaction(rec_id, req.user, type);
