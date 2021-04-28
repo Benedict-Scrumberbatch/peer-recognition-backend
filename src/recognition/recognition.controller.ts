@@ -3,7 +3,7 @@ import {Recognition} from '../dtos/entity/recognition.entity';
 import {Report} from '../dtos/entity/report.entity';
 import {Comment} from '../dtos/entity/comment.entity';
 import {Reaction} from '../dtos/entity/reaction.entity';
-import { Controller, Get, Post, Delete, Body, Param, Request, UseGuards} from '@nestjs/common';
+import { Controller, Get, Post, Delete, Body, Param, Request, UseGuards, Query} from '@nestjs/common';
 import { CreateRecDto } from '../dtos/dto/create-rec.dto';
 import { DeleteResult } from 'typeorm';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -11,6 +11,7 @@ import { RolesGuard } from 'src/roles/roles.guard';
 import { Roles } from 'src/roles/roles.decorator';
 import { Role } from '../dtos/enum/role.enum';
 import { ReactType } from '../dtos/enum/reacttype.enum'
+import { Pagination } from 'nestjs-typeorm-paginate';
 
 @Controller('recognitions')
 export class RecognitionController {
@@ -111,6 +112,32 @@ export class RecognitionController {
     deleteReaction(@Request() req, @Param('reactionID') reaction_id): Promise<Reaction[]>
     {
         return this.deleteReaction(reaction_id, req.user);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('search')
+    async index(
+        @Query('page') page: number = 1,
+        @Query('limit') limit: number = 10,
+        @Query('firstName_t') firstName_t: string,
+        @Query('lastName_t') lastName_t: string,
+        @Query('firstName_f') firstName_f: string,
+        @Query('lastName_f') lastName_f: string,
+        @Query('empTo_id') empTo_id: number,
+        @Query('empFrom_id') empFrom_id: number,
+        @Query('search') search: string,
+        @Query('msg') msg: string,   
+        @Request() req
+    ): Promise<Pagination<Recognition>> {
+        limit = limit > 100 ? 100: limit
+        return this.recs.paginate_post(
+            {page: Number(page), limit: Number(limit), route: 'http://localhost:4200/recognitions/search'},
+            firstName_t, lastName_t,
+            firstName_f, lastName_f,
+            empTo_id, empFrom_id,
+            search,
+            msg,
+            req.user.companyId);
     }
 
 }
