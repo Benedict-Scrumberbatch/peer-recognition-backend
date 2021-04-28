@@ -119,14 +119,14 @@ export class RecognitionService {
         let userFrom = await this.userRepository.findOne({ where: {employeeId: recDto.empFrom.employeeId, companyId: recDto.company.companyId}});
         let userTo = await this.userRepository.findOne({where: {employeeId: recDto.empTo.employeeId, companyId: recDto.company.companyId}})
         for(let i = 0; i < recDto.tags.length; i++){
-            const currTag = await this.tagRepository.findOne({ where: { tagId: recDto.tags[i] } });
+            const currTag = await this.tagRepository.findOne({ where: { tagId: recDto.tags[i].tagId } });
             if (currTag != undefined) {
 
                 //Employee from tag stats
                 let findFrom = await this.tagStatsRepo.createQueryBuilder()
                         .where('"employeeCompanyId" = :comp', {comp: recDto.company.companyId})
                         .andWhere('"employeeEmployeeId" = :emp', { emp: recDto.empFrom.employeeId })
-                        .andWhere('"tagTagId" = :tag', {tag: recDto.tags[i]})
+                        .andWhere('"tagTagId" = :tag', {tag: recDto.tags[i].tagId})
                         .getOne();
                 if (findFrom != undefined) {
                     await this.tagStatsRepo.createQueryBuilder()
@@ -136,7 +136,7 @@ export class RecognitionService {
                         })
                         .where("employeeCompanyId = :comp", {comp: recDto.company.companyId})
                         .andWhere("employeeEmployeeId = :emp", { emp: recDto.empFrom.employeeId })
-                        .andWhere("tagTagId = :tag", {tag: recDto.tags[i]})
+                        .andWhere("tagTagId = :tag", {tag: recDto.tags[i].tagId})
                         .execute();
                 }
                 else if (increment){
@@ -154,7 +154,7 @@ export class RecognitionService {
                 let findTo = await this.tagStatsRepo.createQueryBuilder()
                         .where('"employeeCompanyId" = :comp', {comp: recDto.company.companyId})
                         .andWhere('"employeeEmployeeId" = :emp', { emp: recDto.empTo.employeeId })
-                        .andWhere('"tagTagId" = :tag', {tag: recDto.tags[i]})
+                        .andWhere('"tagTagId" = :tag', {tag: recDto.tags[i].tagId})
                         .getOne();
                 if (findTo != undefined) {
                     let res = await this.tagStatsRepo.createQueryBuilder()
@@ -164,7 +164,7 @@ export class RecognitionService {
                         })
                         .where("employeeCompanyId = :comp", {comp: recDto.company.companyId})
                         .andWhere("employeeEmployeeId = :emp", { emp: recDto.empTo.employeeId })
-                        .andWhere("tagTagId = :tag", {tag: recDto.tags[i]})
+                        .andWhere("tagTagId = :tag", {tag: recDto.tags[i].tagId})
                         .execute();
                 }
                 else if (increment) {
