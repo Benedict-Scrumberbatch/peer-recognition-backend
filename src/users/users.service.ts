@@ -4,7 +4,7 @@ import { Users } from '../dtos/entity/users.entity';
 import { Login } from '../dtos/entity/login.entity';
 import { Company } from '../dtos/entity/company.entity';
 import { TagStats } from '../dtos/entity/tagstats.entity';
-import { CompanyService } from 'src/company/company.service';
+import { CompanyService } from '../company/company.service';
 import { Recognition } from '../dtos/entity/recognition.entity';
 import { DeleteResult, Like, ILike, QueryBuilder, Repository, Brackets } from 'typeorm';
 import { Query } from 'typeorm/driver/Query';
