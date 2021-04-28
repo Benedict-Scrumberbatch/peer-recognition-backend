@@ -6,7 +6,7 @@ import { Company } from '../dtos/entity/company.entity';
 import { Users } from '../dtos/entity/users.entity';
 import { Login } from '../dtos/entity/login.entity';
 import { Tag } from '../dtos/entity/tag.entity';
-import { TagService } from 'src/tag/tag.service';
+import { TagService } from '../tag/tag.service';
 
 
 @Module({
