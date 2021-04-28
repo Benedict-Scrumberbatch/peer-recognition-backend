@@ -9,6 +9,7 @@ import { RolesGuard } from 'src/roles/roles.guard';
 import { Roles } from 'src/roles/roles.decorator';
 import { Role } from '../../peer-recognition-dtos/enum/role.enum';
 import { Rockstar } from '../../peer-recognition-dtos/entity/rockstar.entity';
+import { ReturnRockstarDto } from '../../peer-recognition-dtos/dto/rockstar-stats.dto';
 
 @Controller('rockstar')
 export class RockstarController {
@@ -37,7 +38,8 @@ export class RockstarController {
             prevMonth = date.getMonth();
         }
         //gets the rockstar user object
-        let rockstar = await this.rockstarService.getRockstar(req.user.companyId, prevMonth, year);
-        return rockstar;
+        let returnVal = await this.rockstarService.getRockstar(req.user.companyId, prevMonth, year);
+       
+        return returnVal;
     }
 }

@@ -9,8 +9,9 @@ import { Company } from '../../peer-recognition-dtos/entity/company.entity';
 import { TagStats } from '../../peer-recognition-dtos/entity/tagstats.entity';
 import {Report} from '../../peer-recognition-dtos/entity/report.entity'
 import { Rockstar} from '../../peer-recognition-dtos/entity/rockstar.entity'
+import {RockstarStats} from '../../peer-recognition-dtos/entity/rockstarstats.entity'
 @Module({
-  imports: [ TypeOrmModule.forFeature([ Recognition, Users, Tag, Company, TagStats, Report, Rockstar])],
+  imports: [ TypeOrmModule.forFeature([ Recognition, Users, Tag, Company, TagStats, Report, Rockstar, RockstarStats])],
   providers: [RockstarService],
   controllers: [ RockstarController],
   exports: [RockstarService]
