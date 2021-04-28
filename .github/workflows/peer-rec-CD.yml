@@ -179,8 +179,8 @@ jobs:
           usedocker: true
           stack: container
           docker_build_args: |
-            PGDATA=/var/lib/postgresql/data/peer-recognition-data
-
+            NPM_BUILD_SCRIPT=build:heroku
+            NPM_RUN_SCRIPT=start:prod:heroku
   # Push database docker image to heroku
   database-docker-heroku:
     runs-on: ubuntu-latest
@@ -196,6 +196,8 @@ jobs:
           heroku_app_name: ${{ secrets.HEROKU_DATABASE_NAME }} # you aplication name
           usedocker: true
           stack: container
+          docker_build_args: |
+            PGDATA=/var/lib/postgresql/data/peer-recognition-data
 
 
         
