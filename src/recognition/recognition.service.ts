@@ -175,10 +175,11 @@ export class RecognitionService {
         empFrom_id: number,
         search: string,
         msg: string,
-        comp: number): Promise<Pagination<Recognition>> {
+        comp_id: number): Promise<Pagination<Recognition>> {
         const queryBuilder = this.recognitionsRepository.createQueryBuilder('rec');
+
         queryBuilder.leftJoinAndSelect('rec.empTo', 'empTo').leftJoinAndSelect('rec.empFrom', 'empFrom')
-        // .where("rec.company = :comp", {comp: comp})
+        .where("empTo.companyId = :comp_id", {comp_id: comp_id})
         .andWhere(new Brackets(comp => {
 
             // search by Firstname Lastname
