@@ -1,11 +1,11 @@
 import { Controller, Request, Post, UseGuards, Get, Delete, Param, Body } from '@nestjs/common';
-import { Login } from '../dtos/entity/login.entity';
-import { Users } from '../dtos/entity/users.entity';
+import { Login } from '../../peer-recognition-dtos/entity/login.entity';
+import { Users } from '../../peer-recognition-dtos/entity/users.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UsersService } from './users.service';
 import { Roles } from 'src/roles/roles.decorator';
 import { RolesGuard } from 'src/roles/roles.guard';
-import { Role } from '../dtos/enum/role.enum'
+import { Role } from '../../peer-recognition-dtos/enum/role.enum'
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from '../auth/auth.service';
 

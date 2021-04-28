@@ -1,14 +1,18 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { DeleteResult, getConnection, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Recognition } from '../dtos/entity/recognition.entity';
-import { Company } from '../dtos/entity/company.entity';
-import { Users } from '../dtos/entity/users.entity';
-import { Tag } from '../dtos/entity/tag.entity';
-import { TagStats } from '../dtos/entity/tagstats.entity';
-import { CreateRecDto } from '../dtos/dto/create-rec.dto';
-import {Report} from '../dtos/entity/report.entity';
+import { Recognition } from '../../peer-recognition-dtos/entity/recognition.entity';
+import { Company } from '../../peer-recognition-dtos/entity/company.entity';
+import { Users } from '../../peer-recognition-dtos/entity/users.entity';
+import { Tag } from '../../peer-recognition-dtos/entity/tag.entity';
+import { TagStats } from '../../peer-recognition-dtos/entity/tagstats.entity';
+import { CreateRecDto } from '../../peer-recognition-dtos/dto/create-rec.dto';
+import {Report} from '../../peer-recognition-dtos/entity/report.entity';
 import { reverse } from 'node:dns';
+import {Comment} from '../../peer-recognition-dtos/entity/comment.entity';
+import {Reaction} from '../../peer-recognition-dtos/entity/reaction.entity';
+import { text } from 'express';
+import { ReactType } from '../../peer-recognition-dtos/enum/reacttype.enum'
 
 
 
@@ -26,7 +30,11 @@ export class RecognitionService {
         @InjectRepository(TagStats)
         private tagStatsRepo: Repository<TagStats>,
         @InjectRepository(Report)
-        private reportRepo: Repository<Report>
+        private reportRepo: Repository<Report>,
+        @InjectRepository(Comment)
+        private commentRepo: Repository<Comment>,
+        @InjectRepository(Reaction)
+        private reactRepo: Repository<Reaction>
 
     ){} 
 
@@ -177,8 +185,103 @@ export class RecognitionService {
         let report = new Report();
         report.employeeFrom = reporter;
         report.recognition = recog;
+        report.ReportDate = new Date();
         await this.reportRepo.save(report);
 
         return report;
+    }
+
+    async addComment(rec_id: number, text: String, user: Users)
+    {
+        if (text == undefined)
+        {
+            return new Error('No Body found');
+        }
+        else
+        {
+            let newComment = new Comment();
+            newComment.CommentDate = new Date();
+            newComment.employeeFrom = user;
+            let recognition = await this.recognitionsRepository.findOne( {  where: { recId: rec_id }} );
+            newComment.recognition = recognition;
+        if (newComment.recognition == undefined)
+        {
+            return new Error('no recognition with that ID was found');
+        }
+            await this.commentRepo.save(newComment);
+            return newComment;
+        }
+        
+    }
+
+    async addReaction(rec_id: number, user: Users, type: ReactType)
+    {
+        let newReaction = new Reaction();
+        newReaction.reactDate = new Date();
+        newReaction.employeeFrom = user;
+        newReaction.reactType = type;
+        
+        let recog = await this.recognitionsRepository.findOne( {  where: { recId: rec_id }} );
+        newReaction.recognition = recog;
+        await this.reactRepo.save(newReaction);
+
+        return newReaction;
+    }
+
+    async getReports(rec_id: Number, user: Users)
+    {
+        let recognition = await this.recognitionsRepository.findOne( { where: {recId: rec_id}});
+        let reports = await this.reportRepo.find( {  where: { recognition: recognition }} );
+        if (reports != undefined)
+        {
+            return reports;
+        }
+        else
+        {
+            return new Error("No reports found");
+        }
+    }
+
+    async getComments(rec_id: Number, user: Users)
+    {
+        let recognition = await this.recognitionsRepository.findOne( { where: {recId: rec_id}});
+        let comments = await this.commentRepo.find( {  where: { recognition: recognition }} );
+        if (comments != undefined)
+        {
+            return comments;
+        }
+        else
+        {
+            return new Error("No comments found");
+        }
+    }
+
+    async getReactions(rec_id: Number, user: Users)
+    {
+        let recognition = await this.recognitionsRepository.findOne( { where: {recId: rec_id}});
+        let reactions = await this.reactRepo.find( {  where: { recognition: recognition }} );
+        if (reactions != undefined)
+        {
+            return reactions;
+        }
+        else
+        {
+            return new Error("No reactions found");
+        }
+    }
+
+    async removeReaction(reactionID: number, user: Users): Promise<Reaction[]> {
+        const reaction = await this.reactRepo.findOne({ reactionID: reactionID });
+        return await this.reactRepo.softRemove([reaction]);
+    }
+
+    async removeComment(commentID: number, user: Users): Promise<Comment[]> {
+        const comment = await this.commentRepo.findOne({commentID: commentID});
+        return await this.commentRepo.softRemove([comment]);
+    }
+
+    async removeReport(reportID: number, user: Users): Promise<Report[]> {
+        const report = await this.reportRepo.findOne({reportID: reportID});
+        return await this.reportRepo.softRemove([report]);
     }
 }
