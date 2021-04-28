@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Company } from '../../peer-recognition-dtos/entity/company.entity';
+import { Company } from '../peer-recognition-dtos/entity/company.entity';
 import { DeleteResult} from 'typeorm';
 
 

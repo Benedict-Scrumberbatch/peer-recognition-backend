@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Users } from '../../peer-recognition-dtos/entity/users.entity';
-import { Login } from '../../peer-recognition-dtos/entity/login.entity';
-import { Company } from '../../peer-recognition-dtos/entity/company.entity';
-import { TagStats } from '../../peer-recognition-dtos/entity/tagstats.entity';
+import { Users } from '../peer-recognition-dtos/entity/users.entity';
+import { Login } from '../peer-recognition-dtos/entity/login.entity';
+import { Company } from '../peer-recognition-dtos/entity/company.entity';
+import { TagStats } from '../peer-recognition-dtos/entity/tagstats.entity';
 import { CompanyService } from '../company/company.service';
-import { Recognition } from '../../peer-recognition-dtos/entity/recognition.entity';
+import { Recognition } from '../peer-recognition-dtos/entity/recognition.entity';
 import { DeleteResult, QueryBuilder, Repository } from 'typeorm';
 import { Query } from 'typeorm/driver/Query';
-import { Role } from '../../peer-recognition-dtos/enum/role.enum';
+import { Role } from '../peer-recognition-dtos/enum/role.enum';
 
 
 export interface UserStats {

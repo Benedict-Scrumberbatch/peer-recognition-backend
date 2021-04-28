@@ -1,17 +1,17 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { DeleteResult, getConnection, Repository, Transaction, getManager } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Recognition } from '../../peer-recognition-dtos/entity/recognition.entity';
-import { Company } from '../../peer-recognition-dtos/entity/company.entity';
-import { Users } from '../../peer-recognition-dtos/entity/users.entity';
-import { Tag } from '../../peer-recognition-dtos/entity/tag.entity';
-import { TagStats } from '../../peer-recognition-dtos/entity/tagstats.entity';
-import { CreateRecDto } from '../../peer-recognition-dtos/dto/create-rec.dto';
-import {Report} from '../../peer-recognition-dtos/entity/report.entity';
+import { Recognition } from '../peer-recognition-dtos/entity/recognition.entity';
+import { Company } from '../peer-recognition-dtos/entity/company.entity';
+import { Users } from '../peer-recognition-dtos/entity/users.entity';
+import { Tag } from '../peer-recognition-dtos/entity/tag.entity';
+import { TagStats } from '../peer-recognition-dtos/entity/tagstats.entity';
+import { CreateRecDto } from '../peer-recognition-dtos/dto/create-rec.dto';
+import {Report} from '../peer-recognition-dtos/entity/report.entity';
 import { reverse } from 'node:dns';
-import { Rockstar } from '../../peer-recognition-dtos/entity/rockstar.entity';
-import { RockstarStats} from '../../peer-recognition-dtos/entity/rockstarstats.entity';
-import { ReturnRockstarDto} from '../../peer-recognition-dtos/dto/rockstar-stats.dto';
+import { Rockstar } from '../peer-recognition-dtos/entity/rockstar.entity';
+import { RockstarStats} from '../peer-recognition-dtos/entity/rockstarstats.entity';
+import { ReturnRockstarDto} from '../peer-recognition-dtos/dto/rockstar-stats.dto';
 
 
 

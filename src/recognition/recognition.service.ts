@@ -1,18 +1,18 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { DeleteResult, getConnection, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Recognition } from '../../peer-recognition-dtos/entity/recognition.entity';
-import { Company } from '../../peer-recognition-dtos/entity/company.entity';
-import { Users } from '../../peer-recognition-dtos/entity/users.entity';
-import { Tag } from '../../peer-recognition-dtos/entity/tag.entity';
-import { TagStats } from '../../peer-recognition-dtos/entity/tagstats.entity';
-import { CreateRecDto } from '../../peer-recognition-dtos/dto/create-rec.dto';
-import {Report} from '../../peer-recognition-dtos/entity/report.entity';
+import { Recognition } from '../peer-recognition-dtos/entity/recognition.entity';
+import { Company } from '../peer-recognition-dtos/entity/company.entity';
+import { Users } from '../peer-recognition-dtos/entity/users.entity';
+import { Tag } from '../peer-recognition-dtos/entity/tag.entity';
+import { TagStats } from '../peer-recognition-dtos/entity/tagstats.entity';
+import { CreateRecDto } from '../peer-recognition-dtos/dto/create-rec.dto';
+import {Report} from '../peer-recognition-dtos/entity/report.entity';
 import { reverse } from 'node:dns';
-import {Comment} from '../../peer-recognition-dtos/entity/comment.entity';
-import {Reaction} from '../../peer-recognition-dtos/entity/reaction.entity';
+import {Comment} from '../peer-recognition-dtos/entity/comment.entity';
+import {Reaction} from '../peer-recognition-dtos/entity/reaction.entity';
 import { text } from 'express';
-import { ReactType } from '../../peer-recognition-dtos/enum/reacttype.enum'
+import { ReactType } from '../peer-recognition-dtos/enum/reacttype.enum'
 
 
 
