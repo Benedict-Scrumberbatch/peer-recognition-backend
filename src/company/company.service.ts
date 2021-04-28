@@ -111,21 +111,9 @@ export class CompanyService {
         .where('company.companyId = :id', {id: id})
         .leftJoinAndSelect('company.users', 'users')
         .leftJoinAndSelect('users.login', 'login')
+        .leftJoinAndSelect('company.recognitions', 'recognitions')
+        .leftJoinAndSelect('company.tags', 'tags')
         .getOne();
-
-        let logins = [];
-        for (let i = 0; i < company.users.length; i++) {
-            logins.push(company.users[i].login);
-        }
-        console.log(logins);
-        await this.loginRepo.softRemove(logins); 
-        await this.usersRepository.softRemove(company.users);
         return await this.companyRepository.softRemove([company]);
-    }
- 
-    async removeUser(employeeId: number, companyId: number): Promise<Users[]> {
-        const user = await this.usersRepository.findOne({ employeeId: employeeId, companyId: companyId });
-        await this.loginRepo.softDelete({employee: user});
-        return await this.usersRepository.softRemove([user]);
     }
 } 

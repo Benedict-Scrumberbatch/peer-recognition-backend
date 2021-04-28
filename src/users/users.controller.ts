@@ -81,9 +81,13 @@ export class UsersController {
      * @returns adding user to Database 
      */
     //This endpoint should be guarded
+    @UseGuards(JwtAuthGuard)
+    @Roles(Role.Admin)
     @Post('create')
-    async createUser(@Body() createuserDto: Users & Login & {managerId: number} & {companyName: string}) {
-        return await this.usersService.createUser(createuserDto);
+    async createUser(@Body() createuserDto: Users & Login 
+    & {managerId: number} & {companyName: string} 
+    , @Request() req) {
+        return await this.usersService.createUser(createuserDto, req.user.companyId, req.user.role);
     }
 
     /**
@@ -109,10 +113,10 @@ export class UsersController {
      */
     // @UseGuards(JwtAuthGuard, RolesGuard)
     // @Roles(Role.Admin)
-    @Post('create_multiple')
-    async createUserMultiple(@Body() employeeMultiple: []) {
-        return await this.usersService.createUserMultiple(employeeMultiple);
-    }
+    // @Post('create_multiple')
+    // async createUserMultiple(@Body() employeeMultiple: []) {
+    //     return await this.usersService.createUserMultiple(employeeMultiple);
+    // }
     /**
      * `GET` endpoint to get Rockstar of the month.
      * 

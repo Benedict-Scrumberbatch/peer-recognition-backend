@@ -49,8 +49,8 @@ export class CompanyController {
      * @param createcompanyDto Company object with information about the new company to add.
      * @returns {@link Company} object which was created in the database.
      */
-    // @UseGuards(JwtAuthGuard, RolesGuard)
-    // @Roles(Role.Admin)
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.Admin)
     @Post('create')
     async createCompany(@Body() createcompanyDto: Company) {
         return await this.companyService.createCompany(createcompanyDto);
@@ -61,6 +61,8 @@ export class CompanyController {
      * @param id URL parameter that specifies the company id.
      * @returns {@link DeleteResult} object.
      */
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.Admin)
     @Delete(':id')
     delete(@Param('id') id): Promise<Company[]>{
         return this.companyService.deleteComp(id);

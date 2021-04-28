@@ -18,6 +18,7 @@ import {
   } from 'nestjs-typeorm-paginate';
 import { from, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';    
+import { create } from 'node:domain';
 
 
 /**
@@ -93,41 +94,44 @@ export class UsersService {
      * @param createuserDto 
      * @returns {@link Users} user is added to Database  
      */
-    async createUser(createuserDto: Users & Login & {managerId: number} & {companyName: string}): Promise<Users> {    
+    async createUser(createuserDto: Users & Login 
+        & {managerId: number} & {companyName: string},
+        requestId: number, creator_role: Role): Promise<Users> {    
+
         const user = new Users();
         if (createuserDto.companyName != undefined) {
             let company = await this.companyRepository.findOne({name: createuserDto.companyName})
+            if (!company) {
+                throw new BadRequestException({error: 'Company name does not exist'});
+            }
             user.company = company;
         }
-        else{
-            if (createuserDto.companyId != undefined) {
-                let company = await this.companyRepository.findOne({companyId: createuserDto.companyId})
-                // if (!company ) {
-                //     let createCompany = new Company();
-                //     createCompany.companyId = createuserDto.companyId;
-                //     createCompany.name = createuserDto.lastName;
-                //     createCompany.tags = undefined;
-                //     createCompany.recognitions = undefined;
-                //     createCompany.users = [createuserDto];
-                //     company = await this.companyservice.createCompany(createCompany);
-                // }
+        else{   // Not sure if this is needed because req.user.companyId anyway 
+            if (requestId != undefined) {
+                let company = await this.companyRepository.findOne({companyId: requestId})
                 if (!company) {
-                    throw new HttpException({error: 'Company does not exist'}, HttpStatus.FORBIDDEN);
+                    throw new BadRequestException({error: 'Company Id does not exist'});
                 }
                 user.company = company
             }
         }
         user.employeeId = createuserDto.employeeId;
-        user.companyId = createuserDto.companyId;
+        user.companyId = requestId;
 
         user.firstName = createuserDto.firstName;
         user.lastName = createuserDto.lastName;
-
-        // Will add different level of admin 
+    
         user.isManager = Boolean(createuserDto.isManager);
-        // if (createuserDto.role > )
-        user.role = createuserDto.role;
 
+        // Only be able to add lower ranking user 
+        if (createuserDto.role != undefined){
+            if (creator_role > createuserDto.role){
+                user.role = createuserDto.role;
+            }
+            else {
+                throw new BadRequestException({error: 'Creating higher ranking user is not permitted'});
+            }
+        }
         user.positionTitle = createuserDto.positionTitle;
         user.startDate = new Date(createuserDto.startDate);
         
@@ -136,9 +140,14 @@ export class UsersService {
         }
         else {
             if (createuserDto.managerId != undefined) {
-                let Manager = await this.usersRepository.findOne({where:{companyId: createuserDto.companyId , 
+                let Manager = await this.usersRepository.findOne({where:{companyId: requestId , 
                     employeeId : createuserDto.managerId}});
-                if (Manager.isManager == false){
+                if (Manager) {
+                    if (Manager.isManager == false || Manager.isManager == undefined || Manager.isManager == null){
+                        throw new BadRequestException('Invalid Manager')
+                    }
+                }
+                else {
                     throw new BadRequestException('Invalid Manager')
                 }
                 user.manager = Manager;
@@ -148,11 +157,12 @@ export class UsersService {
         const login = new Login();
         login.email = createuserDto.email;
         login.password = createuserDto.password;
-        login.employee = await this.usersRepository.save(user);
+        const saveduser = await this.usersRepository.save(user);
+        login.employee = saveduser
         await this.loginRepo.save(login);
         // user.login = await this.loginRepo.save(login);
         
-        return await this.usersRepository.save(user);
+        return saveduser;
     }
 
     /**
@@ -181,13 +191,13 @@ export class UsersService {
      * @param employeeMultiple 
      * @returns Array of {@link Users} object 
      */
-    async createUserMultiple(employeeMultiple: []): Promise <any>{
-        let arr_employee = [];
-        for (let i = 0; i < employeeMultiple.length; i++) {
-            arr_employee.push(await this.createUser(employeeMultiple[i]));
-        }
-        return arr_employee;
-    }
+    // async createUserMultiple(employeeMultiple: []): Promise <any>{
+    //     let arr_employee = [];
+    //     for (let i = 0; i < employeeMultiple.length; i++) {
+    //         arr_employee.push(await this.createUser(employeeMultiple[i]));
+    //     }
+    //     return arr_employee;
+    // }
 
     /**
      * Method to get Rockstar of the month
