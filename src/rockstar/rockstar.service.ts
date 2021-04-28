@@ -36,31 +36,33 @@ export class RockstarService {
         @InjectRepository(RockstarStats)
         private rockstarStatsRepo: Repository<RockstarStats>
     ){} 
+    
+    /**
+     * `GET` endpoint to get all user in company
+     * 
+     * Returns {@link Users}[ ]
+     * @param companyId /companyID - number
+     * @param month /numerical month 1-12
+     * @param year /numerical year (2021)
+     * @returns {@link ReturnRockstarDto} /object containing all the necessary info on the rockstar
+     */
 
     async getRockstar( companyId: number, month: number, year: number): Promise<ReturnRockstarDto> {
-        //gets a list of recognitions for the given month and year
-
+       
+         //gets a list of recognitions for the given month, year and company
         let queryString :string = `SELECT t1.empID, t1.numRecog FROM (select recognition."empToEmployeeId" as empID, count(recognition."empToEmployeeId") as numRecog from Recognition where recognition."empToCompanyId" = ${companyId} and extract(Month from recognition."postDate") = ${ month } and extract(Year from recognition."postDate") = ${ year } group by recognition."empToEmployeeId" ) t1 group by t1.empID, t1.numRecog order by t1.numrecog DESC;`
+
         let retQuery= await this.recognitionRepository.query(queryString);
+        //takes the first employeeID in the list (sorted so highest number of recognitions is on top, and finds the employee in the DB)
         let rockstarUser = await this.usersRepository.findOne( {where: { employeeId : retQuery[0].empid}});
-        //creates the user object for that user, assigning in all the needed info
 
-        //one function - done
-        //use insert for rockstar
-        //one transaction
-        //calc rockstar on DB end - done
-
-        //gets recognitions for this rockstar
+        //gets recognitions for this emloyee
         let recogs = await this.recognitionRepository.createQueryBuilder().select("*").innerJoin("recognition_tags_tag","test","test.recognitionRecId = Recognition.recId").where("Recognition.empToCompanyId = :compID", {compID : rockstarUser.companyId}).andWhere("Recognition.empToEmployeeId = :empID", {empID: rockstarUser.employeeId}).andWhere("extract(Month from Recognition.postDate) = :prvMonth",{prvMonth:month}).andWhere("extract(Year from Recognition.postDate) = :yr",{yr:year}).getRawMany();
 
         let tagStatsList: RockstarStats[] = [];
         let tags: number[] = [];
         
-        function checkValue (val1,val2)
-        {
-            return val1 == val2;
-        }
-
+        //loops through each recognition, tallying the tags they have
         for (let i = 0; i < recogs.length; ++i)
         {
             let num = parseInt(recogs[i].tags);
@@ -86,28 +88,29 @@ export class RockstarService {
                 }
             }
         }
-
+        //assembles the rockstar object
         let rockstar: Rockstar = new Rockstar();
         rockstar.month = month;
         rockstar.year = year;
 
         rockstar.rockstar = rockstarUser;
         rockstar.compID = rockstarUser.companyId;
-
+        //checks if the rockstar is saved already
         let savedRockstar = await this.rockstarRepo.findOne({where: { compID:rockstar.compID, month: month, year:year}});
-        console.log(savedRockstar);
 
+        //if not already there, saves it 
         if (savedRockstar == undefined)
         {
              savedRockstar = await this.rockstarRepo.save(rockstar);
         }
 
-
+        //passes the rockstar's ID in the rockstar table to the tags 
         for (let i = 0; i< tagStatsList.length; ++i )
         {
             tagStatsList[i].rockstarID = savedRockstar.rockstarID;
         
         }
+        //checks if each tag exists, if not writes them to the rockstar tag DB
         for (let i = 0; i < tagStatsList.length; i++)
         {
             if (await this.rockstarStatsRepo.findOne({where: { month: month, year:year, rockstarID: savedRockstar.rockstarID, tag:tagStatsList[i].tag}}) == undefined)
@@ -117,14 +120,11 @@ export class RockstarService {
         }
 
         
-        
+        //assembles the DTO for return
         let returnVal: ReturnRockstarDto = new ReturnRockstarDto();
         returnVal.rockstar = rockstar;
         returnVal.rockstarStats = tagStatsList;
-        returnVal.isItADto = "yes";
         return returnVal;
 
-        //calculate and return rockstar
-        //recognition module
     }
 }

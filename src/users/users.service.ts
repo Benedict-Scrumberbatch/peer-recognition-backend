@@ -17,6 +17,7 @@ import {
     IPaginationOptions,
   } from 'nestjs-typeorm-paginate';
 import { create } from 'node:domain';
+import { Console } from 'node:console';
 
 
 
@@ -160,9 +161,9 @@ export class UsersService {
         user.lastName = createuserDto.lastName;
 
         // Will add different level of admin 
+        
         user.isManager = Boolean(createuserDto.isManager);
         user.role = createuserDto.role;
-
         user.positionTitle = createuserDto.positionTitle;
         user.startDate = new Date(createuserDto.startDate);
         
@@ -179,7 +180,7 @@ export class UsersService {
                 user.manager = Manager;
             }
         }
-
+        
         const login = new Login();
         login.email = createuserDto.email;
         login.password = createuserDto.password;

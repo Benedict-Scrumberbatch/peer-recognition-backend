@@ -207,6 +207,13 @@ export class RecognitionService {
             }
         }
     }
+
+    /**
+     * Create a {@link Report} for a {@link Recognition} and writes it to the DB
+     * @param rec_id ID of the recognition to be reported
+     * @param reporter the {@link Users} who is filing the report
+     * @returns {@link Report} the filed report
+     */
     async reportRec(rec_id: number, reporter: Users)
     {
         let recog = await this.recognitionsRepository.findOne( {  where: { recId: rec_id }} );
@@ -220,6 +227,13 @@ export class RecognitionService {
         return report;
     }
 
+    /**
+     * Create a {@link Comment} for a {@link Recognition} and writes it to the DB
+     * @param rec_id ID of the recognition to be reported
+     * @param text the string of what the user wrote 
+     * @param user the {@link Users} who is making the comment
+     * @returns {@link Comment} the comment entity
+     */
     async addComment(rec_id: number, text: String, user: Users)
     {
         if (text == undefined)
@@ -243,6 +257,13 @@ export class RecognitionService {
         
     }
 
+    /**
+     * Create a {@link Reaction} for a {@link recognition} and writes it to the DB
+     * @param rec_id ID of the recognition to be reacted to
+     * @param user the {@link Users} who is making the reaction
+     * @param reactType the type of the reaction, from {@link ReactType}
+     * @returns {@link Reaction} the Reaction entity
+     */
     async addReaction(rec_id: number, user: Users, type: ReactType)
     {
         let newReaction = new Reaction();
@@ -256,7 +277,13 @@ export class RecognitionService {
 
         return newReaction;
     }
-
+    
+    /**
+     * Gets all {@link Report} for a given recognition and returns them
+     * @param rec_id ID of the recognition to find reports for
+     * @param user unused {@link Users} 
+     * @returns {@link Report} an array of found reports
+     */
     async getReports(rec_id: Number, user: Users)
     {
         let recognition = await this.recognitionsRepository.findOne( { where: {recId: rec_id}});
@@ -271,6 +298,12 @@ export class RecognitionService {
         }
     }
 
+    /**
+     * Gets all {@link Comment} for a given recognition and returns them
+     * @param rec_id ID of the recognition to find reports for
+     * @param user unused {@link Users} 
+     * @returns {@link Comment} an array of found comments
+     */
     async getComments(rec_id: Number, user: Users)
     {
         let recognition = await this.recognitionsRepository.findOne( { where: {recId: rec_id}});
@@ -285,6 +318,12 @@ export class RecognitionService {
         }
     }
 
+    /**
+     * Gets all {@link Reaction} for a given recognition and returns them
+     * @param rec_id ID of the recognition to find reports for
+     * @param user unused {@link Users} 
+     * @returns {@link Reaction} an array of found reactions
+     */
     async getReactions(rec_id: Number, user: Users)
     {
         let recognition = await this.recognitionsRepository.findOne( { where: {recId: rec_id}});
@@ -299,17 +338,32 @@ export class RecognitionService {
         }
     }
 
-    async removeReaction(reactionID: number, user: Users): Promise<Reaction[]> {
+    /**
+     * Removes the given {@link Reaction}
+     * @param reactionID ID of the reaction to remove
+     * @returns {@link Reaction} the removed reaction or null if it didn't exist
+     */
+    async removeReaction(reactionID: number): Promise<Reaction[]> {
         const reaction = await this.reactRepo.findOne({ reactionID: reactionID });
-        return await this.reactRepo.softRemove([reaction]);
+        return await this.reactRepo.remove([reaction]);
     }
 
-    async removeComment(commentID: number, user: Users): Promise<Comment[]> {
+    /**
+     * Soft Deletes the given  {@link Comment}
+     * @param commentID ID of the reaction to remove 
+     * @returns {@link Comment} the removed comment or null if it didn't exist
+     */
+    async removeComment(commentID: number): Promise<Comment[]> {
         const comment = await this.commentRepo.findOne({commentID: commentID});
         return await this.commentRepo.softRemove([comment]);
     }
 
-    async removeReport(reportID: number, user: Users): Promise<Report[]> {
+     /**
+     * Soft Deletes the given  {@link Report}
+     * @param reportID ID of the reaction to remove 
+     * @returns {@link Report} the removed report or null if it didn't exist
+     */
+    async removeReport(reportID: number): Promise<Report[]> {
         const report = await this.reportRepo.findOne({reportID: reportID});
         return await this.reportRepo.softRemove([report]);
     }

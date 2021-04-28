@@ -49,12 +49,25 @@ export class RecognitionController {
         return this.recs.deleteRec(id, req.user.companyId, req.user.employeeId, req.user.role);
     }
 
+     /**
+     * Gets all reports for the given recognition ID
+     * @param req Request object which stores user information
+     * @param rec_id id of the {@link Recognition} to find {@link Report}s for
+     * @returns {@link Report} arrays which returns all the reports
+     */
     @UseGuards(JwtAuthGuard)
     @Get(':recID/reports')
     getReports(@Request() req, @Param('recID') rec_id): Promise<Report[] | Error>
     {
         return this.recs.getReports(rec_id, req.user);
     }
+
+    /**
+     * Creates a report for the given rec_id
+     * @param req Request object which stores user information
+     * @param rec_id id of the {@link Recognition} to create a {@link Report} for
+     * @returns {@link Report} the created report
+     */
 
     @UseGuards(JwtAuthGuard)
     @Post(':recID/report')
@@ -63,7 +76,12 @@ export class RecognitionController {
         return this.recs.reportRec(rec_id, req.user);
     }
 
-0
+    /**
+     * Gets all comments for the given recognition ID
+     * @param req Request object which stores user information
+     * @param rec_id id of the {@link Recognition} to find {@link Comment}s for
+     * @returns {@link Comment} array which returns all the comments
+     */
 
     @UseGuards(JwtAuthGuard)
     @Get(':recID/comments')
@@ -72,12 +90,25 @@ export class RecognitionController {
         return this.recs.getComments(rec_id, req.user);
     }
 
+    /**
+     * Creates a comment for the given rec_id
+     * @param req Request object which stores user information
+     * @param rec_id id of the {@link Recognition} to create a {@link Comment} for
+     * @returns {@link Comment} the created comment
+     */
     @UseGuards(JwtAuthGuard)
     @Post(':recID/comment')
     addComment(@Request() req, @Param('redID') rec_id, @Body() text: string): Promise<Comment| Error>
     {
         return this.recs.addComment(rec_id, text, req.user);
     }
+
+    /**
+     * Gets all reports for the given recognition ID
+     * @param req Request object which stores user information
+     * @param rec_id id of the {@link Recognition} to find {@link Reaction}s for
+     * @returns {@link Reaction} array which returns all the reports
+     */
 
     @UseGuards(JwtAuthGuard)
     @Get(':recID/reactions')
@@ -86,6 +117,13 @@ export class RecognitionController {
         return this.recs.getReactions(rec_id, req.user);
     }
 
+    /**
+     * Creates a reaction for the given rec_id
+     * @param req Request object which stores user information
+     * @param rec_id id of the {@link Recognition} to create a {@link Reaction} for
+     * @param type type of the reaction from {@link reacttype.enum} 
+     * @returns {@link Reaction} the created reaction
+     */
     @UseGuards(JwtAuthGuard)
     @Post(':recID/reaction')
     addReaction(@Request() req, @Param('recID') rec_id, @Body() type: ReactType) : Promise<Reaction| Error>
@@ -93,25 +131,45 @@ export class RecognitionController {
         return this.recs.addReaction(rec_id, req.user, type);
     }
 
+    /**
+     * Soft Deletes the given Report
+     * @param req Request object which stores user information
+     * @param reportID id of the {@link Report} to delete
+     * @returns {@link Report} the deleted Report
+     */
     @UseGuards(JwtAuthGuard)
     @Delete('report/:reportID')
     deleteReport(@Request() req, @Param('reportID') report_id): Promise<Report[]>
     {
-        return this.recs.removeReport(report_id, req.user);
+        return this.recs.removeReport(report_id);
     }
+
+    /**
+     * Soft Deletes the given Comment
+     * @param req Request object which stores user information
+     * @param commentID id of the {@link Comment} to delete
+     * @returns {@link Comment} the deleted Comment
+     */
 
     @UseGuards(JwtAuthGuard)
     @Delete('comment/:commentID')
     deleteComment(@Request() req, @Param('commentID') comment_id): Promise<Comment[]>
     {
-        return this.deleteComment(comment_id, req.user);
+        return this.recs.removeComment(comment_id);
     }
+
+    /**
+     * Deletes the given Reaction
+     * @param req Request object which stores user information
+     * @param reactiontID id of the {@link Reaction} to delete
+     * @returns {@link Reaction} the deleted reaction
+     */
 
     @UseGuards(JwtAuthGuard)
     @Delete('reaction/:reactionID')
     deleteReaction(@Request() req, @Param('reactionID') reaction_id): Promise<Reaction[]>
     {
-        return this.deleteReaction(reaction_id, req.user);
+        return this.recs.removeReaction(reaction_id);
     }
 
     @UseGuards(JwtAuthGuard)
