@@ -252,14 +252,16 @@ export class UsersService {
                 .orWhere("user.lastName ilike :lastName", {lastName: '%'+lastName+'%'})
             }
             // search: string return users with similar firstname and lastname
-            const arr = search.split(' ', 2)
-            if (arr.length > 1) {
-                comp.orWhere("user.firstName ilike :fn", {fn: '%'+arr[0]+'%'})
-                .andWhere("user.lastName ilike :ln", {ln: '%'+arr[1]+'%'})
-            }
-            else {
-                comp.orWhere("user.firstName ilike :search", {search: '%'+search+'%'})
-                .orWhere("user.lastName ilike :search", {search: '%'+search+'%'})
+            if (search != null && search != undefined){
+                const arr = search.split(' ', 2)
+                if (arr.length > 1) {
+                    comp.orWhere("user.firstName ilike :fn", {fn: '%'+arr[0]+'%'})
+                    .andWhere("user.lastName ilike :ln", {ln: '%'+arr[1]+'%'})
+                }
+                else {
+                    comp.orWhere("user.firstName ilike :search", {search: '%'+search+'%'})
+                    .orWhere("user.lastName ilike :search", {search: '%'+search+'%'})
+                }
             }
         })); 
         return paginate<Users>(queryBuilder, options);

@@ -53,7 +53,7 @@ export class RecognitionController {
             empTo_id, empFrom_id,
             search,
             msg,
-            req.user.companyId);
+            req.user.company);
     }
 
 }
