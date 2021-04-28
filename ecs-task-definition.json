@@ -1,0 +1,205 @@
+{
+    "ipcMode": null,
+    "executionRoleArn": "ecsTaskExecutionRole",
+    "containerDefinitions": [
+      {
+        "dnsSearchDomains": null,
+        "environmentFiles": null,
+        "logConfiguration": {
+          "logDriver": "awslogs",
+          "secretOptions": null,
+          "options": {
+            "awslogs-group": "/ecs/ECS-EC2-FullStack-Deployment",
+            "awslogs-region": "us-east-1",
+            "awslogs-stream-prefix": "ecs"
+          }
+        },
+        "entryPoint": null,
+        "portMappings": [
+          {
+            "hostPort": 4200,
+            "protocol": "tcp",
+            "containerPort": 4200
+          }
+        ],
+        "command": null,
+        "linuxParameters": null,
+        "cpu": 340,
+        "environment": [],
+        "resourceRequirements": null,
+        "ulimits": null,
+        "dnsServers": null,
+        "mountPoints": [],
+        "workingDirectory": null,
+        "secrets": null,
+        "dockerSecurityOptions": null,
+        "memory": 300,
+        "memoryReservation": 280,
+        "volumesFrom": [],
+        "stopTimeout": null,
+        "image": "ghcr.io/benedict-scrumberbatch/peer-recognition-backend-aws-docker-image:latest",
+        "startTimeout": null,
+        "firelensConfiguration": null,
+        "dependsOn": [
+          {
+            "containerName": "Postgres_Database_Docker_Container",
+            "condition": "START"
+          }
+        ],
+        "disableNetworking": null,
+        "interactive": null,
+        "healthCheck": null,
+        "essential": true,
+        "links": null,
+        "hostname": null,
+        "extraHosts": null,
+        "pseudoTerminal": null,
+        "user": null,
+        "readonlyRootFilesystem": null,
+        "dockerLabels": null,
+        "systemControls": null,
+        "privileged": null,
+        "name": "Backend_Docker_Container"
+      },
+      {
+        "dnsSearchDomains": null,
+        "environmentFiles": null,
+        "logConfiguration": {
+          "logDriver": "awslogs",
+          "secretOptions": null,
+          "options": {
+            "awslogs-group": "/ecs/ECS-EC2-FullStack-Deployment",
+            "awslogs-region": "us-east-1",
+            "awslogs-stream-prefix": "ecs"
+          }
+        },
+        "entryPoint": null,
+        "portMappings": [
+          {
+            "hostPort": 5432,
+            "protocol": "tcp",
+            "containerPort": 5432
+          }
+        ],
+        "command": null,
+        "linuxParameters": null,
+        "cpu": 340,
+        "environment": [],
+        "resourceRequirements": null,
+        "ulimits": null,
+        "dnsServers": null,
+        "mountPoints": [],
+        "workingDirectory": null,
+        "secrets": null,
+        "dockerSecurityOptions": null,
+        "memory": 300,
+        "memoryReservation": 280,
+        "volumesFrom": [],
+        "stopTimeout": null,
+        "image": "ghcr.io/benedict-scrumberbatch/peer-recognition-database-docker-image:latest",
+        "startTimeout": null,
+        "firelensConfiguration": null,
+        "dependsOn": null,
+        "disableNetworking": null,
+        "interactive": null,
+        "healthCheck": null,
+        "essential": true,
+        "links": null,
+        "hostname": null,
+        "extraHosts": null,
+        "pseudoTerminal": null,
+        "user": null,
+        "readonlyRootFilesystem": null,
+        "dockerLabels": null,
+        "systemControls": null,
+        "privileged": null,
+        "name": "Postgres_Database_Docker_Container"
+      },
+      {
+        "dnsSearchDomains": null,
+        "environmentFiles": null,
+        "logConfiguration": {
+          "logDriver": "awslogs",
+          "secretOptions": null,
+          "options": {
+            "awslogs-group": "/ecs/ECS-EC2-FullStack-Deployment",
+            "awslogs-region": "us-east-1",
+            "awslogs-stream-prefix": "ecs"
+          }
+        },
+        "entryPoint": null,
+        "portMappings": [
+          {
+            "hostPort": 3000,
+            "protocol": "tcp",
+            "containerPort": 3000
+          }
+        ],
+        "command": null,
+        "linuxParameters": null,
+        "cpu": 340,
+        "environment": [],
+        "resourceRequirements": null,
+        "ulimits": null,
+        "dnsServers": null,
+        "mountPoints": [],
+        "workingDirectory": null,
+        "secrets": null,
+        "dockerSecurityOptions": null,
+        "memory": 300,
+        "memoryReservation": 280,
+        "volumesFrom": [],
+        "stopTimeout": null,
+        "image": "ghcr.io/benedict-scrumberbatch/peer-recognition-frontend-deployment-image:latest",
+        "startTimeout": null,
+        "firelensConfiguration": null,
+        "dependsOn": [
+          {
+            "containerName": "Backend_Docker_Container",
+            "condition": "START"
+          }
+        ],
+        "disableNetworking": null,
+        "interactive": null,
+        "healthCheck": null,
+        "essential": true,
+        "links": null,
+        "hostname": null,
+        "extraHosts": null,
+        "pseudoTerminal": null,
+        "user": null,
+        "readonlyRootFilesystem": null,
+        "dockerLabels": null,
+        "systemControls": null,
+        "privileged": null,
+        "name": "Frontend_Docker_Container"
+      }
+    ],
+    "placementConstraints": [],
+    "memory": "900",
+    "taskRoleArn": "ecsTaskExecutionRole",
+    "family": "ECS-EC2-FullStack-Deployment",
+    "pidMode": null,
+    "requiresCompatibilities": [
+      "EC2"
+    ],
+    "networkMode": "host",
+    "cpu": "1024",
+    "inferenceAccelerators": null,
+    "proxyConfiguration": null,
+    "volumes": [
+      {
+        "fsxWindowsFileServerVolumeConfiguration": null,
+        "efsVolumeConfiguration": null,
+        "name": "production-system-data",
+        "host": null,
+        "dockerVolumeConfiguration": {
+          "autoprovision": true,
+          "labels": null,
+          "scope": "shared",
+          "driver": "local",
+          "driverOpts": null
+        }
+      }
+    ]
+  }

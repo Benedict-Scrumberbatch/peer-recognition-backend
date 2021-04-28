@@ -6,11 +6,15 @@ services:
     ports:
       - "5432:5432"
     volumes:
+      - ./pg-init.sql:/docker-entrypoint-initdb.d/pg-init.sql
       - database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
     environment:
       POSTGRES_USER: "peer-recognition-user"
       POSTGRES_PASSWORD: "peer-recognition-password"
       POSTGRES_DB: "peer-recognition"
-
+    env_file:
+      - ./.env-dev
+      - ./.env-test
 volumes:
+  pg-init.sql:
   database-data: # named volumes can be managed easier using docker-compose

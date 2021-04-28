@@ -7,7 +7,7 @@ const fs = require('fs');
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: {
-      origin: ['http://localhost:3000'],
+      origin: [process.env.FRONTEND_URL],
     },
   });
 
@@ -32,6 +32,6 @@ async function bootstrap() {
 
   SwaggerModule.setup('api', app, document);
   fs.writeFileSync("./swagger-assets/swagger-spec.json", JSON.stringify(document));
-  await app.listen(4200);
+  await app.listen(process.env.PORT || 4200);
 }
 bootstrap();
