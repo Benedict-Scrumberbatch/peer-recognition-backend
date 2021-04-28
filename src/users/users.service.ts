@@ -235,16 +235,35 @@ export class UsersService {
         return results;
     }
    
-    async paginate_username(options: IPaginationOptions, firstName: string, lastName: string, search: string): Promise<Pagination<Users>> {
+    async paginate_username(options: IPaginationOptions, firstName: string, lastName: string, 
+        search: string, comp_id: number): Promise<Pagination<Users>> {
         const queryBuilder = this.usersRepository.createQueryBuilder('user');
         queryBuilder.orderBy('user.firstName', 'ASC')
         // Must specify both firstname and lastname
-        .where("user.firstName ilike :firstName", {firstName: '%'+firstName+'%'})
-        .andWhere("user.lastName ilike :lastName", {lastName: '%'+lastName+'%'})
-
-        // search: string return users with similar firstname and lastname
-        .orWhere("user.firstName ilike :search", {search: '%'+search+'%'})
-        .orWhere("user.lastName ilike :search", {search: '%'+search+'%'});
+        .where("user.companyId = :id", {id: comp_id})
+        .andWhere(new Brackets (comp => {
+            if (firstName != null && firstName != undefined 
+                && lastName != null && lastName != undefined){
+                comp.orWhere("user.firstName ilike :firstName", {firstName: '%'+firstName+'%'})
+                .andWhere("user.lastName ilike :lastName", {lastName: '%'+lastName+'%'})
+            }
+            else {
+                comp.orWhere("user.firstName ilike :firstName", {firstName: '%'+firstName+'%'})
+                .orWhere("user.lastName ilike :lastName", {lastName: '%'+lastName+'%'})
+            }
+            // search: string return users with similar firstname and lastname
+            if (search != null && search != undefined){
+                const arr = search.split(' ', 2)
+                if (arr.length > 1) {
+                    comp.orWhere("user.firstName ilike :fn", {fn: '%'+arr[0]+'%'})
+                    .andWhere("user.lastName ilike :ln", {ln: '%'+arr[1]+'%'})
+                }
+                else {
+                    comp.orWhere("user.firstName ilike :search", {search: '%'+search+'%'})
+                    .orWhere("user.lastName ilike :search", {search: '%'+search+'%'})
+                }
+            }
+        })); 
         return paginate<Users>(queryBuilder, options);
     }
 

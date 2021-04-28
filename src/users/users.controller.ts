@@ -76,11 +76,12 @@ export class UsersController {
         @Query('limit') limit: number = 10,
         @Query('firstName') firstName: string,
         @Query('lastName') lastName: string,
-        @Query('search') search: string
+        @Query('search') search: string,
+        @Request() req
     ): Promise<Pagination<Users>> {
         limit = limit > 100 ? 100: limit
         return this.usersService.paginate_username(
             {page: Number(page), limit: Number(limit), route: 'http://localhost:4200/users/search'},
-            firstName, lastName, search);
+            firstName, lastName, search, req.user.companyId);
     }
 }

@@ -43,6 +43,7 @@ export class RecognitionController {
         @Query('empFrom_id') empFrom_id: number,
         @Query('search') search: string,
         @Query('msg') msg: string,   
+        @Request() req
     ): Promise<Pagination<Recognition>> {
         limit = limit > 100 ? 100: limit
         return this.recs.paginate_post(
@@ -51,7 +52,8 @@ export class RecognitionController {
             firstName_f, lastName_f,
             empTo_id, empFrom_id,
             search,
-            msg);
+            msg,
+            req.user.companyId);
     }
 
 }
