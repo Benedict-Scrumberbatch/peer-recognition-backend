@@ -1,15 +1,15 @@
 import {RockstarService} from './rockstar.service';
-import {Recognition} from '../peer-recognition-dtos/entity/recognition.entity';
-import {Report} from '../peer-recognition-dtos/entity/report.entity';
-import {Users} from '../peer-recognition-dtos/entity/users.entity';
+import {Recognition} from '../dtos/entity/recognition.entity';
+import {Report} from '../dtos/entity/report.entity';
+import {Users} from '../dtos/entity/users.entity';
 import { Controller, Get, Post, Delete, Body, Param, Request, UseGuards} from '@nestjs/common';
 import { DeleteResult } from 'typeorm';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/roles/roles.guard';
 import { Roles } from 'src/roles/roles.decorator';
-import { Role } from '../peer-recognition-dtos/enum/role.enum';
-import { Rockstar } from '../peer-recognition-dtos/entity/rockstar.entity';
-import { ReturnRockstarDto } from '../peer-recognition-dtos/dto/rockstar-stats.dto';
+import { Role } from '../dtos/enum/role.enum';
+import { Rockstar } from '../dtos/entity/rockstar.entity';
+import { ReturnRockstarDto } from '../dtos/dto/rockstar-stats.dto';
 
 @Controller('rockstar')
 export class RockstarController {

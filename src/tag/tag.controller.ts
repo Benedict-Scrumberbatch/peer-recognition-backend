@@ -1,8 +1,8 @@
 import { Controller, Get, Post, Delete, Body, Param, UseGuards, Request, UnauthorizedException} from '@nestjs/common';
 import {TagService} from './tag.service'
-import {Tag} from '../peer-recognition-dtos/entity/tag.entity';
+import {Tag} from '../dtos/entity/tag.entity';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { Role } from '../peer-recognition-dtos/enum/role.enum';
+import { Role } from '../dtos/enum/role.enum';
 import { RolesGuard } from '../roles/roles.guard';
 import { Roles } from 'src/roles/roles.decorator';
 import { DeleteResult } from 'typeorm';

@@ -1,6 +1,6 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Role } from '../peer-recognition-dtos/enum/role.enum';
+import { Role } from '../dtos/enum/role.enum';
 import { ROLES_KEY } from './roles.decorator';
 
 /**

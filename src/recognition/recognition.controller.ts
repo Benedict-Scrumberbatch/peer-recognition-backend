@@ -1,15 +1,15 @@
 import {RecognitionService} from './recognition.service';
-import {Recognition} from '../peer-recognition-dtos/entity/recognition.entity';
-import {Report} from '../peer-recognition-dtos/entity/report.entity';
-import {Comment} from '../peer-recognition-dtos/entity/comment.entity';
-import {Reaction} from '../peer-recognition-dtos/entity/reaction.entity';
+import {Recognition} from '../dtos/entity/recognition.entity';
+import {Report} from '../dtos/entity/report.entity';
+import {Comment} from '../dtos/entity/comment.entity';
+import {Reaction} from '../dtos/entity/reaction.entity';
 import { Controller, Get, Post, Delete, Body, Param, Request, UseGuards} from '@nestjs/common';
 import { DeleteResult } from 'typeorm';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/roles/roles.guard';
 import { Roles } from 'src/roles/roles.decorator';
-import { Role } from '../peer-recognition-dtos/enum/role.enum';
-import { ReactType } from '../peer-recognition-dtos/enum/reacttype.enum'
+import { Role } from '../dtos/enum/role.enum';
+import { ReactType } from '../dtos/enum/reacttype.enum'
 
 @Controller('recognitions')
 export class RecognitionController {
