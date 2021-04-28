@@ -174,30 +174,33 @@ export class RecognitionService {
         empTo_id: number,
         empFrom_id: number,
         search: string,
-        msg: string): Promise<Pagination<Recognition>> {
+        msg: string,
+        comp_id: number): Promise<Pagination<Recognition>> {
         const queryBuilder = this.recognitionsRepository.createQueryBuilder('rec');
         queryBuilder.leftJoinAndSelect('rec.empTo', 'empTo').leftJoinAndSelect('rec.empFrom', 'empFrom')
-        
-        .where(new Brackets(qb => {
-            qb.where("empTo.firstName ilike :firstName_t", {firstName_t: '%' + firstName_t + '%'})
-            .andWhere("empTo.lastName ilike :lastName_t", {lastName_t: '%' + lastName_t + '%'});
-        }))
+        .where("user.companyId = :id", {id: comp_id})
+        .andWhere(new Brackets(comp => {
+            comp.andWhere(new Brackets(qb => {
+                qb.where("empTo.firstName ilike :firstName_t", {firstName_t: '%' + firstName_t + '%'})
+                .andWhere("empTo.lastName ilike :lastName_t", {lastName_t: '%' + lastName_t + '%'});
+            }))
 
-        .orWhere(new Brackets(qb => {
-            qb.where("empFrom.firstName ilike :firstName_f", {firstName_f: '%' + firstName_f + '%'})
-            .andWhere("empFrom.lastName ilike :lastName_f", {lastName_f: '%' + lastName_f + '%'});
-        }))
-        .orWhere(new Brackets(qb => {
-            qb.where("empTo.employeeId = :empTo_id", {empTo_id: empTo_id})
-            .andWhere("empFrom.employeeId = :empFrom_id", {empFrom_id: empFrom_id});
-        }))
-        
-        .orWhere("empTo.lastName ilike :search", {search: '%' + search + '%'})
-        .orWhere("empTo.firstName ilike :search", {search: '%' + search + '%'})
-        .orWhere("empFrom.firstName ilike :search", {search: '%' + search + '%'})
-        .orWhere("empFrom.lastName ilike :search", {search: '%' + search + '%'})
+            .orWhere(new Brackets(qb => {
+                qb.where("empFrom.firstName ilike :firstName_f", {firstName_f: '%' + firstName_f + '%'})
+                .andWhere("empFrom.lastName ilike :lastName_f", {lastName_f: '%' + lastName_f + '%'});
+            }))
+            .orWhere(new Brackets(qb => {
+                qb.where("empTo.employeeId = :empTo_id", {empTo_id: empTo_id})
+                .andWhere("empFrom.employeeId = :empFrom_id", {empFrom_id: empFrom_id});
+            }))
+            
+            .orWhere("empTo.lastName ilike :search", {search: '%' + search + '%'})
+            .orWhere("empTo.firstName ilike :search", {search: '%' + search + '%'})
+            .orWhere("empFrom.firstName ilike :search", {search: '%' + search + '%'})
+            .orWhere("empFrom.lastName ilike :search", {search: '%' + search + '%'})
 
-        .orWhere("msg like :msg", {msg: '%' + msg + '%'});
+            .orWhere("msg like :msg", {msg: '%' + msg + '%'});
+        }))
         return paginate<Recognition>(queryBuilder, options);
     }
 }
