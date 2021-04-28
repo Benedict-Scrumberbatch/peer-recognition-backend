@@ -13,13 +13,7 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-ref
             secretOrKey: jwtConstants.refresh_secret,
         });
     }
-  //   async validate(username: string, password:string): Promise<any> {
-  //     const user = await this.authService.validateUser(username, password);
-  //     if (!user) {
-  //         throw new UnauthorizedException();
-  //     }
-  //     return user;
-  // }
+  
     async validate(payload: any) {
       return { employeeId: payload.sub.employeeId, role: payload.sub.role, companyId: payload.sub.companyId, email: payload.username };
   }

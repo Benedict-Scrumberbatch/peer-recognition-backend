@@ -2,7 +2,7 @@
 /dist
 /node_modules
 
-#documentation
+#docs files
 /docs
 
 # Logs
@@ -17,7 +17,7 @@ lerna-debug.log*
 .DS_Store
 
 # Tests
-/coverage
+/test/coverage
 /.nyc_output
 
 # IDEs and editors
