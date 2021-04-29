@@ -150,7 +150,7 @@
         "memoryReservation": 280,
         "volumesFrom": [],
         "stopTimeout": null,
-        "image": "ghcr.io/benedict-scrumberbatch/peer-recognition-frontend-deployment-image:latest",
+        "image": "ghcr.io/benedict-scrumberbatch/peer-recognition-fronend-aws-docker-image:latest",
         "startTimeout": null,
         "firelensConfiguration": null,
         "dependsOn": [
