@@ -200,16 +200,55 @@ export class UsersService {
     }
     
     /**
-     * Method to create array of {@link Users} object 
+     * Method to create {@link Users} in the database from an array input
      * @param employeeMultiple 
      * @returns Array of {@link Users} object 
      */
-    async createUserMultiple(employeeMultiple: []): Promise <any>{
-        let arr_employee = [];
+    async createUserMultiple(employeeMultiple: (Users & Login & {managerId: number} & {companyName: string})[]): Promise <any>{
+        let users = [];
+        let logins = [];
         for (let i = 0; i < employeeMultiple.length; i++) {
-            arr_employee.push(await this.createUser(employeeMultiple[i]));
+            const user = new Users();
+            if (employeeMultiple[i].company != undefined) {
+                user.company = employeeMultiple[i].company;
+            }
+            else{
+                if (employeeMultiple[i].companyId != undefined) {
+                    let company = await this.companyRepository.findOne({where:{companyId: employeeMultiple[i].companyId}})
+                    if (!company ) {
+                        let createCompany = new Company();
+                        createCompany.companyId = employeeMultiple[i].companyId;
+                        createCompany.name = employeeMultiple[i].lastName;
+                        createCompany.tags = undefined;
+                        createCompany.recognitions = undefined;
+                        createCompany.users = [employeeMultiple[i]];
+                        company = await this.companyservice.createCompany(createCompany);
+                    }
+                    user.company = company
+                }
+            }
+            user.employeeId = employeeMultiple[i].employeeId;
+            user.companyId = employeeMultiple[i].companyId;
+            user.firstName = employeeMultiple[i].firstName;
+            user.lastName = employeeMultiple[i].lastName;
+            user.isManager = Boolean(employeeMultiple[i].isManager);
+            user.role = employeeMultiple[i].role;
+            user.positionTitle = employeeMultiple[i].positionTitle;
+            user.startDate = new Date(employeeMultiple[i].startDate);
+            if (employeeMultiple[i].manager != undefined) {
+                user.manager = employeeMultiple[i].manager;
+            }
+
+            const login = new Login();
+            login.email = employeeMultiple[i].email;
+            login.password = employeeMultiple[i].password;
+            login.employee = user;
+            logins.push(login);
+            users.push(user);
         }
-        return arr_employee;
+        await this.usersRepository.save(users);
+        await this.loginRepo.save(logins);
+        return users;
     }
 
     /**
