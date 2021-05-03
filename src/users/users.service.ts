@@ -362,6 +362,12 @@ export class UsersService {
         return paginate<Users>(queryBuilder, options);
     }
 
+    /**
+     * 
+     * @param empID ID of the logged in user
+     * @param newUser new User object to update old user
+     * @returns the new User object which was used to update the user
+     */
     async editUserDetails(empID: number, newUser: Users){
         if(empID !== newUser.employeeId){
             throw new UnauthorizedException();

@@ -178,6 +178,12 @@ export class UsersController {
             firstName, lastName, search, req.user.companyId);
     }
 
+    /**
+     * 
+     * @param req request object
+     * @param user User object which to be used to update 
+     * @returns User object
+     */
     @UseGuards(JwtAuthGuard)
     @Patch('edit')
     async editUserDetails(@Request() req, @Body() user: Users){
