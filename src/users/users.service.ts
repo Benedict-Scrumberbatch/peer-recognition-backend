@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from '../dtos/entity/users.entity';
 import { Login } from '../dtos/entity/login.entity';
@@ -17,7 +17,7 @@ import {
     IPaginationOptions,
   } from 'nestjs-typeorm-paginate';
 import { create } from 'node:domain';
-import { exception } from 'node:console';
+
 
 
 
