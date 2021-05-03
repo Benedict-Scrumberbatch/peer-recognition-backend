@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from '../dtos/entity/users.entity';
 import { Login } from '../dtos/entity/login.entity';
@@ -17,6 +17,7 @@ import {
     IPaginationOptions,
   } from 'nestjs-typeorm-paginate';
 import { create } from 'node:domain';
+import { exception } from 'node:console';
 
 
 
@@ -361,4 +362,14 @@ export class UsersService {
         return paginate<Users>(queryBuilder, options);
     }
 
+    async editUserDetails(empID: number, newUser: Users){
+        if(empID !== newUser.employeeId){
+            throw new UnauthorizedException();
+        }
+        await this.usersRepository.save(newUser);
+        return newUser;
+    }
+
 } 
+
+   

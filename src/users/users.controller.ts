@@ -1,4 +1,4 @@
-import { Controller, Request, Post, UseGuards, Get, Delete, Param, Body, Query } from '@nestjs/common';
+import { Controller, Request, Post, UseGuards, Get, Delete, Param, Body, Query, Patch} from '@nestjs/common';
 import { Login } from '../dtos/entity/login.entity';
 import { Users } from '../dtos/entity/users.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -177,4 +177,11 @@ export class UsersController {
             {page: Number(page), limit: Number(limit), route: 'http://localhost:4200/users/search'},
             firstName, lastName, search, req.user.companyId);
     }
+
+    @UseGuards(JwtAuthGuard)
+    @Patch('edit')
+    async editUserDetails(@Request() req, @Body() user: Users){
+        return this.usersService.editUserDetails(req.user.employeeId, user);
+    }
 }
+    
