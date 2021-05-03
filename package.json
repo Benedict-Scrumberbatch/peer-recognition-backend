@@ -1,9 +1,9 @@
 {
-  "name": "peer-recognition-backend",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
-  "private": true,
+  "name": "@Benedict-Scrumberbatch/peer-recognition-frontend",
+  "repository": "https://github.com/Benedict-Scrumberbatch/peer-recognition",
+  "version": "0.1.0",
+  "description": "Backend application for Benedict Scrumberbatch's Peer Recognition Software",
+  "author": "Benedict-Scrumberbatch",
   "license": "UNLICENSED",
   "scripts": {
     "prebuild": "rimraf dist",
