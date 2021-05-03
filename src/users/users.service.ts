@@ -121,29 +121,10 @@ export class UsersService {
      * @param createuserDto 
      * @returns {@link Users} user is added to Database  
      */
-    async createUser(createuserDto: Users & Login & {managerId: number} & {companyName: string}): Promise<Users> {    
+    async createUser(createuserDto: Users & Login & {managerId: number}, cId: number): Promise<Users> {    
         const user = new Users();
-        if (createuserDto.company != undefined) {
-            user.company = createuserDto.company;
-
-        }
-        else{
-            if (createuserDto.companyId != undefined) {
-                let company = await this.companyRepository.findOne({where:{companyId: createuserDto.companyId}})
-                if (!company ) {
-                    let createCompany = new Company();
-                    createCompany.companyId = createuserDto.companyId;
-                    createCompany.name = createuserDto.lastName;
-                    createCompany.tags = undefined;
-                    createCompany.recognitions = undefined;
-                    createCompany.users = [createuserDto];
-                    company = await this.companyservice.createCompany(createCompany);
-                }
-                user.company = company
-            }
-        }
+        user.company = await this.companyRepository.findOne({where:{companyId: cId}});
         user.employeeId = createuserDto.employeeId;
-        user.companyId = createuserDto.companyId;
 
         user.firstName = createuserDto.firstName;
         user.lastName = createuserDto.lastName;
@@ -160,7 +141,7 @@ export class UsersService {
         }
         else {
             if (createuserDto.managerId != undefined) {
-                let Manager = await this.usersRepository.findOne({where:{companyId: createuserDto.companyId , 
+                let Manager = await this.usersRepository.findOne({where:{companyId: cId , 
                     employeeId : createuserDto.managerId}});
                 if (Manager.isManager == false){
                     throw new BadRequestException('Invalid Manager')
@@ -204,31 +185,16 @@ export class UsersService {
      * @param employeeMultiple 
      * @returns Array of {@link Users} object 
      */
-    async createUserMultiple(employeeMultiple: (Users & Login & {managerId: number} & {companyName: string})[]): Promise <any>{
+    async createUserMultiple(employeeMultiple: (Users & Login & {managerId: number} & {companyName: string})[], cId: number): Promise <any>{
         let users = [];
         let logins = [];
         for (let i = 0; i < employeeMultiple.length; i++) {
             const user = new Users();
-            if (employeeMultiple[i].company != undefined) {
-                user.company = employeeMultiple[i].company;
-            }
-            else{
-                if (employeeMultiple[i].companyId != undefined) {
-                    let company = await this.companyRepository.findOne({where:{companyId: employeeMultiple[i].companyId}})
-                    if (!company ) {
-                        let createCompany = new Company();
-                        createCompany.companyId = employeeMultiple[i].companyId;
-                        createCompany.name = employeeMultiple[i].lastName;
-                        createCompany.tags = undefined;
-                        createCompany.recognitions = undefined;
-                        createCompany.users = [employeeMultiple[i]];
-                        company = await this.companyservice.createCompany(createCompany);
-                    }
-                    user.company = company
-                }
-            }
+            user.company = await this.companyRepository.findOne({where:{companyId: cId}})
+
             user.employeeId = employeeMultiple[i].employeeId;
-            user.companyId = employeeMultiple[i].companyId;
+            // ignore input company id and override with the valid company id.
+            user.companyId = cId;
             user.firstName = employeeMultiple[i].firstName;
             user.lastName = employeeMultiple[i].lastName;
             user.isManager = Boolean(employeeMultiple[i].isManager);
