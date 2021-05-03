@@ -32,7 +32,7 @@ let typeormConfig: TypeOrmModuleOptions = {
     database: process.env.DATABASE_URL && ENV.startsWith('prod') ? undefined : process.env.DB_NAME,
     entities: [process.env.DB_ENTITIES],
     ssl: process.env.DATABASE_URL && ENV.startsWith('prod') ? { rejectUnauthorized: false } : false,
-    synchronize: false,
+    synchronize: process.env.DB_SYNC == "true" ? true : false,
     logging: process.env.DB_LOGGING as LoggerOptions
  })],
   controllers: [AppController],

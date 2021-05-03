@@ -49,9 +49,7 @@ CREATE INDEX "IDX_2e1c46c843402e9d54bf87a825" ON "tag" ("companyCompanyId")
 ;
 CREATE TABLE "company" ("companyId" integer NOT NULL, "name" character varying NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, CONSTRAINT "PK_81611e86d930483997273420166" PRIMARY KEY ("companyId"))
 ;
-CREATE TABLE "login" ("email" character varying NOT NULL, "password" character varying NOT NULL, "createdAt" 
-;
-TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "employeeCompanyId" integer, "employeeEmployeeId" integer, CONSTRAINT "REL_70941b5bce090acd4e1fb277c6" UNIQUE ("employeeCompanyId", "employeeEmployeeId"), CONSTRAINT "PK_a1fa377d7cba456bebaa6922edf" PRIMARY KEY ("email"))
+CREATE TABLE "login" ("email" character varying NOT NULL, "password" character varying NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "employeeCompanyId" integer, "employeeEmployeeId" integer, CONSTRAINT "REL_70941b5bce090acd4e1fb277c6" UNIQUE ("employeeCompanyId", "employeeEmployeeId"), CONSTRAINT "PK_a1fa377d7cba456bebaa6922edf" PRIMARY KEY ("email"))
 ;
 SELECT "n"."nspname", "t"."typname" FROM "pg_type" "t" INNER JOIN "pg_namespace" "n" ON "n"."oid" = "t"."typnamespace" WHERE "n"."nspname" = current_schema() AND "t"."typname" = 'users_role_enum'
 ;
