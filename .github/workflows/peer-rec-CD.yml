@@ -71,7 +71,7 @@ jobs:
           # Build directory to deploy
           build_dir: docs
         env:
-          GITHUB_TOKEN: ${{ secrets.REPO_TOKEN_ACTIONS }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   npm-publish:
     runs-on: ubuntu-latest
@@ -88,7 +88,7 @@ jobs:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
             NPM_REGISTRY_URL: https://npm.pkg.github.com
-            
+
   # Push docker image for app to github packages
   docker-app-localhost-github-packages:
     runs-on: ubuntu-latest
