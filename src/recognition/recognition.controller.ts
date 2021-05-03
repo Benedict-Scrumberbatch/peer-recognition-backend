@@ -29,7 +29,7 @@ export class RecognitionController {
     @UseGuards(JwtAuthGuard)
     @Post('create')
     create(@Request() req, @Body() recognition: Recognition): Promise<Recognition>{
-        return this.recs.createRec(recognition, req.user.empId);
+        return this.recs.createRec(recognition, req.user.companyId, req.user.employeeId);
     }
   
    
