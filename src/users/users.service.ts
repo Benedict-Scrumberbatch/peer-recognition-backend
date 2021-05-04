@@ -6,7 +6,7 @@ import { Company } from '../dtos/entity/company.entity';
 import { TagStats } from '../dtos/entity/tagstats.entity';
 import { CompanyService } from '../company/company.service';
 import { Recognition } from '../dtos/entity/recognition.entity';
-import { DeleteResult, Like, QueryBuilder, Repository } from 'typeorm';
+import { DeleteResult, Like, ILike, QueryBuilder, Repository, Brackets } from 'typeorm';
 import { Query } from 'typeorm/driver/Query';
 import { Role } from '../dtos/enum/role.enum';
 import { throwError } from 'rxjs';
@@ -16,8 +16,8 @@ import {
     Pagination,
     IPaginationOptions,
   } from 'nestjs-typeorm-paginate';
-import { from, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';    
+import { create } from 'node:domain';
+
 
 
 /**
@@ -328,48 +328,37 @@ export class UsersService {
         }
         return results;
     }
-    async paginate(options: IPaginationOptions): Promise<Pagination<Users>> {
-        return paginate<Users>(this.usersRepository, options);
-    }
-    // Back up search user in case the main endpoint doesn't work properly!
-    async paginate_backup(options: IPaginationOptions, firstName: string, lastName: string): Promise<Observable<Pagination<Users>>> {
-        return from (this.usersRepository.findAndCount({
-            take: Number(options.limit) || 10,  // Only take 10 first results or firs number of limit
-            order: {firstName: 'ASC'},          // result follows ASC order (alphabetical)
-            where: [
-                {firstName: Like(`%${firstName}%`)},
-                {lastName: Like(`%${lastName}%`)}
-            ]
-        })).pipe(
-            map(([users, totalUsers]) => {
-                const usersPageable: Pagination<Users> = {
-                    items: users,
-                    links: {
-                        first: options.route + `?limit=${options.limit}`,
-                        previous: options.route + ``,
-                        next: options.route + `?limit=${options.limit}&page=${Number(options.page) + 1}`,
-                        last: options.route + `?limit=${options.limit}&page=${totalUsers / Number(options.page)}`
-                    },
-                    meta: {
-                        currentPage: Number(options.page),
-                        itemCount: users.length,
-                        itemsPerPage: Number(options.limit),
-                        totalItems: totalUsers,
-                        totalPages: totalUsers / Number(options.limit)
-                    }
-                };
-                return usersPageable;
-            })
-        )       
-    }
-    async paginate_username(options: IPaginationOptions, firstName: string, lastName: string): Promise<Pagination<Users>> {
+   
+    async paginate_username(options: IPaginationOptions, firstName: string, lastName: string, 
+        search: string, comp_id: number): Promise<Pagination<Users>> {
         const queryBuilder = this.usersRepository.createQueryBuilder('user');
-        queryBuilder.where([
-            {firstName: Like(`%${firstName}%`)},
-            {lastName: Like(`%${lastName}%`)}
-        ]);
-        // queryBuilder.orWhere({lastName: Like(`%${lastName}%`)});
+        queryBuilder.orderBy('user.firstName', 'ASC')
+        // Must specify both firstname and lastname
+        .where("user.companyId = :id", {id: comp_id})
+        .andWhere(new Brackets (comp => {
+            if (firstName != null && firstName != undefined 
+                && lastName != null && lastName != undefined){
+                comp.orWhere("user.firstName ilike :firstName", {firstName: '%'+firstName+'%'})
+                .andWhere("user.lastName ilike :lastName", {lastName: '%'+lastName+'%'})
+            }
+            else {
+                comp.orWhere("user.firstName ilike :firstName", {firstName: '%'+firstName+'%'})
+                .orWhere("user.lastName ilike :lastName", {lastName: '%'+lastName+'%'})
+            }
+            // search: string return users with similar firstname and lastname
+            if (search != null && search != undefined){
+                const arr = search.split(' ', 2)
+                if (arr.length > 1) {
+                    comp.orWhere("user.firstName ilike :fn", {fn: '%'+arr[0]+'%'})
+                    .andWhere("user.lastName ilike :ln", {ln: '%'+arr[1]+'%'})
+                }
+                else {
+                    comp.orWhere("user.firstName ilike :search", {search: '%'+search+'%'})
+                    .orWhere("user.lastName ilike :search", {search: '%'+search+'%'})
+                }
+            }
+        })); 
         return paginate<Users>(queryBuilder, options);
     }
-    
+
 } 
