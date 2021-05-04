@@ -27,7 +27,37 @@ jobs:
         uses: actions/checkout@v2
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.1.5
+      - uses: c-hive/gha-npm-cache@v1
       - run: npm install
       - run: git submodule init
       - run: git submodule update
       - run: npm run build
+
+  test-application:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.1.5   
+      - uses: c-hive/gha-npm-cache@v1
+      - run: npm install
+      - run: docker-compose up -d
+      - run: npm run test:e2e
+
+  eslint:
+    name: eslint
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - name: install node
+      uses: actions/setup-node@v2.1.5
+    - uses: c-hive/gha-npm-cache@v1
+    - name: npm install
+      run: npm install
+    - name: eslint
+      uses: icrawl/action-eslint@v1
