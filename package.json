@@ -1,6 +1,6 @@
 {
-  "name": "@Benedict-Scrumberbatch/peer-recognition-frontend",
-  "repository": "https://github.com/Benedict-Scrumberbatch/peer-recognition",
+  "name": "@Benedict-Scrumberbatch/peer-recognition-backend",
+  "repository": "https://github.com/Benedict-Scrumberbatch/peer-recognition-backend",
   "version": "0.1.0",
   "description": "Backend application for Benedict Scrumberbatch's Peer Recognition Software",
   "author": "Benedict-Scrumberbatch",
