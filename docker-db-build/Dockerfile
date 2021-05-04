@@ -1,5 +1,5 @@
 # Base image
-FROM postgres
+FROM postgres:latest
 COPY ./pg-init.sql ./docker-entrypoint-initdb.d/
 ARG POSTGRES_USER="peer-recognition-user"
 ARG POSTGRES_PASSWORD="peer-recognition-password"

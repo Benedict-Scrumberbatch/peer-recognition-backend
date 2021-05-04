@@ -6,11 +6,11 @@ import {Reaction} from '../dtos/entity/reaction.entity';
 import { Controller, Get, Post, Delete, Body, Param, Request, UseGuards, Query} from '@nestjs/common';
 import { CreateRecDto } from '../dtos/dto/create-rec.dto';
 import { DeleteResult } from 'typeorm';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { RolesGuard } from 'src/roles/roles.guard';
-import { Roles } from 'src/roles/roles.decorator';
-import { Role } from '../dtos/enum/role.enum';
 import { ReactType } from '../dtos/enum/reacttype.enum'
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RolesGuard } from '../roles/roles.guard';
+import { Roles } from '../roles/roles.decorator';
+import { Role } from '../dtos/enum/role.enum';
 import { Pagination } from 'nestjs-typeorm-paginate';
 
 @Controller('recognitions')
@@ -33,7 +33,7 @@ export class RecognitionController {
     @UseGuards(JwtAuthGuard)
     @Post('create')
     create(@Request() req, @Body() recognition: Recognition): Promise<Recognition>{
-        return this.recs.createRec(recognition, req.user.empId);
+        return this.recs.createRec(recognition, req.user.companyId, req.user.employeeId);
     }
   
    
