@@ -17,6 +17,7 @@ import {
     IPaginationOptions,
   } from 'nestjs-typeorm-paginate';
 import { create } from 'node:domain';
+import { Console } from 'node:console';
 
 
 
@@ -40,6 +41,10 @@ export class UsersService {
         private companyservice: CompanyService,
     ){}
 
+   /* async storeRefreshToken(refreshToken:string, email:string, refreshtokenexpires){
+        await this.loginRepo.update(email, {refreshtoken:refreshToken, refreshtokenexpires});
+    }
+    */
     //Must hash passwords
     //In reality will grab user information from the database.
     /**
@@ -130,6 +135,13 @@ export class UsersService {
         else{
             if (createuserDto.companyId != undefined) {
                 let company = await this.companyRepository.findOne({where:{companyId: createuserDto.companyId}})
+                // If company.name to companyName if they are not the same
+                // Don't 
+                if (company.name != createuserDto.companyName){
+                    company.name = createuserDto.companyName; 
+                    await this.companyRepository.save(company)
+                }
+
                 if (!company ) {
                     let createCompany = new Company();
                     createCompany.companyId = createuserDto.companyId;
@@ -149,9 +161,9 @@ export class UsersService {
         user.lastName = createuserDto.lastName;
 
         // Will add different level of admin 
+        
         user.isManager = Boolean(createuserDto.isManager);
         user.role = createuserDto.role;
-
         user.positionTitle = createuserDto.positionTitle;
         user.startDate = new Date(createuserDto.startDate);
         
@@ -168,7 +180,7 @@ export class UsersService {
                 user.manager = Manager;
             }
         }
-
+        
         const login = new Login();
         login.email = createuserDto.email;
         login.password = createuserDto.password;
@@ -212,84 +224,9 @@ export class UsersService {
         return arr_employee;
     }
 
-    /**
-     * Method to get Rockstar of the month
-     * 
-     * Returns {@link Users} object
-     * @param companyId 
-     * @returns 
-     */
-    async getRockstar( companyId: number): Promise<Users | undefined> {
-        let date: Date = new Date();
-        let prevMonth: number = -1;
-        let year = date.getFullYear()
-        if (date.getMonth() == 0)
-        {
-            prevMonth = 12;
-            year = date.getFullYear() - 1;
-        }
-        else
-        {
-            //SQL takes 1 based months but the date object has 0 based months.
-            prevMonth = date.getMonth();
-        }
-        let queryString :string = `SELECT * FROM (SELECT t1."empToEmployeeId", MAX(t1.numRecog) as numRecognitions FROM (select recognition."empToEmployeeId", count(recognition."empToEmployeeId") as numRecog from Recognition where recognition."empToCompanyId" = ${companyId} and extract(Month from recognition."postDate") = ${ prevMonth } and extract(Year from recognition."postDate") = ${ year } group by recognition."empToEmployeeId" ) t1 group by t1."empToEmployeeId") t2, users where t2."empToEmployeeId" = users."employeeId";`
-        let retQuery= await this.recognitionRepository.query(queryString);
-        let maxRecog: number = 0;
-        let maxIndex: number = 0;
-        for (let i = 0; i < retQuery.length;i++ )
-        {
-            if (retQuery[i].max > maxRecog)
-            {
-                maxRecog = retQuery.max;
-                maxIndex = i;
-            }
-        }
-        let rawRockstar = retQuery[maxIndex];
-        let rockstar: Users = new Users();
-        rockstar.company = rawRockstar.companyId;
-        rockstar.employeeId = rawRockstar.employeeId;
-
-        rockstar.firstName = rawRockstar.firstName;
-        rockstar.lastName = rawRockstar.lastName;
-
-        rockstar.isManager = rawRockstar.isManager;
-        rockstar.positionTitle = rawRockstar.positionTitle;
-        rockstar.startDate = new Date(rawRockstar.startDate);
-        rockstar.role = rawRockstar.role;
-
-        rockstar.manager = await this.usersRepository.findOne({where:{employeeId : rawRockstar.managerEmployeeId}})
-
-
-        return rockstar;
-
-        //calculate and return rockstar
-        //recognition module
-    }
-
-    /**
-     * Method to get Rockstar of the month recognitions
-     * 
-     * Returns: array of recognition 
-     * @param rockstar 
-     * @returns 
-     */
-    async getRockstarRecogs(rockstar: Users): Promise<any[]>{
-        let date: Date = new Date();
-        let prevMonth: number = -1;
-        let year = date.getFullYear()
-        if (date.getMonth() == 1)
-        {
-            prevMonth = 12;
-            year = date.getFullYear() - 1;
-        }
-        else
-        {
-            prevMonth = date.getMonth()
-        }
-        let recogs = await this.recognitionRepository.createQueryBuilder().select("*").where("Recognition.empToCompanyId = :compID", {compID : rockstar.company}).andWhere("Recognition.empToEmployeeId = :empID", {empID: rockstar.employeeId}).andWhere("extract(Month from Recognition.postDate) = :prvMonth",{prvMonth:prevMonth}).andWhere("extract(Year from Recognition.postDate) = :yr",{yr:year}).getRawMany();
-        console.log(recogs);
-        return recogs;
+   
+    async paginate(options: IPaginationOptions): Promise<Pagination<Users>> {
+        return paginate<Users>(this.usersRepository, options);
     }
 
     /**

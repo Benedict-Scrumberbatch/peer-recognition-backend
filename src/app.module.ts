@@ -11,6 +11,7 @@ import { Tag } from './dtos/entity/tag.entity';
 import { Company } from './dtos/entity/company.entity';
 import { RecognitionService } from './recognition/recognition.service';
 import { TagModule } from './tag/tag.module';
+import { RockstarModule} from './rockstar/rockstar.module';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerOptions } from 'typeorm';
 
@@ -22,7 +23,7 @@ let typeormConfig: TypeOrmModuleOptions = {
   imports: [ ConfigModule.forRoot({
     envFilePath: !ENV ? '.env-dev': `.env-${ENV}`
   }),
-  AuthModule, UsersModule, RecognitionModule, CompanyModule, TagModule, TypeOrmModule.forRoot({
+  AuthModule, UsersModule, RecognitionModule, CompanyModule, TagModule, RockstarModule, TypeOrmModule.forRoot({
     type: "postgres",
     url: process.env.DATABASE_URL && ENV.startsWith('prod') ? process.env.DATABASE_URL : undefined,
     host: process.env.DATABASE_URL && ENV.startsWith('prod') ? undefined : "localhost",
