@@ -280,7 +280,7 @@ export class UsersService {
             user.startDate = newUser.startDate;
             user.isManager = newUser.isManager
         }
-        return newUser;
+        return await this.usersRepository.save(user);
     }
 
 } 
