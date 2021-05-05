@@ -232,9 +232,8 @@ export class UsersService {
     /**
      * Method to get Rockstar of the month stats
      * 
-     * Returns: stats
      * @param rockstar 
-     * @returns 
+     * @returns stats
      */
     async getRockstarStats(rockstar: Users): Promise<any> {
         let date: Date = new Date();
