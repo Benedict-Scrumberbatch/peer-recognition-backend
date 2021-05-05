@@ -71,7 +71,6 @@ export class RecognitionService {
         empFrom.employeeId = empId;
         recognition.empFrom = empFrom;
         recognition.company = comp;
-        recognition.postDate = new Date();
         await this.recognitionsRepository.save(recognition);
         await this.changeUserStats(recognition, true);
         return recognition
@@ -209,7 +208,6 @@ export class RecognitionService {
         let report = new Report();
         report.employeeFrom = reporter;
         report.recognition = recog;
-        report.ReportDate = new Date();
         await this.reportRepo.save(report);
 
         return report;
@@ -231,7 +229,6 @@ export class RecognitionService {
         else
         {
             let newComment = new Comment();
-            newComment.CommentDate = new Date();
             newComment.employeeFrom = user;
             let recognition = await this.recognitionsRepository.findOne( {  where: { recId: rec_id }} );
             newComment.recognition = recognition;
@@ -255,7 +252,6 @@ export class RecognitionService {
     async addReaction(rec_id: number, user: Users, type: ReactType)
     {
         let newReaction = new Reaction();
-        newReaction.reactDate = new Date();
         newReaction.employeeFrom = user;
         newReaction.reactType = type;
         
