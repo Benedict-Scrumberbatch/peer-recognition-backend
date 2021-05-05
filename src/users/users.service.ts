@@ -278,6 +278,7 @@ export class UsersService {
         if (requester.role === Role.Admin) {
             user.positionTitle = newUser.positionTitle;
             user.startDate = newUser.startDate;
+            user.isManager = newUser.isManager
         }
         return newUser;
     }
