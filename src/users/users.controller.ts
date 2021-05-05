@@ -146,9 +146,9 @@ export class UsersController {
      * @returns User object
      */
     @UseGuards(JwtAuthGuard)
-    @Patch('edit')
-    async editUserDetails(@Request() req, @Body() user: Users){
-        return this.usersService.editUserDetails(req.user.employeeId, user);
+    @Patch(':employeeId/edit')
+    async editUserDetails(@Param('employeeId') employeeId: number, @Request() req, @Body() user: Users){
+        return this.usersService.editUserDetails(req.user, employeeId, user);
     }
 }
     

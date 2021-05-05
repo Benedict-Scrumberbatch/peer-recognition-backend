@@ -268,11 +268,17 @@ export class UsersService {
      * @param newUser new User object to update old user
      * @returns the new User object which was used to update the user
      */
-    async editUserDetails(empID: number, newUser: Users){
-        if(empID !== newUser.employeeId){
+    async editUserDetails(requester: Users, employeeId: number, newUser: Users){
+        if(requester.employeeId !== employeeId && requester.role !== Role.Admin){
             throw new UnauthorizedException();
         }
-        await this.usersRepository.save(newUser);
+        const user = await this.usersRepository.findOne({employeeId, companyId: requester.companyId});
+        user.firstName = newUser.firstName;
+        user.lastName = newUser.lastName;
+        if (requester.role === Role.Admin) {
+            user.positionTitle = newUser.positionTitle;
+            user.startDate = newUser.startDate;
+        }
         return newUser;
     }
 
