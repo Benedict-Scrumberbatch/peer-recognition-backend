@@ -71,9 +71,16 @@ export class RecognitionController {
 
     @UseGuards(JwtAuthGuard)
     @Post(':recID/report')
-    addReport(@Request() req, @Param('recID') rec_id): Promise<Report>
+    addReport(@Request() req, @Param('recID') rec_id, @Body() report: Report): Promise<Report>
     {
-        return this.recs.reportRec(rec_id, req.user);
+        return this.recs.reportRec(rec_id, req.user, report);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post(':recID/comment/:commentId/report')
+    addReportComment(@Request() req, @Param('commentId') comment_id, @Body() report: Report): Promise<Report>
+    {
+        return this.recs.reportComment(comment_id, req.user, report);
     }
 
     /**
@@ -98,9 +105,9 @@ export class RecognitionController {
      */
     @UseGuards(JwtAuthGuard)
     @Post(':recID/comment')
-    addComment(@Request() req, @Param('redID') rec_id, @Body() text: string): Promise<Comment| Error>
+    addComment(@Request() req, @Param('redID') rec_id, @Body() comment: Comment): Promise<Comment>
     {
-        return this.recs.addComment(rec_id, text, req.user);
+        return this.recs.addComment(rec_id, comment, req.user);
     }
 
     /**

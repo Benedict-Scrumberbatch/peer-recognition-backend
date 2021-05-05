@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Brackets, DeleteResult, getConnection, Like, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Recognition } from '../dtos/entity/recognition.entity';
@@ -16,6 +16,9 @@ import { ReactType } from '../dtos/enum/reacttype.enum'
 
 import { Role } from '../dtos/enum/role.enum';
 import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
+import { NotificationsService } from '../notifications/notifications.service';
+import { UserNotification } from '../dtos/entity/notification.entity';
+import { NotificationType } from '../dtos/enum/notification-types';
 
 
 @Injectable()
@@ -36,8 +39,9 @@ export class RecognitionService {
         @InjectRepository(Comment)
         private commentRepo: Repository<Comment>,
         @InjectRepository(Reaction)
-        private reactRepo: Repository<Reaction>
-
+        private reactRepo: Repository<Reaction>,
+        @InjectRepository(UserNotification)
+        private notificationRepository: Repository<UserNotification>,
     ){} 
     /**
      * Finds the recognitions for given {@link Company}
@@ -71,9 +75,30 @@ export class RecognitionService {
         empFrom.employeeId = empId;
         recognition.empFrom = empFrom;
         recognition.company = comp;
-        await this.recognitionsRepository.save(recognition);
+        const savedRecognition = await this.recognitionsRepository.save(recognition);
         await this.changeUserStats(recognition, true);
-        return recognition
+
+        // notifications
+        const empFromNotification = new UserNotification();
+        empFromNotification.recognition = savedRecognition;
+        empFromNotification.employeeTo = savedRecognition.empFrom;
+        empFromNotification.notificationType = NotificationType.Recognition;
+        empFromNotification.msg = `Your recognition of ${savedRecognition.empTo.firstName} ${savedRecognition.empTo.lastName} has been posted!`;
+
+        const empToNotification = new UserNotification();
+        empToNotification.recognition = savedRecognition;
+        empToNotification.employeeTo = savedRecognition.empTo;
+        empToNotification.notificationType = NotificationType.Recognition;
+        empToNotification.msg = `You have been recognized by ${savedRecognition.empFrom.firstName} ${savedRecognition.empFrom.lastName}!`
+
+        const empToManagerNotification = new UserNotification();
+        empToManagerNotification.recognition = savedRecognition;
+        empToManagerNotification.employeeTo = savedRecognition.empTo.manager;
+        empToManagerNotification.notificationType = NotificationType.Recognition;
+        empToManagerNotification.msg = `Your employee ${savedRecognition.empTo.firstName} ${savedRecognition.empTo.lastName} has been recognized by ${savedRecognition.empFrom.firstName} ${savedRecognition.empFrom.lastName}!`
+        await this.notificationRepository.save([empFromNotification, empToNotification, empToManagerNotification])
+
+        return savedRecognition;
     }
   
   /**
@@ -201,16 +226,59 @@ export class RecognitionService {
      * @param reporter the {@link Users} who is filing the report
      * @returns {@link Report} the filed report
      */
-    async reportRec(rec_id: number, reporter: Users)
+    async reportRec(rec_id: number, reporter: Users, report: Report)
     {
         let recog = await this.recognitionsRepository.findOne( {  where: { recId: rec_id }} );
 
-        let report = new Report();
         report.employeeFrom = reporter;
         report.recognition = recog;
-        await this.reportRepo.save(report);
+        const savedReport =  await this.reportRepo.save(report);
 
-        return report;
+        const empFromNotification = new UserNotification();
+        empFromNotification.report = savedReport;
+        empFromNotification.employeeTo = savedReport.employeeFrom;
+        empFromNotification.notificationType = NotificationType.Report;
+        empFromNotification.msg = `Your report of ${recog.empFrom.firstName} ${recog.empFrom.lastName}'s recogniton of ${recog.empTo.firstName} ${recog.empTo.lastName} has been recieved.`;
+
+        const admins = await this.userRepository.find({companyId: reporter.companyId, role: Role.Admin})
+        const adminNotifications = admins.map(admin => {
+            const adminNotif = new UserNotification();
+            adminNotif.report = savedReport;
+            adminNotif.employeeTo = admin;
+            adminNotif.notificationType = NotificationType.Report;
+            adminNotif.msg = `${savedReport.employeeFrom.firstName} ${savedReport.employeeFrom.lastName} has reported recognition ${savedReport.recognition.recId}.`;
+            return adminNotif
+        })
+        await this.notificationRepository.save([...adminNotifications, empFromNotification])
+
+        return savedReport;
+    }
+
+    async reportComment(comment_id: number, reporter: Users, report: Report)
+    {
+        let comment = await this.commentRepo.findOne( {  where: { commentID: comment_id }} );
+
+        report.employeeFrom = reporter;
+        report.comment = comment;
+        const savedReport = await this.reportRepo.save(report);
+
+        const empFromNotification = new UserNotification();
+        empFromNotification.report = savedReport;
+        empFromNotification.employeeTo = savedReport.employeeFrom;
+        empFromNotification.notificationType = NotificationType.Report;
+        empFromNotification.msg = `Your report of ${comment.employeeFrom.firstName} ${comment.employeeFrom.lastName}'s comment has been recieved.`;
+
+        const admins = await this.userRepository.find({companyId: reporter.companyId, role: Role.Admin})
+        const adminNotifications = admins.map(admin => {
+            const adminNotif = new UserNotification();
+            adminNotif.report = savedReport;
+            adminNotif.employeeTo = admin;
+            adminNotif.notificationType = NotificationType.Report;
+            adminNotif.msg = `${savedReport.employeeFrom.firstName} ${savedReport.employeeFrom.lastName} has reported comment ${savedReport.comment.commentID}.`;
+            return adminNotif
+        })
+        await this.notificationRepository.save([...adminNotifications, empFromNotification])
+        return savedReport;
     }
 
     /**
@@ -220,26 +288,39 @@ export class RecognitionService {
      * @param user the {@link Users} who is making the comment
      * @returns {@link Comment} the comment entity
      */
-    async addComment(rec_id: number, text: String, user: Users)
+    async addComment(rec_id: number, newComment: Comment, user: Users)
     {
-        if (text == undefined)
-        {
-            return new Error('No Body found');
+     
+        newComment.employeeFrom = user;
+        let recognition = await this.recognitionsRepository.findOne( {  where: { recId: rec_id }} );
+        newComment.recognition = recognition;
+        if (newComment.recognition == undefined) {
+            throw new NotFoundException('no recognition with that ID was found');
         }
-        else
-        {
-            let newComment = new Comment();
-            newComment.employeeFrom = user;
-            let recognition = await this.recognitionsRepository.findOne( {  where: { recId: rec_id }} );
-            newComment.recognition = recognition;
-        if (newComment.recognition == undefined)
-        {
-            return new Error('no recognition with that ID was found');
-        }
-            await this.commentRepo.save(newComment);
-            return newComment;
-        }
+        const savedComment = await this.commentRepo.save(newComment);
         
+        const empFromNotification = new UserNotification();
+        empFromNotification.comment = savedComment;
+        empFromNotification.employeeTo = savedComment.employeeFrom;
+        empFromNotification.notificationType = NotificationType.Comment;
+        empFromNotification.msg = `Your comment on ${recognition.empTo.firstName} ${recognition.empTo.lastName}'s recognition has been posted.`;
+
+        const empToNotification = new UserNotification();
+        empToNotification.comment = savedComment;
+        empToNotification.employeeTo = recognition.empTo;
+        empToNotification.notificationType = NotificationType.Comment;
+        empToNotification.msg = `${savedComment.employeeFrom.firstName} ${savedComment.employeeFrom.lastName} has commented on your recognition.`;
+    
+        const empRecFromNotification = new UserNotification();
+        empRecFromNotification.comment = savedComment;
+        empRecFromNotification.employeeTo = recognition.empFrom;
+        empRecFromNotification.notificationType = NotificationType.Comment;
+        empRecFromNotification.msg = `${savedComment.employeeFrom.firstName} ${savedComment.employeeFrom.lastName} has commented on your recognition.`;
+
+        await this.notificationRepository.save([empToNotification, empRecFromNotification, empFromNotification])
+
+        return savedComment;
+
     }
 
     /**
@@ -257,9 +338,21 @@ export class RecognitionService {
         
         let recog = await this.recognitionsRepository.findOne( {  where: { recId: rec_id }} );
         newReaction.recognition = recog;
-        await this.reactRepo.save(newReaction);
+        const savedReaction = await this.reactRepo.save(newReaction);
 
-        return newReaction;
+        const empToNotification = new UserNotification();
+        empToNotification.reaction = savedReaction;
+        empToNotification.employeeTo = recog.empTo;
+        empToNotification.notificationType = NotificationType.Reaction;
+        empToNotification.msg = `${savedReaction.employeeFrom.firstName} ${savedReaction.employeeFrom.lastName} has reacted on your recognition.`;
+    
+        const empRecFromNotification = new UserNotification();
+        empRecFromNotification.reaction = savedReaction;
+        empRecFromNotification.employeeTo = recog.empFrom;
+        empRecFromNotification.notificationType = NotificationType.Comment;
+        empRecFromNotification.msg = `${savedReaction.employeeFrom.firstName} ${savedReaction.employeeFrom.lastName} has reacted on your recognition.`;
+
+        return savedReaction;
     }
     
     /**

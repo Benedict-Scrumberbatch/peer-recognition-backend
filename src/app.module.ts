@@ -14,6 +14,7 @@ import { TagModule } from './tag/tag.module';
 import { RockstarModule} from './rockstar/rockstar.module';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerOptions } from 'typeorm';
+import { NotificationsModule } from './notifications/notifications.module';
 
 const ENV = process.env.NODE_ENV
 let typeormConfig: TypeOrmModuleOptions = {
@@ -35,7 +36,7 @@ let typeormConfig: TypeOrmModuleOptions = {
     ssl: process.env.DATABASE_URL && ENV.startsWith('prod') ? { rejectUnauthorized: false } : false,
     synchronize: true,
     logging: process.env.DB_LOGGING as LoggerOptions
- })],
+ }), NotificationsModule],
   controllers: [AppController],
   providers: [AppService],
 
