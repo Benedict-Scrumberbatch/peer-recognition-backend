@@ -25,6 +25,8 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          submodules: true
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.1.5
       - uses: c-hive/gha-npm-cache@v1
@@ -46,18 +48,3 @@ jobs:
       - run: npm install
       - run: docker-compose up -d
       - run: npm run test:e2e
-
-  code-scanning:
-    name: code-scanning
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        submodules: true
-    - name: install node
-      uses: actions/setup-node@v2.1.5
-    - uses: c-hive/gha-npm-cache@v1
-    - name: npm install
-      run: npm install
-    - name: Codacy Analysis CLI
-      uses: codacy/codacy-analysis-cli-action@3.0.1
