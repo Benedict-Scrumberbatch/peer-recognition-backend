@@ -3,9 +3,9 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { DeleteResult } from 'typeorm';
 import { Company } from '../dtos/entity/company.entity';
 import { CompanyService } from './company.service';
-import { Role } from 'src/dtos/enum/role.enum';
-import { RolesGuard } from 'src/roles/roles.guard';
-import { Roles } from 'src/roles/roles.decorator';
+import { Role } from '../dtos/enum/role.enum';
+import { RolesGuard } from '../roles/roles.guard';
+import { Roles } from '../roles/roles.decorator';
 
 @Controller('company')
 export class CompanyController {
