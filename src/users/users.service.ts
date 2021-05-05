@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from '../dtos/entity/users.entity';
 import { Login } from '../dtos/entity/login.entity';
@@ -18,6 +18,7 @@ import {
   } from 'nestjs-typeorm-paginate';
 import { create } from 'node:domain';
 import { Console } from 'node:console';
+
 
 
 
@@ -295,4 +296,27 @@ export class UsersService {
         return paginate<Users>(queryBuilder, options);
     }
 
+    /**
+     * 
+     * @param empID ID of the logged in user
+     * @param newUser new User object to update old user
+     * @returns the new User object which was used to update the user
+     */
+    async editUserDetails(requester: Users, employeeId: number, newUser: Users){
+        if(requester.employeeId !== employeeId && requester.role !== Role.Admin){
+            throw new UnauthorizedException();
+        }
+        const user = await this.usersRepository.findOne({employeeId, companyId: requester.companyId});
+        user.firstName = newUser.firstName;
+        user.lastName = newUser.lastName;
+        if (requester.role === Role.Admin) {
+            user.positionTitle = newUser.positionTitle;
+            user.startDate = newUser.startDate;
+            user.isManager = newUser.isManager
+        }
+        return await this.usersRepository.save(user);
+    }
+
 } 
+
+   
