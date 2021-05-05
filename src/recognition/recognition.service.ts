@@ -7,8 +7,15 @@ import { Users } from '../dtos/entity/users.entity';
 import { Tag } from '../dtos/entity/tag.entity';
 import { TagStats } from '../dtos/entity/tagstats.entity';
 import { CreateRecDto } from '../dtos/dto/create-rec.dto';
-import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
+import {Report} from '../dtos/entity/report.entity';
+import { reverse } from 'node:dns';
+import {Comment} from '../dtos/entity/comment.entity';
+import {Reaction} from '../dtos/entity/reaction.entity';
+import { text } from 'express';
+import { ReactType } from '../dtos/enum/reacttype.enum'
+
 import { Role } from '../dtos/enum/role.enum';
+import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
 
 
 @Injectable()
@@ -23,8 +30,15 @@ export class RecognitionService {
         @InjectRepository(Recognition)
         private recognitionsRepository: Repository<Recognition>,
         @InjectRepository(TagStats)
-        private tagStatsRepo: Repository<TagStats>
-    ){}
+        private tagStatsRepo: Repository<TagStats>,
+        @InjectRepository(Report)
+        private reportRepo: Repository<Report>,
+        @InjectRepository(Comment)
+        private commentRepo: Repository<Comment>,
+        @InjectRepository(Reaction)
+        private reactRepo: Repository<Reaction>
+
+    ){} 
     /**
      * Finds the recognitions for given {@link Company}
      * @param id companyId number
@@ -57,7 +71,6 @@ export class RecognitionService {
         empFrom.employeeId = empId;
         recognition.empFrom = empFrom;
         recognition.company = comp;
-        recognition.postDate = new Date();
         await this.recognitionsRepository.save(recognition);
         await this.changeUserStats(recognition, true);
         return recognition
@@ -80,7 +93,7 @@ export class RecognitionService {
         await this.changeUserStats(rec, false);
 
         let deletor = await this.userRepository.findOne({ where: {companyId: companyId, employeeId: empId} });
-        await this.recognitionsRepository.update(id, {deletedBy: deletor});
+        /await this.recognitionsRepository.update(id, {deletedBy: deletor});/
 
         return await this.recognitionsRepository.softDelete({recId:id});
     }
@@ -182,6 +195,162 @@ export class RecognitionService {
         }
     }
 
+    /**
+     * Create a {@link Report} for a {@link Recognition} and writes it to the DB
+     * @param rec_id ID of the recognition to be reported
+     * @param reporter the {@link Users} who is filing the report
+     * @returns {@link Report} the filed report
+     */
+    async reportRec(rec_id: number, reporter: Users)
+    {
+        let recog = await this.recognitionsRepository.findOne( {  where: { recId: rec_id }} );
+
+        let report = new Report();
+        report.employeeFrom = reporter;
+        report.recognition = recog;
+        await this.reportRepo.save(report);
+
+        return report;
+    }
+
+    /**
+     * Create a {@link Comment} for a {@link Recognition} and writes it to the DB
+     * @param rec_id ID of the recognition to be reported
+     * @param text the string of what the user wrote 
+     * @param user the {@link Users} who is making the comment
+     * @returns {@link Comment} the comment entity
+     */
+    async addComment(rec_id: number, text: String, user: Users)
+    {
+        if (text == undefined)
+        {
+            return new Error('No Body found');
+        }
+        else
+        {
+            let newComment = new Comment();
+            newComment.employeeFrom = user;
+            let recognition = await this.recognitionsRepository.findOne( {  where: { recId: rec_id }} );
+            newComment.recognition = recognition;
+        if (newComment.recognition == undefined)
+        {
+            return new Error('no recognition with that ID was found');
+        }
+            await this.commentRepo.save(newComment);
+            return newComment;
+        }
+        
+    }
+
+    /**
+     * Create a {@link Reaction} for a {@link recognition} and writes it to the DB
+     * @param rec_id ID of the recognition to be reacted to
+     * @param user the {@link Users} who is making the reaction
+     * @param reactType the type of the reaction, from {@link ReactType}
+     * @returns {@link Reaction} the Reaction entity
+     */
+    async addReaction(rec_id: number, user: Users, type: ReactType)
+    {
+        let newReaction = new Reaction();
+        newReaction.employeeFrom = user;
+        newReaction.reactType = type;
+        
+        let recog = await this.recognitionsRepository.findOne( {  where: { recId: rec_id }} );
+        newReaction.recognition = recog;
+        await this.reactRepo.save(newReaction);
+
+        return newReaction;
+    }
+    
+    /**
+     * Gets all {@link Report} for a given recognition and returns them
+     * @param rec_id ID of the recognition to find reports for
+     * @param user unused {@link Users} 
+     * @returns {@link Report} an array of found reports
+     */
+    async getReports(rec_id: Number, user: Users)
+    {
+        let recognition = await this.recognitionsRepository.findOne( { where: {recId: rec_id}});
+        let reports = await this.reportRepo.find( {  where: { recognition: recognition }} );
+        if (reports != undefined)
+        {
+            return reports;
+        }
+        else
+        {
+            return new Error("No reports found");
+        }
+    }
+
+    /**
+     * Gets all {@link Comment} for a given recognition and returns them
+     * @param rec_id ID of the recognition to find reports for
+     * @param user unused {@link Users} 
+     * @returns {@link Comment} an array of found comments
+     */
+    async getComments(rec_id: Number, user: Users)
+    {
+        let recognition = await this.recognitionsRepository.findOne( { where: {recId: rec_id}});
+        let comments = await this.commentRepo.find( {  where: { recognition: recognition }} );
+        if (comments != undefined)
+        {
+            return comments;
+        }
+        else
+        {
+            return new Error("No comments found");
+        }
+    }
+
+    /**
+     * Gets all {@link Reaction} for a given recognition and returns them
+     * @param rec_id ID of the recognition to find reports for
+     * @param user unused {@link Users} 
+     * @returns {@link Reaction} an array of found reactions
+     */
+    async getReactions(rec_id: Number, user: Users)
+    {
+        let recognition = await this.recognitionsRepository.findOne( { where: {recId: rec_id}});
+        let reactions = await this.reactRepo.find( {  where: { recognition: recognition }} );
+        if (reactions != undefined)
+        {
+            return reactions;
+        }
+        else
+        {
+            return new Error("No reactions found");
+        }
+    }
+
+    /**
+     * Removes the given {@link Reaction}
+     * @param reactionID ID of the reaction to remove
+     * @returns {@link Reaction} the removed reaction or null if it didn't exist
+     */
+    async removeReaction(reactionID: number): Promise<Reaction[]> {
+        const reaction = await this.reactRepo.findOne({ reactionID: reactionID });
+        return await this.reactRepo.remove([reaction]);
+    }
+
+    /**
+     * Soft Deletes the given  {@link Comment}
+     * @param commentID ID of the reaction to remove 
+     * @returns {@link Comment} the removed comment or null if it didn't exist
+     */
+    async removeComment(commentID: number): Promise<Comment[]> {
+        const comment = await this.commentRepo.findOne({commentID: commentID});
+        return await this.commentRepo.softRemove([comment]);
+    }
+
+     /**
+     * Soft Deletes the given  {@link Report}
+     * @param reportID ID of the reaction to remove 
+     * @returns {@link Report} the removed report or null if it didn't exist
+     */
+    async removeReport(reportID: number): Promise<Report[]> {
+        const report = await this.reportRepo.findOne({reportID: reportID});
+        return await this.reportRepo.softRemove([report]);
+    }
     async paginate_post(options: IPaginationOptions, 
         firstName_t: string, 
         lastName_t: string,

@@ -117,46 +117,9 @@ export class UsersController {
     // async createUserMultiple(@Body() employeeMultiple: []) {
     //     return await this.usersService.createUserMultiple(employeeMultiple);
     // }
-    /**
-     * `GET` endpoint to get Rockstar of the month.
-     * 
-     * Return: {@link Users} object 
-     * @param companyId 
-     * @returns 
-     */
-    @UseGuards(JwtAuthGuard)
-    @Get('rockstar')
-    async getRockstar(@Request() req) {
-        return await this.usersService.getRockstar(req.user.companyId);
-    }
-    /**
-     * `GET` endpoint to get Rockstar of the month stat
-     * 
-     * @param comp_ID 
-     * @returns 
-     */
-    @UseGuards(JwtAuthGuard)
-    @Get('company/rockstar/stats/:comp_ID')
-    async getRockstarStats(@Param('comp_ID') comp_ID: number)
-    {
-        let rockstar: Users = await this.getRockstar(comp_ID)
-        return await this.usersService.getRockstarStats(rockstar);
-    }
 
-    /**
-     * `GET` endpoint to get Rock star of the month recognitions
-     * 
-     * Returns: array of recognitions
-     * @param comp_ID 
-     * @returns 
-     */
-    @UseGuards(JwtAuthGuard)
-    @Get('company/rockstar/recognitions/:comp_ID')
-    async getRockstarRecogs(@Param('comp_ID') comp_ID: number)
-    {
-        let rockstar: Users = await this.getRockstar(comp_ID)
-        return await this.usersService.getRockstarRecogs(rockstar);
-    }
+    
+   
     @UseGuards(JwtAuthGuard)
     @Get('search')
     async index(
