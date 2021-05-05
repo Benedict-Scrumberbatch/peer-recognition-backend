@@ -230,35 +230,69 @@ export class UsersService {
         return paginate<Users>(this.usersRepository, options);
     }
 
-    async paginate_username(options: IPaginationOptions, firstName: string, lastName: string, 
-        search: string, comp_id: number): Promise<Pagination<Users>> {
+    /**
+     * Method to get Rockstar of the month stats
+     * 
+     * @param rockstar 
+     * @returns stats
+     */
+    async getRockstarStats(rockstar: Users): Promise<any> {
+        let date: Date = new Date();
+        let prevMonth: number = -1;
+        let year = date.getFullYear()
+        if (date.getMonth() == 1)
+        {
+            prevMonth = 12;
+            year = date.getFullYear() - 1;
+        }
+        else
+        {
+            prevMonth = date.getMonth()
+        }
+        let results = {};
+        let recogs = await this.recognitionRepository.createQueryBuilder().select("*").innerJoin("recognition_tags_tag","test","test.recognitionRecId = Recognition.recId").where("Recognition.empToCompanyId = :compID", {compID : rockstar.company}).andWhere("Recognition.empToEmployeeId = :empID", {empID: rockstar.employeeId}).andWhere("extract(Month from Recognition.postDate) = :prvMonth",{prvMonth:prevMonth}).andWhere("extract(Year from Recognition.postDate) = :yr",{yr:year}).getRawMany();
+        for (let i = 0; i < recogs.length; ++i)
+        {
+            if (!(recogs[i].tagTagID in results))
+            {
+                results[recogs[i].tagTagId]= 1;
+            }
+            else 
+            {
+                let numTag = results[recogs[i].tagTagId];
+                results[recogs[i].tagTagId]= numTag + 1;
+            }
+        }
+        return results;
+    }
+   
+    async paginate_username(options: IPaginationOptions, firstName: string, lastName: string, search: string, comp_id: number): Promise<Pagination<Users>> {
+        const matchCase = firstName || lastName;
         const queryBuilder = this.usersRepository.createQueryBuilder('user');
         queryBuilder.orderBy('user.firstName', 'ASC')
         // Must specify both firstname and lastname
-        .where("user.companyId = :id", {id: comp_id})
-        .andWhere(new Brackets (comp => {
-            if (firstName != null && firstName != undefined 
-                && lastName != null && lastName != undefined){
-                comp.orWhere("user.firstName ilike :firstName", {firstName: '%'+firstName+'%'})
-                .andWhere("user.lastName ilike :lastName", {lastName: '%'+lastName+'%'})
-            }
-            else {
-                comp.orWhere("user.firstName ilike :firstName", {firstName: '%'+firstName+'%'})
-                .orWhere("user.lastName ilike :lastName", {lastName: '%'+lastName+'%'})
-            }
-            // search: string return users with similar firstname and lastname
-            if (search != null && search != undefined){
-                const arr = search.split(' ', 2)
-                if (arr.length > 1) {
-                    comp.orWhere("user.firstName ilike :fn", {fn: '%'+arr[0]+'%'})
-                    .andWhere("user.lastName ilike :ln", {ln: '%'+arr[1]+'%'})
-                }
-                else {
+        .where("user.companyId = :id", {id: comp_id});
+        if(search || matchCase){
+            queryBuilder.andWhere(new Brackets (comp => {
+                if (search) {
                     comp.orWhere("user.firstName ilike :search", {search: '%'+search+'%'})
-                    .orWhere("user.lastName ilike :search", {search: '%'+search+'%'})
+                    .orWhere("user.lastName ilike :search", {search: '%'+search+'%'});
                 }
-            }
-        })); 
+                if (matchCase) {
+                    comp.orWhere(new Brackets (bracket => {
+                        if (firstName) {
+                            bracket.andWhere("user.firstName ilike :firstName", {firstName: '%'+firstName+'%'});
+                        }
+        
+                        if (lastName) {
+                            bracket.andWhere("user.lastName ilike :lastName", {lastName: '%'+lastName+'%'});
+                        }
+        
+                    }));
+                }        
+            })); 
+        }
+      
         return paginate<Users>(queryBuilder, options);
     }
 

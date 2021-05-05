@@ -177,24 +177,31 @@ export class RecognitionController {
     async index(
         @Query('page') page: number = 1,
         @Query('limit') limit: number = 10,
-        @Query('firstName_t') firstName_t: string,
-        @Query('lastName_t') lastName_t: string,
-        @Query('firstName_f') firstName_f: string,
-        @Query('lastName_f') lastName_f: string,
+        @Query('firstName_to') firstName_t: string,
+        @Query('lastName_to') lastName_t: string,
+        @Query('firstName_from') firstName_f: string,
+        @Query('lastName_from') lastName_f: string,
         @Query('empTo_id') empTo_id: number,
+        @Query('empToFrom_id') empToFrom_id: number,
         @Query('empFrom_id') empFrom_id: number,
         @Query('search') search: string,
         @Query('msg') msg: string,   
         @Request() req
     ): Promise<Pagination<Recognition>> {
+        const pageRegex = /&page(\=[^&]*)?(?=&|$)|^page(\=[^&]*)?(&|$)/;
+        const limitRegex = /&limit(\=[^&]*)?(?=&|$)|^limit(\=[^&]*)?(&|$)/;
+        let path: string = req.url;
+        path = path.replace(pageRegex, '')
+        path = path.replace(limitRegex, '')
         limit = limit > 100 ? 100: limit
+        limit = limit <= 0 ? 1: limit
         return this.recs.paginate_post(
-            {page: Number(page), limit: Number(limit), route: 'http://localhost:4200/recognitions/search'},
+            {page: Number(page), limit: Number(limit), route: req.headers.host + path},
             firstName_t, lastName_t,
             firstName_f, lastName_f,
             empTo_id, empFrom_id,
-            search,
-            msg,
+            empToFrom_id, 
+            search, msg,
             req.user.companyId);
     }
 
