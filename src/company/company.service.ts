@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Tag } from '../dtos/entity/tag.entity';
 import { DeleteResult, Repository } from 'typeorm';
 import { Company } from '../dtos/entity/company.entity';
 import { Users } from '../dtos/entity/users.entity';
@@ -25,7 +26,6 @@ export class CompanyService {
         private loginRepo: Repository<Login>,
         @InjectRepository(Tag)
         private tagRepository: Repository<Tag>, 
-
         private tagservice: TagService,
     
     ){}
