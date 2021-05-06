@@ -1,4 +1,4 @@
-import { Controller, Request, Post, UseGuards, Get, Delete, Param, Body, Query } from '@nestjs/common';
+import { Controller, Request, Post, UseGuards, Get, Delete, Param, Body, Query, Patch} from '@nestjs/common';
 import { Login } from '../dtos/entity/login.entity';
 import { Users } from '../dtos/entity/users.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -133,9 +133,28 @@ export class UsersController {
         @Query('search') search: string,
         @Request() req
     ): Promise<Pagination<Users>> {
+        const pageRegex = /&page(\=[^&]*)?(?=&|$)|^page(\=[^&]*)?(&|$)/;
+        const limitRegex = /&limit(\=[^&]*)?(?=&|$)|^limit(\=[^&]*)?(&|$)/;
+        let path: string = req.url;
+        path = path.replace(pageRegex, '')
+        path = path.replace(limitRegex, '')
         limit = limit > 100 ? 100: limit
+        limit = limit <= 0 ? 1: limit
         return this.usersService.paginate_username(
-            {page: Number(page), limit: Number(limit), route: 'http://localhost:4200/users/search'},
+            {page: Number(page), limit: Number(limit), route: req.headers.host + path},
             firstName, lastName, search, req.user.companyId);
     }
+
+    /**
+     * 
+     * @param req request object
+     * @param user User object which to be used to update 
+     * @returns User object
+     */
+    @UseGuards(JwtAuthGuard)
+    @Patch(':employeeId/edit')
+    async editUserDetails(@Param('employeeId') employeeId: number, @Request() req, @Body() user: Users){
+        return this.usersService.editUserDetails(req.user, employeeId, user);
+    }
 }
+    

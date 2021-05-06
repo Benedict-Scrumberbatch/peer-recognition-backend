@@ -451,69 +451,66 @@ export class RecognitionService {
         lastName_f: string,
         empTo_id: number,
         empFrom_id: number,
+        empToFrom_id: number,
         search: string,
         msg: string,
         comp_id: number): Promise<Pagination<Recognition>> {
+        
+        const matchCase = firstName_f || firstName_t || lastName_f|| lastName_t || empFrom_id || empTo_id || empToFrom_id || msg
         const queryBuilder = this.recognitionsRepository.createQueryBuilder('rec');
 
         queryBuilder.leftJoinAndSelect('rec.empTo', 'empTo').leftJoinAndSelect('rec.empFrom', 'empFrom')
-        .where("empTo.companyId = :comp_id", {comp_id: comp_id})
-        .andWhere(new Brackets(comp => {
-
-            // search by Firstname Lastname
-            if (firstName_t != null && firstName_t != undefined 
-                && lastName_t != null && lastName_t != undefined){
-                comp.orWhere("empTo.firstName ilike :firstName_t", {firstName_t: '%'+firstName_t+'%'})
-                .andWhere("empTo.lastName ilike :lastName_t", {lastName_t: '%'+lastName_t+'%'})
-            }
-            else {
-                comp.orWhere("empTo.firstName ilike :firstName_t", {firstName_t: '%'+firstName_t+'%'})
-                .orWhere("empTo.lastName ilike :lastName_t", {lastName_t: '%'+lastName_t+'%'})
-            }
-
-            if (firstName_f != null && firstName_f != undefined 
-                && lastName_f != null && lastName_f != undefined){
-                comp.orWhere("empFrom.firstName ilike :firstName_f", {firstName_f: '%'+firstName_f+'%'})
-                .andWhere("empFrom.lastName ilike :lastName_f", {lastName_f: '%'+lastName_f+'%'})
-            }
-            else {
-                comp.orWhere("empFrom.firstName ilike :firstName_f", {firstName_f: '%'+firstName_f+'%'})
-                .orWhere("empFrom.lastName ilike :lastName_f", {lastName_f: '%'+lastName_f+'%'})
-            }
-
-
-            // search by $ID
-            comp.orWhere(new Brackets(qb => {
-                qb.where("empTo.employeeId = :empTo_id", {empTo_id: empTo_id})
-                .andWhere("empFrom.employeeId = :empFrom_id", {empFrom_id: empFrom_id});
-            }))
-
-
-            // search by $SEARCH
-            if (search != null && search != undefined){
-                const arr = search.split(' ', 2)
-                if (arr.length > 1) {
-                    comp.orWhere(new Brackets(qb => {
-                        qb.orWhere("empTo.firstName ilike :fnTo", {fnTo: '%'+arr[0]+'%'})
-                        .andWhere("empTo.lastName ilike :lnTo", {lnTo: '%'+arr[1]+'%'})
-                    }))
-                    .orWhere(new Brackets(qb => {
-                        qb.orWhere("empFrom.firstName ilike :fnFrom", {fnFrom: '%'+arr[0]+'%'})
-                        .andWhere("empFrom.lastName ilike :lnFrom", {lnFrom: '%'+arr[1]+'%'})
-                    }));
-                }
-                else {
+        .where("empTo.companyId = :comp_id", {comp_id: comp_id});
+        if(search || matchCase){
+            queryBuilder.andWhere(new Brackets (comp => {
+                if (search) {
                     comp.orWhere("empTo.lastName ilike :search", {search: '%' + search + '%'})
                     .orWhere("empTo.firstName ilike :search", {search: '%' + search + '%'})
                     .orWhere("empFrom.firstName ilike :search", {search: '%' + search + '%'})
                     .orWhere("empFrom.lastName ilike :search", {search: '%' + search + '%'})
+                    .orWhere("msg like :search", {search: '%' + search + '%'});
                 }
-            }
-            
+                if (matchCase) {
+                    comp.orWhere(new Brackets (bracket => {
+                        if (firstName_t) {
+                            bracket.andWhere("empTo.firstName ilike :firstName_t", {firstName_t: '%'+firstName_t+'%'});
+                        }
 
-            // search by $MSG
-            comp.orWhere("msg like :msg", {msg: '%' + msg + '%'});
-        }))
+                        if (firstName_f) {
+                            bracket.andWhere("empFrom.firstName ilike :firstName_f", {firstName_f: '%'+firstName_f+'%'});
+                        }
+        
+                        if (lastName_t) {
+                            bracket.andWhere("empTo.lastName ilike :lastName_t", {lastName_t: '%'+lastName_t+'%'});
+                        }
+
+                        if (lastName_f) {
+                            bracket.andWhere("empFrom.lastName ilike :lastName_f", {lastName_f: '%'+lastName_f+'%'});
+                        }
+
+                        if (empFrom_id) {
+                            bracket.andWhere("empFrom.employeeId = :empFrom_id", {empFrom_id: empFrom_id})
+                        }
+
+                        if (empTo_id) {
+                            bracket.andWhere("empTo.employeeId = :empTo_id", {empTo_id: empTo_id})
+                        }
+
+                        if(msg) {
+                            bracket.andWhere("msg like :msg", {msg: '%' + msg + '%'})
+                        }
+
+                        if (empToFrom_id) {
+                            bracket.andWhere(new Brackets (query => {
+                                query.orWhere("empTo.employeeId = :empToFrom_id", {empToFrom_id: empToFrom_id})
+                                .orWhere("empFrom.employeeId = :empToFrom_id", {empToFrom_id: empToFrom_id})
+                            }))
+                        }
+        
+                    }));
+                }        
+            })); 
+        }
         return paginate<Recognition>(queryBuilder, options);
     }
 }
