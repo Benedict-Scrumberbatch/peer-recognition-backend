@@ -476,6 +476,8 @@ export class RecognitionService {
         const queryBuilder = this.recognitionsRepository.createQueryBuilder('rec');
 
         queryBuilder.leftJoinAndSelect('rec.empTo', 'empTo').leftJoinAndSelect('rec.empFrom', 'empFrom')
+        .leftJoinAndSelect('rec.tags', 'tags').leftJoinAndSelect('rec.reactions', 'reactions')
+        .leftJoinAndSelect('rec.comments', 'comments')
         .where("empTo.companyId = :comp_id", {comp_id: comp_id});
         if(search || matchCase){
             queryBuilder.andWhere(new Brackets (comp => {

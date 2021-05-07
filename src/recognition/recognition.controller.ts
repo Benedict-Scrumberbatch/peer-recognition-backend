@@ -26,6 +26,41 @@ export class RecognitionController {
     }
 
     @UseGuards(JwtAuthGuard)
+    @Get('search')
+    async index(
+        @Query('page') page: number = 1,
+        @Query('limit') limit: number = 10,
+        @Query('firstName_to') firstName_t: string,
+        @Query('lastName_to') lastName_t: string,
+        @Query('firstName_from') firstName_f: string,
+        @Query('lastName_from') lastName_f: string,
+        @Query('empTo_id') empTo_id: number,
+        @Query('empToFrom_id') empToFrom_id: number,
+        @Query('empFrom_id') empFrom_id: number,
+        @Query('search') search: string,
+        @Query('msg') msg: string,   
+        @Request() req
+    ): Promise<Pagination<Recognition>> {
+        let path: string = req.url;
+        let [host, query] = path.split('?');
+        const params = new URLSearchParams(query);
+        
+        params.delete('page');
+        params.delete('limit');
+        
+        limit = limit > 100 ? 100: limit
+        limit = limit <= 0 ? 1: limit
+        return this.recs.paginate_post(
+            {page: Number(page), limit: Number(limit), route: host + '?' + params.toString()},
+            firstName_t, lastName_t,
+            firstName_f, lastName_f,
+            empTo_id, empFrom_id,
+            empToFrom_id, 
+            search, msg,
+            req.user.companyId);
+    }
+
+    @UseGuards(JwtAuthGuard)
     @Get(':id')
     findOne(@Request() req, @Param('id') id): Promise<Recognition>{
         return this.recs.findRecById(req.user.companyId, id);
@@ -182,39 +217,6 @@ export class RecognitionController {
     deleteReaction(@Request() req, @Param('reactionID') reaction_id): Promise<Reaction[]>
     {
         return this.recs.removeReaction(reaction_id);
-    }
-
-    @UseGuards(JwtAuthGuard)
-    @Get('search')
-    async index(
-        @Query('page') page: number = 1,
-        @Query('limit') limit: number = 10,
-        @Query('firstName_to') firstName_t: string,
-        @Query('lastName_to') lastName_t: string,
-        @Query('firstName_from') firstName_f: string,
-        @Query('lastName_from') lastName_f: string,
-        @Query('empTo_id') empTo_id: number,
-        @Query('empToFrom_id') empToFrom_id: number,
-        @Query('empFrom_id') empFrom_id: number,
-        @Query('search') search: string,
-        @Query('msg') msg: string,   
-        @Request() req
-    ): Promise<Pagination<Recognition>> {
-        const pageRegex = /&page(\=[^&]*)?(?=&|$)|^page(\=[^&]*)?(&|$)/;
-        const limitRegex = /&limit(\=[^&]*)?(?=&|$)|^limit(\=[^&]*)?(&|$)/;
-        let path: string = req.url;
-        path = path.replace(pageRegex, '')
-        path = path.replace(limitRegex, '')
-        limit = limit > 100 ? 100: limit
-        limit = limit <= 0 ? 1: limit
-        return this.recs.paginate_post(
-            {page: Number(page), limit: Number(limit), route: req.headers.host + path},
-            firstName_t, lastName_t,
-            firstName_f, lastName_f,
-            empTo_id, empFrom_id,
-            empToFrom_id, 
-            search, msg,
-            req.user.companyId);
     }
 
 }

@@ -271,7 +271,8 @@ export class UsersService {
         const queryBuilder = this.usersRepository.createQueryBuilder('user');
         queryBuilder.orderBy('user.firstName', 'ASC')
         // Must specify both firstname and lastname
-        .where("user.companyId = :id", {id: comp_id});
+        .where("user.companyId = :id", {id: comp_id})
+        .leftJoinAndSelect('user.manager', 'manager');
         if(search || matchCase){
             queryBuilder.andWhere(new Brackets (comp => {
                 if (search) {
