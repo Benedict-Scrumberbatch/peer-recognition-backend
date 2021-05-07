@@ -12,7 +12,6 @@ import { reverse } from 'node:dns';
 import {Comment} from '../dtos/entity/comment.entity';
 import {Reaction} from '../dtos/entity/reaction.entity';
 import { text } from 'express';
-import { ReactType } from '../dtos/enum/reacttype.enum'
 
 import { Role } from '../dtos/enum/role.enum';
 import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
@@ -249,11 +248,10 @@ export class RecognitionService {
      * @param reactType the type of the reaction, from {@link ReactType}
      * @returns {@link Reaction} the Reaction entity
      */
-    async addReaction(rec_id: number, user: Users, type: ReactType)
+    async addReaction(rec_id: number, user: Users)
     {
         let newReaction = new Reaction();
         newReaction.employeeFrom = user;
-        newReaction.reactType = type;
         
         let recog = await this.recognitionsRepository.findOne( {  where: { recId: rec_id }} );
         newReaction.recognition = recog;
