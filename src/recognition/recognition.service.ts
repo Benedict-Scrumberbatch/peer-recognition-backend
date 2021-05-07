@@ -12,7 +12,6 @@ import { reverse } from 'node:dns';
 import {Comment} from '../dtos/entity/comment.entity';
 import {Reaction} from '../dtos/entity/reaction.entity';
 import { text } from 'express';
-import { ReactType } from '../dtos/enum/reacttype.enum'
 
 import { Role } from '../dtos/enum/role.enum';
 import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
@@ -49,14 +48,19 @@ export class RecognitionService {
      * @returns an array of {@link Recognition} objects
      */
     async findCompRec(id: number): Promise<Recognition[]>{
-     return await this.recognitionsRepository.find({relations: ['empFrom', 'empTo', 'tags'], where:{company:id}});
+     return await this.recognitionsRepository.find({relations: ['empFrom', 'empTo', 'tags', 'comments', 'reactions'], where:{company:id}});
     }
+
+    async findRecById(companyId: number, id: number): Promise<Recognition>{
+        return await this.recognitionsRepository.findOne({relations: ['empFrom', 'empTo', 'tags', 'comments', 'reactions'], where:{company: companyId, recId: id}});
+       }
+
     /**
      * Finds all recognitions in the database
      * @returns an array of {@link Recognition} objects
      */
     async findAll(): Promise<Recognition[]>{
-        return await this.recognitionsRepository.find({relations: ['empFrom', 'empTo', 'tags']});
+        return await this.recognitionsRepository.find({relations: ['empFrom', 'empTo', 'tags', 'comments', 'reactions']});
     }
 
    /**
@@ -64,19 +68,21 @@ export class RecognitionService {
      * @param recognition takes in a {@link Recognition} object and the current's user's ID number
      * @returns a {@link Recognition} object
      */    
-    async createRec(recognition: Recognition, compId: number, empId: number): Promise<Recognition> {
-        if(recognition.empTo.employeeId === empId){
+    async createRec(recognition: Recognition, requester: Users): Promise<Recognition> {
+        if(recognition.empTo.employeeId === requester.employeeId){
             throw new UnauthorizedException();
         }
-        let empFrom = new Users();
         let comp = new Company();
-        comp.companyId = compId;
-        empFrom.companyId = compId;
-        empFrom.employeeId = empId;
-        recognition.empFrom = empFrom;
+        comp.companyId = requester.companyId;
+        recognition.empFrom = requester;
         recognition.company = comp;
-        const savedRecognition = await this.recognitionsRepository.save(recognition);
-        await this.changeUserStats(recognition, true);
+        recognition.empTo = await this.userRepository.findOne({where: {employeeId: recognition.empTo.employeeId, companyId: recognition.empTo.companyId}, relations: ['manager']})
+  
+        let savedRecognition = await this.recognitionsRepository.save(recognition);
+
+        await this.changeUserStats(savedRecognition, true);
+
+        const notifications: UserNotification[] = []
 
         // notifications
         const empFromNotification = new UserNotification();
@@ -84,19 +90,25 @@ export class RecognitionService {
         empFromNotification.employeeTo = savedRecognition.empFrom;
         empFromNotification.notificationType = NotificationType.Recognition;
         empFromNotification.msg = `Your recognition of ${savedRecognition.empTo.firstName} ${savedRecognition.empTo.lastName} has been posted!`;
+        notifications.push(empFromNotification);
 
         const empToNotification = new UserNotification();
         empToNotification.recognition = savedRecognition;
         empToNotification.employeeTo = savedRecognition.empTo;
         empToNotification.notificationType = NotificationType.Recognition;
         empToNotification.msg = `You have been recognized by ${savedRecognition.empFrom.firstName} ${savedRecognition.empFrom.lastName}!`
+        notifications.push(empToNotification);
+        
+        if (savedRecognition.empTo.manager) {
+            const empToManagerNotification = new UserNotification();
+            empToManagerNotification.recognition = savedRecognition;
+            empToManagerNotification.employeeTo = savedRecognition.empTo.manager;
+            empToManagerNotification.notificationType = NotificationType.Recognition;
+            empToManagerNotification.msg = `Your employee ${savedRecognition.empTo.firstName} ${savedRecognition.empTo.lastName} has been recognized by ${savedRecognition.empFrom.firstName} ${savedRecognition.empFrom.lastName}!`;
+            notifications.push(empToManagerNotification)
+        }
+        await this.notificationRepository.save(notifications);
 
-        const empToManagerNotification = new UserNotification();
-        empToManagerNotification.recognition = savedRecognition;
-        empToManagerNotification.employeeTo = savedRecognition.empTo.manager;
-        empToManagerNotification.notificationType = NotificationType.Recognition;
-        empToManagerNotification.msg = `Your employee ${savedRecognition.empTo.firstName} ${savedRecognition.empTo.lastName} has been recognized by ${savedRecognition.empFrom.firstName} ${savedRecognition.empFrom.lastName}!`
-        await this.notificationRepository.save([empFromNotification, empToNotification, empToManagerNotification])
 
         return savedRecognition;
     }
@@ -109,18 +121,35 @@ export class RecognitionService {
  * @param role the role of the logged in user
  * @returns {@link DeleteResult} 
  */
-    async deleteRec(id: number, companyId: number, empId: number, role: Role): Promise<DeleteResult> {        
+    async deleteRec(id: number, user: Users): Promise<DeleteResult> {        
         let rec = await this.recognitionsRepository.findOne({ relations: ["empFrom", "empTo", "company", "tags"], where: { recId: id } });
-        if(rec.empFrom.employeeId !== empId && rec.empTo.employeeId !== empId && role !== 'admin'){
+        if(rec.empFrom.employeeId !== user.employeeId  && user.role !== Role.Admin){
             throw new UnauthorizedException();
         }
 
         await this.changeUserStats(rec, false);
 
-        let deletor = await this.userRepository.findOne({ where: {companyId: companyId, employeeId: empId} });
-        /await this.recognitionsRepository.update(id, {deletedBy: deletor});/
+        // let deletor = await this.userRepository.findOne({ where: {companyId: use, employeeId: empId} });
+        await this.recognitionsRepository.update(id, {deletedBy: user});
 
-        return await this.recognitionsRepository.softDelete({recId:id});
+        const result = await this.recognitionsRepository.softDelete({recId:id});
+
+        // notifications
+        const empFromNotification = new UserNotification();
+        empFromNotification.recognition = rec;
+        empFromNotification.employeeTo = rec.empFrom;
+        empFromNotification.notificationType = NotificationType.Recognition;
+        empFromNotification.msg = `Your recognition of ${rec.empTo.firstName} ${rec.empTo.lastName} has been deleted by ${user.firstName} ${user.lastName}.`;
+
+        const empToNotification = new UserNotification();
+        empToNotification.recognition = rec;
+        empToNotification.employeeTo = rec.empTo;
+        empToNotification.notificationType = NotificationType.Recognition;
+        empToNotification.msg = `The recogniton you have recieved from ${rec.empFrom.firstName} ${rec.empFrom.lastName} has been deleted by ${user.firstName} ${user.lastName}.`
+        
+        await this.notificationRepository.save([empToNotification, empFromNotification]);
+
+        return result;
     }
 
     /**
@@ -228,7 +257,7 @@ export class RecognitionService {
      */
     async reportRec(rec_id: number, reporter: Users, report: Report)
     {
-        let recog = await this.recognitionsRepository.findOne( {  where: { recId: rec_id }} );
+        let recog = await this.recognitionsRepository.findOne( {relations: ["empFrom", "empTo", "company", "tags"],  where: { recId: rec_id }} );
 
         report.employeeFrom = reporter;
         report.recognition = recog;
@@ -256,7 +285,7 @@ export class RecognitionService {
 
     async reportComment(comment_id: number, reporter: Users, report: Report)
     {
-        let comment = await this.commentRepo.findOne( {  where: { commentID: comment_id }} );
+        let comment = await this.commentRepo.findOne( {relations: ["empFrom", "empTo", "company", "tags"],  where: { commentID: comment_id }} );
 
         report.employeeFrom = reporter;
         report.comment = comment;
@@ -292,7 +321,7 @@ export class RecognitionService {
     {
      
         newComment.employeeFrom = user;
-        let recognition = await this.recognitionsRepository.findOne( {  where: { recId: rec_id }} );
+        let recognition = await this.recognitionsRepository.findOne( {relations: ["empFrom", "empTo", "company", "tags"],  where: { recId: rec_id }} );
         newComment.recognition = recognition;
         if (newComment.recognition == undefined) {
             throw new NotFoundException('no recognition with that ID was found');
@@ -330,27 +359,14 @@ export class RecognitionService {
      * @param reactType the type of the reaction, from {@link ReactType}
      * @returns {@link Reaction} the Reaction entity
      */
-    async addReaction(rec_id: number, user: Users, type: ReactType)
+    async addReaction(rec_id: number, user: Users)
     {
         let newReaction = new Reaction();
         newReaction.employeeFrom = user;
-        newReaction.reactType = type;
         
         let recog = await this.recognitionsRepository.findOne( {  where: { recId: rec_id }} );
         newReaction.recognition = recog;
         const savedReaction = await this.reactRepo.save(newReaction);
-
-        const empToNotification = new UserNotification();
-        empToNotification.reaction = savedReaction;
-        empToNotification.employeeTo = recog.empTo;
-        empToNotification.notificationType = NotificationType.Reaction;
-        empToNotification.msg = `${savedReaction.employeeFrom.firstName} ${savedReaction.employeeFrom.lastName} has reacted on your recognition.`;
-    
-        const empRecFromNotification = new UserNotification();
-        empRecFromNotification.reaction = savedReaction;
-        empRecFromNotification.employeeTo = recog.empFrom;
-        empRecFromNotification.notificationType = NotificationType.Comment;
-        empRecFromNotification.msg = `${savedReaction.employeeFrom.firstName} ${savedReaction.employeeFrom.lastName} has reacted on your recognition.`;
 
         return savedReaction;
     }

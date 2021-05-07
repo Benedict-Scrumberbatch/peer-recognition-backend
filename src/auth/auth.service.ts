@@ -33,8 +33,8 @@ export class AuthService {
      * @param user user information that gets associated with the JWT token.
      * @returns Object with a JWT access token which can be used to authenticate future API calls.
      */
-    async login(user: any) {
-        const payload = { username: user.email, sub: { employeeId: user.employee.employeeId, companyId: user.employee.companyId, role: user.employee.role } };
+    async login(user: Login) {
+        const payload = { username: user.email, sub: {...user.employee } };
         const accessTokenExpireDate = new Date();
         const refreshTokenExpireDate = new Date();
         accessTokenExpireDate.setMinutes(accessTokenExpireDate.getMinutes() + 5)
@@ -46,8 +46,8 @@ export class AuthService {
             refreshTokenExpire: refreshTokenExpireDate   // expire in 7 days 
         };
     }
-    async refresh(user: any) {
-        const payload = { username: user.email, sub: { employeeId: user.employeeId, companyId: user.companyId, role: user.role } };
+    async refresh(user: Login) {
+        const payload = { username: user.email, sub: { ...user.employee } };
         const accessTokenExpireDate = new Date();
         accessTokenExpireDate.setMinutes(accessTokenExpireDate.getMinutes() + 5)
         return {
