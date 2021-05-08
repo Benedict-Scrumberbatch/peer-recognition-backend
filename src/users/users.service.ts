@@ -54,7 +54,7 @@ export class UsersService {
      * @returns {@link Login} user object.
      */
     async loginUser(username: string): Promise<Login> {
-        return this.loginRepo.findOne( { relations: ["employee"], where: { email: username } });
+        return this.loginRepo.findOne( { relations: ["employee", "employee.manager"], where: { email: username } });
     }
 
     //Function retrieves user profile using their userId.
@@ -271,7 +271,8 @@ export class UsersService {
         const queryBuilder = this.usersRepository.createQueryBuilder('user');
         queryBuilder.orderBy('user.firstName', 'ASC')
         // Must specify both firstname and lastname
-        .where("user.companyId = :id", {id: comp_id});
+        .where("user.companyId = :id", {id: comp_id})
+        .leftJoinAndSelect('user.manager', 'manager');
         if(search || matchCase){
             queryBuilder.andWhere(new Brackets (comp => {
                 if (search) {

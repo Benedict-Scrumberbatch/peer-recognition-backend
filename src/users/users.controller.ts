@@ -133,15 +133,16 @@ export class UsersController {
         @Query('search') search: string,
         @Request() req
     ): Promise<Pagination<Users>> {
-        const pageRegex = /&page(\=[^&]*)?(?=&|$)|^page(\=[^&]*)?(&|$)/;
-        const limitRegex = /&limit(\=[^&]*)?(?=&|$)|^limit(\=[^&]*)?(&|$)/;
         let path: string = req.url;
-        path = path.replace(pageRegex, '')
-        path = path.replace(limitRegex, '')
+        let [host, query] = path.split('?');
+        const params = new URLSearchParams(query);
+        
+        params.delete('page');
+        params.delete('limit');
         limit = limit > 100 ? 100: limit
         limit = limit <= 0 ? 1: limit
         return this.usersService.paginate_username(
-            {page: Number(page), limit: Number(limit), route: req.headers.host + path},
+            {page: Number(page), limit: Number(limit), route: host + '?' + params.toString()},
             firstName, lastName, search, req.user.companyId);
     }
 

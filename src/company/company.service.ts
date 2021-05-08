@@ -50,16 +50,16 @@ export class CompanyService {
         
         company.recognitions = createcompanyDto.recognitions;
         
-        createcompanyDto.tags.forEach(createTag)
-        async function createTag(item: Tag) {
-            const tag = await this.tagRepository.save(item);
-            company.tags.push(tag)
-          } 
+        // createcompanyDto.tags.forEach(createTag)
+        // async function createTag(item: Tag) {
+        //     const tag = await this.tagRepository.save(item);
+        //     company.tags.push(tag)
+        //   } 
         
         company.users = createcompanyDto.users;
-
-        await this.companyRepository.save(company);
-        return company;
+        const tags = await this.tagRepository.save(createcompanyDto.tags);
+        company.tags = tags;
+        return await this.companyRepository.save(company);
     }
     
 
