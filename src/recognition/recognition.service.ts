@@ -44,14 +44,14 @@ export class RecognitionService {
      * @returns an array of {@link Recognition} objects
      */
     async findCompRec(id: number): Promise<Recognition[]>{
-     return await this.recognitionsRepository.find({relations: ['empFrom', 'empTo', 'tags'], where:{company:id}});
+     return await this.recognitionsRepository.find({relations: ['empFrom', 'empTo', 'tags', 'comments', 'reactions'], where:{company:id}});
     }
     /**
      * Finds all recognitions in the database
      * @returns an array of {@link Recognition} objects
      */
     async findAll(): Promise<Recognition[]>{
-        return await this.recognitionsRepository.find({relations: ['empFrom', 'empTo', 'tags']});
+        return await this.recognitionsRepository.find({relations: ['empFrom', 'empTo', 'tags', 'comments', 'reactions']});
     }
 
    /**
