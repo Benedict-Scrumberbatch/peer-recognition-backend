@@ -6,7 +6,7 @@ import { Company } from '../dtos/entity/company.entity';
 import { TagStats } from '../dtos/entity/tagstats.entity';
 import { CompanyService } from '../company/company.service';
 import { Recognition } from '../dtos/entity/recognition.entity';
-import { DeleteResult, Like, QueryBuilder, Repository } from 'typeorm';
+import { DeleteResult, Like, QueryBuilder, Repository, getConnection } from 'typeorm';
 import { Query } from 'typeorm/driver/Query';
 import { Role } from '../dtos/enum/role.enum';
 import { throwError } from 'rxjs';
@@ -185,7 +185,7 @@ export class UsersService {
      * @param employeeMultiple 
      * @returns Array of {@link Users} object 
      */
-    async createUserMultiple(employeeMultiple: (Users & Login & {managerId: number} & {companyName: string})[], cId: number): Promise <any>{
+    async createUserMultiple(employeeMultiple: (Users & Login & {managerId: number} & {companyName: string})[], cId: number): Promise <Users[]>{
         let users = [];
         let logins = [];
         for (let i = 0; i < employeeMultiple.length; i++) {
@@ -212,9 +212,24 @@ export class UsersService {
             logins.push(login);
             users.push(user);
         }
-        await this.usersRepository.save(users);
-        await this.loginRepo.save(logins);
-        return users;
+
+        const connection = getConnection();
+        const queryRunner = connection.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+
+        try{
+            await queryRunner.manager.insert(Users, users);
+            await queryRunner.manager.insert(Login, logins);
+            queryRunner.commitTransaction();
+            queryRunner.release();
+            return users;
+        }
+        catch(error){
+            await queryRunner.rollbackTransaction();
+            queryRunner.release();
+            return [];
+        }
     }
 
     /**
