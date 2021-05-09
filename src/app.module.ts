@@ -11,8 +11,10 @@ import { Tag } from './dtos/entity/tag.entity';
 import { Company } from './dtos/entity/company.entity';
 import { RecognitionService } from './recognition/recognition.service';
 import { TagModule } from './tag/tag.module';
+import { RockstarModule} from './rockstar/rockstar.module';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerOptions } from 'typeorm';
+import { NotificationsModule } from './notifications/notifications.module';
 
 const ENV = process.env.NODE_ENV
 let typeormConfig: TypeOrmModuleOptions = {
@@ -22,7 +24,7 @@ let typeormConfig: TypeOrmModuleOptions = {
   imports: [ ConfigModule.forRoot({
     envFilePath: !ENV ? '.env-dev': `.env-${ENV}`
   }),
-  AuthModule, UsersModule, RecognitionModule, CompanyModule, TagModule, TypeOrmModule.forRoot({
+  AuthModule, UsersModule, RecognitionModule, CompanyModule, TagModule, RockstarModule, TypeOrmModule.forRoot({
     type: "postgres",
     url: process.env.DATABASE_URL && ENV.startsWith('prod') ? process.env.DATABASE_URL : undefined,
     host: process.env.DATABASE_URL && ENV.startsWith('prod') ? undefined : "localhost",
@@ -34,7 +36,7 @@ let typeormConfig: TypeOrmModuleOptions = {
     ssl: process.env.DATABASE_URL && ENV.startsWith('prod') ? { rejectUnauthorized: false } : false,
     synchronize: true,
     logging: process.env.DB_LOGGING as LoggerOptions
- })],
+ }), NotificationsModule],
   controllers: [AppController],
   providers: [AppService],
 

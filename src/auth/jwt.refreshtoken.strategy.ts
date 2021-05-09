@@ -15,7 +15,7 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-ref
     }
   
     async validate(payload: any) {
-      return { employeeId: payload.sub.employeeId, role: payload.sub.role, companyId: payload.sub.companyId, email: payload.username };
+      return {...payload.sub, email: payload.username };
   }
 
 }

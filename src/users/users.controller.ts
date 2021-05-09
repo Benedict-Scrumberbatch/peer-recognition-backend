@@ -1,4 +1,4 @@
-import { Controller, Request, Post, UseGuards, Get, Delete, Param, Body, Query } from '@nestjs/common';
+import { Controller, Request, Post, UseGuards, Get, Delete, Param, Body, Query, Patch} from '@nestjs/common';
 import { Login } from '../dtos/entity/login.entity';
 import { Users } from '../dtos/entity/users.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -54,8 +54,6 @@ export class UsersController {
     async getUsersByCompany(@Param("comp_id") company_id: number) {
 	    return await this.usersService.getArrayOfUsers(company_id);
     }
-
-  
 
     // TEMPORARY ONLY
     // Place holder endpoint if database is empty
@@ -124,57 +122,42 @@ export class UsersController {
     async createUserMultiple(@Body() employeeMultiple: [], @Request() req) {
         return await this.usersService.createUserMultiple(employeeMultiple, req.user.companyId);
     }
-    /**
-     * `GET` endpoint to get Rockstar of the month.
-     * 
-     * Return: {@link Users} object 
-     * @param companyId 
-     * @returns 
-     */
-    @UseGuards(JwtAuthGuard)
-    @Get('rockstar')
-    async getRockstar(@Request() req) {
-        return await this.usersService.getRockstar(req.user.companyId);
-    }
-    /**
-     * `GET` endpoint to get Rockstar of the month stat
-     * 
-     * @param comp_ID 
-     * @returns 
-     */
-    @UseGuards(JwtAuthGuard)
-    @Get('company/rockstar/stats/:comp_ID')
-    async getRockstarStats(@Param('comp_ID') comp_ID: number)
-    {
-        let rockstar: Users = await this.getRockstar(comp_ID)
-        return await this.usersService.getRockstarStats(rockstar);
-    }
 
-    /**
-     * `GET` endpoint to get Rock star of the month recognitions
-     * 
-     * Returns: array of recognitions
-     * @param comp_ID 
-     * @returns 
-     */
-    @UseGuards(JwtAuthGuard)
-    @Get('company/rockstar/recognitions/:comp_ID')
-    async getRockstarRecogs(@Param('comp_ID') comp_ID: number)
-    {
-        let rockstar: Users = await this.getRockstar(comp_ID)
-        return await this.usersService.getRockstarRecogs(rockstar);
-    }
+    
+   
     @UseGuards(JwtAuthGuard)
     @Get('search')
     async index(
         @Query('page') page: number = 1,
         @Query('limit') limit: number = 10,
         @Query('firstName') firstName: string,
-        @Query('lastName') lastName: string
+        @Query('lastName') lastName: string,
+        @Query('search') search: string,
+        @Request() req
     ): Promise<Pagination<Users>> {
+        let path: string = req.url;
+        let [host, query] = path.split('?');
+        const params = new URLSearchParams(query);
+        
+        params.delete('page');
+        params.delete('limit');
         limit = limit > 100 ? 100: limit
+        limit = limit <= 0 ? 1: limit
         return this.usersService.paginate_username(
-            {page: Number(page), limit: Number(limit), route: 'http://localhost:4200/users/search'},
-            firstName, lastName);
+            {page: Number(page), limit: Number(limit), route: host + '?' + params.toString()},
+            firstName, lastName, search, req.user.companyId);
+    }
+
+    /**
+     * 
+     * @param req request object
+     * @param user User object which to be used to update 
+     * @returns User object
+     */
+    @UseGuards(JwtAuthGuard)
+    @Patch(':employeeId/edit')
+    async editUserDetails(@Param('employeeId') employeeId: number, @Request() req, @Body() user: Users){
+        return this.usersService.editUserDetails(req.user, employeeId, user);
     }
 }
+    

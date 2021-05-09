@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from '../dtos/entity/users.entity';
 import { Login } from '../dtos/entity/login.entity';
@@ -6,7 +6,7 @@ import { Company } from '../dtos/entity/company.entity';
 import { TagStats } from '../dtos/entity/tagstats.entity';
 import { CompanyService } from '../company/company.service';
 import { Recognition } from '../dtos/entity/recognition.entity';
-import { DeleteResult, Like, QueryBuilder, Repository, getConnection } from 'typeorm';
+import { DeleteResult, Like, QueryBuilder, ILike, Repository, getConnection, Brackets } from 'typeorm';
 import { Query } from 'typeorm/driver/Query';
 import { Role } from '../dtos/enum/role.enum';
 import { throwError } from 'rxjs';
@@ -16,9 +16,8 @@ import {
     Pagination,
     IPaginationOptions,
   } from 'nestjs-typeorm-paginate';
-import { from, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';    
-
+import { create } from 'node:domain';
+import { Console } from 'node:console';
 
 /**
  * Service for {@link UsersController}. Functional logic is kept here.
@@ -40,6 +39,10 @@ export class UsersService {
         private companyservice: CompanyService,
     ){}
 
+   /* async storeRefreshToken(refreshToken:string, email:string, refreshtokenexpires){
+        await this.loginRepo.update(email, {refreshtoken:refreshToken, refreshtokenexpires});
+    }
+    */
     //Must hash passwords
     //In reality will grab user information from the database.
     /**
@@ -48,7 +51,7 @@ export class UsersService {
      * @returns {@link Login} user object.
      */
     async loginUser(username: string): Promise<Login> {
-        return this.loginRepo.findOne( { relations: ["employee"], where: { email: username } });
+        return this.loginRepo.findOne( { relations: ["employee", "employee.manager"], where: { email: username } });
     }
 
     //Function retrieves user profile using their userId.
@@ -130,9 +133,9 @@ export class UsersService {
         user.lastName = createuserDto.lastName;
 
         // Will add different level of admin 
+        
         user.isManager = Boolean(createuserDto.isManager);
         user.role = createuserDto.role;
-
         user.positionTitle = createuserDto.positionTitle;
         user.startDate = new Date(createuserDto.startDate);
         
@@ -149,7 +152,7 @@ export class UsersService {
                 user.manager = Manager;
             }
         }
-
+        
         const login = new Login();
         login.email = createuserDto.email;
         login.password = createuserDto.password;
@@ -232,92 +235,16 @@ export class UsersService {
         }
     }
 
-    /**
-     * Method to get Rockstar of the month
-     * 
-     * Returns {@link Users} object
-     * @param companyId 
-     * @returns 
-     */
-    async getRockstar( companyId: number): Promise<Users | undefined> {
-        let date: Date = new Date();
-        let prevMonth: number = -1;
-        let year = date.getFullYear()
-        if (date.getMonth() == 0)
-        {
-            prevMonth = 12;
-            year = date.getFullYear() - 1;
-        }
-        else
-        {
-            //SQL takes 1 based months but the date object has 0 based months.
-            prevMonth = date.getMonth();
-        }
-        let queryString :string = `SELECT * FROM (SELECT t1."empToEmployeeId", MAX(t1.numRecog) as numRecognitions FROM (select recognition."empToEmployeeId", count(recognition."empToEmployeeId") as numRecog from Recognition where recognition."empToCompanyId" = ${companyId} and extract(Month from recognition."postDate") = ${ prevMonth } and extract(Year from recognition."postDate") = ${ year } group by recognition."empToEmployeeId" ) t1 group by t1."empToEmployeeId") t2, users where t2."empToEmployeeId" = users."employeeId";`
-        let retQuery= await this.recognitionRepository.query(queryString);
-        let maxRecog: number = 0;
-        let maxIndex: number = 0;
-        for (let i = 0; i < retQuery.length;i++ )
-        {
-            if (retQuery[i].max > maxRecog)
-            {
-                maxRecog = retQuery.max;
-                maxIndex = i;
-            }
-        }
-        let rawRockstar = retQuery[maxIndex];
-        let rockstar: Users = new Users();
-        rockstar.company = rawRockstar.companyId;
-        rockstar.employeeId = rawRockstar.employeeId;
-
-        rockstar.firstName = rawRockstar.firstName;
-        rockstar.lastName = rawRockstar.lastName;
-
-        rockstar.isManager = rawRockstar.isManager;
-        rockstar.positionTitle = rawRockstar.positionTitle;
-        rockstar.startDate = new Date(rawRockstar.startDate);
-        rockstar.role = rawRockstar.role;
-
-        rockstar.manager = await this.usersRepository.findOne({where:{employeeId : rawRockstar.managerEmployeeId}})
-
-
-        return rockstar;
-
-        //calculate and return rockstar
-        //recognition module
-    }
-
-    /**
-     * Method to get Rockstar of the month recognitions
-     * 
-     * Returns: array of recognition 
-     * @param rockstar 
-     * @returns 
-     */
-    async getRockstarRecogs(rockstar: Users): Promise<any[]>{
-        let date: Date = new Date();
-        let prevMonth: number = -1;
-        let year = date.getFullYear()
-        if (date.getMonth() == 1)
-        {
-            prevMonth = 12;
-            year = date.getFullYear() - 1;
-        }
-        else
-        {
-            prevMonth = date.getMonth()
-        }
-        let recogs = await this.recognitionRepository.createQueryBuilder().select("*").where("Recognition.empToCompanyId = :compID", {compID : rockstar.company}).andWhere("Recognition.empToEmployeeId = :empID", {empID: rockstar.employeeId}).andWhere("extract(Month from Recognition.postDate) = :prvMonth",{prvMonth:prevMonth}).andWhere("extract(Year from Recognition.postDate) = :yr",{yr:year}).getRawMany();
-        console.log(recogs);
-        return recogs;
+   
+    async paginate(options: IPaginationOptions): Promise<Pagination<Users>> {
+        return paginate<Users>(this.usersRepository, options);
     }
 
     /**
      * Method to get Rockstar of the month stats
      * 
-     * Returns: stats
      * @param rockstar 
-     * @returns 
+     * @returns stats
      */
     async getRockstarStats(rockstar: Users): Promise<any> {
         let date: Date = new Date();
@@ -348,48 +275,57 @@ export class UsersService {
         }
         return results;
     }
-    async paginate(options: IPaginationOptions): Promise<Pagination<Users>> {
-        return paginate<Users>(this.usersRepository, options);
-    }
-    // Back up search user in case the main endpoint doesn't work properly!
-    async paginate_backup(options: IPaginationOptions, firstName: string, lastName: string): Promise<Observable<Pagination<Users>>> {
-        return from (this.usersRepository.findAndCount({
-            take: Number(options.limit) || 10,  // Only take 10 first results or firs number of limit
-            order: {firstName: 'ASC'},          // result follows ASC order (alphabetical)
-            where: [
-                {firstName: Like(`%${firstName}%`)},
-                {lastName: Like(`%${lastName}%`)}
-            ]
-        })).pipe(
-            map(([users, totalUsers]) => {
-                const usersPageable: Pagination<Users> = {
-                    items: users,
-                    links: {
-                        first: options.route + `?limit=${options.limit}`,
-                        previous: options.route + ``,
-                        next: options.route + `?limit=${options.limit}&page=${Number(options.page) + 1}`,
-                        last: options.route + `?limit=${options.limit}&page=${totalUsers / Number(options.page)}`
-                    },
-                    meta: {
-                        currentPage: Number(options.page),
-                        itemCount: users.length,
-                        itemsPerPage: Number(options.limit),
-                        totalItems: totalUsers,
-                        totalPages: totalUsers / Number(options.limit)
-                    }
-                };
-                return usersPageable;
-            })
-        )       
-    }
-    async paginate_username(options: IPaginationOptions, firstName: string, lastName: string): Promise<Pagination<Users>> {
+   
+    async paginate_username(options: IPaginationOptions, firstName: string, lastName: string, search: string, comp_id: number): Promise<Pagination<Users>> {
+        const matchCase = firstName || lastName;
         const queryBuilder = this.usersRepository.createQueryBuilder('user');
-        queryBuilder.where([
-            {firstName: Like(`%${firstName}%`)},
-            {lastName: Like(`%${lastName}%`)}
-        ]);
-        // queryBuilder.orWhere({lastName: Like(`%${lastName}%`)});
+        queryBuilder.orderBy('user.firstName', 'ASC')
+        // Must specify both firstname and lastname
+        .where("user.companyId = :id", {id: comp_id})
+        .leftJoinAndSelect('user.manager', 'manager');
+        if(search || matchCase){
+            queryBuilder.andWhere(new Brackets (comp => {
+                if (search) {
+                    comp.orWhere("user.firstName ilike :search", {search: '%'+search+'%'})
+                    .orWhere("user.lastName ilike :search", {search: '%'+search+'%'});
+                }
+                if (matchCase) {
+                    comp.orWhere(new Brackets (bracket => {
+                        if (firstName) {
+                            bracket.andWhere("user.firstName ilike :firstName", {firstName: '%'+firstName+'%'});
+                        }
+        
+                        if (lastName) {
+                            bracket.andWhere("user.lastName ilike :lastName", {lastName: '%'+lastName+'%'});
+                        }
+        
+                    }));
+                }        
+            })); 
+        }
+      
         return paginate<Users>(queryBuilder, options);
     }
-    
+
+    /**
+     * 
+     * @param empID ID of the logged in user
+     * @param newUser new User object to update old user
+     * @returns the new User object which was used to update the user
+     */
+    async editUserDetails(requester: Users, employeeId: number, newUser: Users){
+        if(requester.employeeId !== employeeId && requester.role !== Role.Admin){
+            throw new UnauthorizedException();
+        }
+        const user = await this.usersRepository.findOne({employeeId, companyId: requester.companyId});
+        user.firstName = newUser.firstName;
+        user.lastName = newUser.lastName;
+        if (requester.role === Role.Admin) {
+            user.positionTitle = newUser.positionTitle;
+            user.startDate = newUser.startDate;
+            user.isManager = newUser.isManager
+        }
+        return await this.usersRepository.save(user);
+    }
+
 } 

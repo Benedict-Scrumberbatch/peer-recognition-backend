@@ -7,8 +7,13 @@ import { Users } from '../dtos/entity/users.entity';
 import { Tag } from '../dtos/entity/tag.entity';
 import { Company } from '../dtos/entity/company.entity';
 import { TagStats } from '../dtos/entity/tagstats.entity';
+import {Report} from '../dtos/entity/report.entity';
+import {Comment} from '../dtos/entity/comment.entity';
+import {Reaction} from '../dtos/entity/reaction.entity';
+import { UserNotification } from '../dtos/entity/notification.entity';
+import { NotificationsModule } from '../notifications/notifications.module';
 @Module({
-  imports: [ TypeOrmModule.forFeature([ Recognition, Users, Tag, Company, TagStats])],
+  imports: [ TypeOrmModule.forFeature([ Recognition, Users, Tag, Company, TagStats, Report, Comment, Reaction, UserNotification])],
   providers: [RecognitionService],
   controllers: [ RecognitionController],
   exports: [RecognitionService]
