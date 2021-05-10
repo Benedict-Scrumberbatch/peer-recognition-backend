@@ -88,9 +88,11 @@ export class UsersController {
      * @returns adding user to Database 
      */
     //This endpoint should be guarded
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.Admin)
     @Post('create')
-    async createUser(@Body() createuserDto: Users & Login & {managerId: number} & {companyName: string}) {
-        return await this.usersService.createUser(createuserDto);
+    async createUser(@Body() createuserDto: Users & Login & {managerId: number}, @Request() req) {
+        return await this.usersService.createUser(createuserDto, req.user.companyId);
     }
 
     /**
@@ -117,8 +119,8 @@ export class UsersController {
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(Role.Admin)
     @Post('create_multiple')
-    async createUserMultiple(@Body() employeeMultiple: []) {
-        return await this.usersService.createUserMultiple(employeeMultiple);
+    async createUserMultiple(@Body() employeeMultiple: [], @Request() req) {
+        return await this.usersService.createUserMultiple(employeeMultiple, req.user.companyId);
     }
 
     
