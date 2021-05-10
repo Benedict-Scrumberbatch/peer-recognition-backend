@@ -1,9 +1,11 @@
-import { Controller, Request, Post, UseGuards, Get} from '@nestjs/common';
+import { Controller, Request, Post, UseGuards, Get, Body, Patch} from '@nestjs/common';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { LocalAuthGuard } from './local-auth.guard';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtAuthRefreshGuard } from './jwt-auth.refresh.guard';
+import { EditLoginDto } from '../dtos/dto/edit-login.dto';
+import { UpdateResult } from 'typeorm';
 
 /**
  * Controller for user authentication.
@@ -24,9 +26,27 @@ export class AuthController {
         return this.authService.login(req.user);
     }
     
+    /**
+     * POST api endpoint to retrieve a JWT refresh token.
+     * @param req Request object specified by the POST request
+     * @returns sends back a new JWT token, and the expiration date.
+     */
     @UseGuards(JwtAuthRefreshGuard)
     @Post('refreshtoken')
     async refreshToken(@Request() req){
         return this.authService.refresh(req.user);
     }
+
+    /**
+     * PATCH api endpoint to modify user login details.
+     * @param req Request object specified by the post request.
+     * @param edits Object that specifies the current username and password, and the new changes to the {@link Login} details.
+     * @returns 
+     */
+    @UseGuards(LocalAuthGuard)
+    @Patch()
+    async editLogin(@Request() req, @Body() edits: EditLoginDto): Promise<UpdateResult> {
+        return this.authService.editLogin(req.user, edits.newDetails);
+    }
+
 }
