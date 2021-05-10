@@ -76,7 +76,7 @@ export class RecognitionService {
         comp.companyId = requester.companyId;
         recognition.empFrom = requester;
         recognition.company = comp;
-        recognition.empTo = await this.userRepository.findOne({where: {employeeId: recognition.empTo.employeeId, companyId: recognition.empTo.companyId}, relations: ['manager']})
+        recognition.empTo = await this.userRepository.findOne({where: {employeeId: recognition.empTo.employeeId, companyId: recognition.empTo.companyId}})
   
         let savedRecognition = await this.recognitionsRepository.save(recognition);
 
@@ -86,6 +86,7 @@ export class RecognitionService {
 
         // notifications
         const empFromNotification = new UserNotification();
+        empFromNotification.title = 'New Recogntion!'
         empFromNotification.recognition = savedRecognition;
         empFromNotification.employeeTo = savedRecognition.empFrom;
         empFromNotification.notificationType = NotificationType.Recognition;
@@ -93,20 +94,13 @@ export class RecognitionService {
         notifications.push(empFromNotification);
 
         const empToNotification = new UserNotification();
+        empToNotification.title = 'New Recogntion!'
         empToNotification.recognition = savedRecognition;
         empToNotification.employeeTo = savedRecognition.empTo;
         empToNotification.notificationType = NotificationType.Recognition;
         empToNotification.msg = `You have been recognized by ${savedRecognition.empFrom.firstName} ${savedRecognition.empFrom.lastName}!`
         notifications.push(empToNotification);
         
-        if (savedRecognition.empTo.manager) {
-            const empToManagerNotification = new UserNotification();
-            empToManagerNotification.recognition = savedRecognition;
-            empToManagerNotification.employeeTo = savedRecognition.empTo.manager;
-            empToManagerNotification.notificationType = NotificationType.Recognition;
-            empToManagerNotification.msg = `Your employee ${savedRecognition.empTo.firstName} ${savedRecognition.empTo.lastName} has been recognized by ${savedRecognition.empFrom.firstName} ${savedRecognition.empFrom.lastName}!`;
-            notifications.push(empToManagerNotification)
-        }
         await this.notificationRepository.save(notifications);
 
 
@@ -136,12 +130,14 @@ export class RecognitionService {
 
         // notifications
         const empFromNotification = new UserNotification();
+        empFromNotification.title = 'Recognition Deleted!';
         empFromNotification.recognition = rec;
         empFromNotification.employeeTo = rec.empFrom;
         empFromNotification.notificationType = NotificationType.Recognition;
         empFromNotification.msg = `Your recognition of ${rec.empTo.firstName} ${rec.empTo.lastName} has been deleted by ${user.firstName} ${user.lastName}.`;
 
         const empToNotification = new UserNotification();
+        empToNotification.title = 'Recognition Deleted!';
         empToNotification.recognition = rec;
         empToNotification.employeeTo = rec.empTo;
         empToNotification.notificationType = NotificationType.Recognition;
@@ -264,6 +260,7 @@ export class RecognitionService {
         const savedReport =  await this.reportRepo.save(report);
 
         const empFromNotification = new UserNotification();
+        empFromNotification.title = 'Recognition Reported!';
         empFromNotification.report = savedReport;
         empFromNotification.employeeTo = savedReport.employeeFrom;
         empFromNotification.notificationType = NotificationType.Report;
@@ -272,6 +269,7 @@ export class RecognitionService {
         const admins = await this.userRepository.find({companyId: reporter.companyId, role: Role.Admin})
         const adminNotifications = admins.map(admin => {
             const adminNotif = new UserNotification();
+            adminNotif.title = 'Recognition Reported!';
             adminNotif.report = savedReport;
             adminNotif.employeeTo = admin;
             adminNotif.notificationType = NotificationType.Report;
@@ -292,6 +290,7 @@ export class RecognitionService {
         const savedReport = await this.reportRepo.save(report);
 
         const empFromNotification = new UserNotification();
+        empFromNotification.title = 'Comment Reported!';
         empFromNotification.report = savedReport;
         empFromNotification.employeeTo = savedReport.employeeFrom;
         empFromNotification.notificationType = NotificationType.Report;
@@ -300,6 +299,7 @@ export class RecognitionService {
         const admins = await this.userRepository.find({companyId: reporter.companyId, role: Role.Admin})
         const adminNotifications = admins.map(admin => {
             const adminNotif = new UserNotification();
+            adminNotif.title = 'Comment Reported!';
             adminNotif.report = savedReport;
             adminNotif.employeeTo = admin;
             adminNotif.notificationType = NotificationType.Report;
@@ -329,18 +329,21 @@ export class RecognitionService {
         const savedComment = await this.commentRepo.save(newComment);
         
         const empFromNotification = new UserNotification();
+        empFromNotification.title = 'New Comment!';
         empFromNotification.comment = savedComment;
         empFromNotification.employeeTo = savedComment.employeeFrom;
         empFromNotification.notificationType = NotificationType.Comment;
         empFromNotification.msg = `Your comment on ${recognition.empTo.firstName} ${recognition.empTo.lastName}'s recognition has been posted.`;
 
         const empToNotification = new UserNotification();
+        empToNotification.title = 'New Comment!';
         empToNotification.comment = savedComment;
         empToNotification.employeeTo = recognition.empTo;
         empToNotification.notificationType = NotificationType.Comment;
         empToNotification.msg = `${savedComment.employeeFrom.firstName} ${savedComment.employeeFrom.lastName} has commented on your recognition.`;
     
         const empRecFromNotification = new UserNotification();
+        empRecFromNotification.title = 'New Comment!';
         empRecFromNotification.comment = savedComment;
         empRecFromNotification.employeeTo = recognition.empFrom;
         empRecFromNotification.notificationType = NotificationType.Comment;
@@ -486,7 +489,7 @@ export class RecognitionService {
                     .orWhere("empTo.firstName ilike :search", {search: '%' + search + '%'})
                     .orWhere("empFrom.firstName ilike :search", {search: '%' + search + '%'})
                     .orWhere("empFrom.lastName ilike :search", {search: '%' + search + '%'})
-                    .orWhere("msg like :search", {search: '%' + search + '%'});
+                    .orWhere("rec.msg like :search", {search: '%' + search + '%'});
                 }
                 if (matchCase) {
                     comp.orWhere(new Brackets (bracket => {
