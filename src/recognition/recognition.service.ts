@@ -326,30 +326,22 @@ export class RecognitionService {
         if (newComment.recognition == undefined) {
             throw new NotFoundException('no recognition with that ID was found');
         }
-        const savedComment = await this.commentRepo.save(newComment);
         
         const empFromNotification = new UserNotification();
         empFromNotification.title = 'New Comment!';
-        empFromNotification.comment = savedComment;
-        empFromNotification.employeeTo = savedComment.employeeFrom;
+        empFromNotification.employeeTo = newComment.employeeFrom;
         empFromNotification.notificationType = NotificationType.Comment;
         empFromNotification.msg = `Your comment on ${recognition.empTo.firstName} ${recognition.empTo.lastName}'s recognition has been posted.`;
 
         const empToNotification = new UserNotification();
         empToNotification.title = 'New Comment!';
-        empToNotification.comment = savedComment;
         empToNotification.employeeTo = recognition.empTo;
         empToNotification.notificationType = NotificationType.Comment;
-        empToNotification.msg = `${savedComment.employeeFrom.firstName} ${savedComment.employeeFrom.lastName} has commented on your recognition.`;
+        empToNotification.msg = `${newComment.employeeFrom.firstName} ${newComment.employeeFrom.lastName} has commented on your recognition.`;
     
-        const empRecFromNotification = new UserNotification();
-        empRecFromNotification.title = 'New Comment!';
-        empRecFromNotification.comment = savedComment;
-        empRecFromNotification.employeeTo = recognition.empFrom;
-        empRecFromNotification.notificationType = NotificationType.Comment;
-        empRecFromNotification.msg = `${savedComment.employeeFrom.firstName} ${savedComment.employeeFrom.lastName} has commented on your recognition.`;
+        newComment.notifications = [empFromNotification, empToNotification]
 
-        await this.notificationRepository.save([empToNotification, empRecFromNotification, empFromNotification])
+        const savedComment = await this.commentRepo.save(newComment);
 
         return savedComment;
 
