@@ -3,6 +3,7 @@ import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
 import { Login } from '../dtos/entity/login.entity';
+import { Users } from '../dtos/entity/users.entity';
 
 /**
  * Service for the {@link AuthController}. Functional logic is kept here.
@@ -46,8 +47,8 @@ export class AuthService {
             refreshTokenExpire: refreshTokenExpireDate   // expire in 7 days 
         };
     }
-    async refresh(user: Login) {
-        const payload = { username: user.email, sub: { ...user.employee } };
+    async refresh(user: Users & {email: string}) {
+        const payload = { username: user.email, sub: { ...user } };
         const accessTokenExpireDate = new Date();
         accessTokenExpireDate.setMinutes(accessTokenExpireDate.getMinutes() + 5)
         return {
