@@ -6,7 +6,7 @@ import { Company } from '../dtos/entity/company.entity';
 import { TagStats } from '../dtos/entity/tagstats.entity';
 import { CompanyService } from '../company/company.service';
 import { Recognition } from '../dtos/entity/recognition.entity';
-import { DeleteResult, Like, ILike, QueryBuilder, Repository, Brackets } from 'typeorm';
+import { DeleteResult, Like, QueryBuilder, ILike, Repository, getConnection, Brackets } from 'typeorm';
 import { Query } from 'typeorm/driver/Query';
 import { Role } from '../dtos/enum/role.enum';
 import { throwError } from 'rxjs';
@@ -18,9 +18,6 @@ import {
   } from 'nestjs-typeorm-paginate';
 import { create } from 'node:domain';
 import { Console } from 'node:console';
-
-
-
 
 /**
  * Service for {@link UsersController}. Functional logic is kept here.
@@ -127,36 +124,10 @@ export class UsersService {
      * @param createuserDto 
      * @returns {@link Users} user is added to Database  
      */
-    async createUser(createuserDto: Users & Login & {managerId: number} & {companyName: string}): Promise<Users> {    
+    async createUser(createuserDto: Users & Login & {managerId: number}, cId: number): Promise<Users> {    
         const user = new Users();
-        if (createuserDto.company != undefined) {
-            user.company = createuserDto.company;
-
-        }
-        else{
-            if (createuserDto.companyId != undefined) {
-                let company = await this.companyRepository.findOne({where:{companyId: createuserDto.companyId}})
-                // If company.name to companyName if they are not the same
-                // Don't 
-                if (company.name != createuserDto.companyName){
-                    company.name = createuserDto.companyName; 
-                    await this.companyRepository.save(company)
-                }
-
-                if (!company ) {
-                    let createCompany = new Company();
-                    createCompany.companyId = createuserDto.companyId;
-                    createCompany.name = createuserDto.lastName;
-                    createCompany.tags = undefined;
-                    createCompany.recognitions = undefined;
-                    createCompany.users = [createuserDto];
-                    company = await this.companyservice.createCompany(createCompany);
-                }
-                user.company = company
-            }
-        }
+        user.company = await this.companyRepository.findOne({where:{companyId: cId}});
         user.employeeId = createuserDto.employeeId;
-        user.companyId = createuserDto.companyId;
 
         user.firstName = createuserDto.firstName;
         user.lastName = createuserDto.lastName;
@@ -173,7 +144,7 @@ export class UsersService {
         }
         else {
             if (createuserDto.managerId != undefined) {
-                let Manager = await this.usersRepository.findOne({where:{companyId: createuserDto.companyId , 
+                let Manager = await this.usersRepository.findOne({where:{companyId: cId , 
                     employeeId : createuserDto.managerId}});
                 if (Manager.isManager == false){
                     throw new BadRequestException('Invalid Manager')
@@ -213,16 +184,55 @@ export class UsersService {
     }
     
     /**
-     * Method to create array of {@link Users} object 
+     * Method to create {@link Users} in the database from an array input
      * @param employeeMultiple 
      * @returns Array of {@link Users} object 
      */
-    async createUserMultiple(employeeMultiple: []): Promise <any>{
-        let arr_employee = [];
+    async createUserMultiple(employeeMultiple: (Users & Login & {managerId: number} & {companyName: string})[], cId: number): Promise <Users[]>{
+        let users = [];
+        let logins = [];
         for (let i = 0; i < employeeMultiple.length; i++) {
-            arr_employee.push(await this.createUser(employeeMultiple[i]));
+            const user = new Users();
+            user.company = await this.companyRepository.findOne({where:{companyId: cId}})
+
+            user.employeeId = employeeMultiple[i].employeeId;
+            // ignore input company id and override with the valid company id.
+            user.companyId = cId;
+            user.firstName = employeeMultiple[i].firstName;
+            user.lastName = employeeMultiple[i].lastName;
+            user.isManager = Boolean(employeeMultiple[i].isManager);
+            user.role = employeeMultiple[i].role;
+            user.positionTitle = employeeMultiple[i].positionTitle;
+            user.startDate = new Date(employeeMultiple[i].startDate);
+            if (employeeMultiple[i].manager != undefined) {
+                user.manager = employeeMultiple[i].manager;
+            }
+
+            const login = new Login();
+            login.email = employeeMultiple[i].email;
+            login.password = employeeMultiple[i].password;
+            login.employee = user;
+            logins.push(login);
+            users.push(user);
         }
-        return arr_employee;
+
+        const connection = getConnection();
+        const queryRunner = connection.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+
+        try{
+            await queryRunner.manager.insert(Users, users);
+            await queryRunner.manager.insert(Login, logins);
+            queryRunner.commitTransaction();
+            queryRunner.release();
+            return users;
+        }
+        catch(error){
+            await queryRunner.rollbackTransaction();
+            queryRunner.release();
+            return [];
+        }
     }
 
    
@@ -319,5 +329,3 @@ export class UsersService {
     }
 
 } 
-
-   
