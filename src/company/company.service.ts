@@ -83,7 +83,7 @@ export class CompanyService {
             user.companyId = createcompanyDto.companyId;
 
             const login = new Login();
-            login.email = 'Admin';  // @company.com
+            login.email = `admin@${company.name.toLowerCase().replace(/\s/g, '')}.com`
             login.password = 'password';
 
             // company.users = [user];

@@ -47,8 +47,6 @@ export class CompanyController {
      * @param createcompanyDto Company object with information about the new company to add.
      * @returns {@link Company} object which was created in the database.
      */
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles(Role.Admin)
     @Post('create')
     async createCompany(@Body() createcompanyDto: Company) {
         return await this.companyService.createCompany(createcompanyDto);
