@@ -52,7 +52,7 @@ export class RecognitionService {
     }
 
     async findRecById(companyId: number, id: number): Promise<Recognition>{
-        return await this.recognitionsRepository.findOne({relations: ['empFrom', 'empTo', 'tags', 'comments', 'reactions'], where:{company: companyId, recId: id}});
+        return await this.recognitionsRepository.findOne({relations: ['empFrom', 'empTo', 'tags', 'comments', 'comments.employeeFrom', 'reactions'], where:{company: companyId, recId: id}});
        }
 
     /**
