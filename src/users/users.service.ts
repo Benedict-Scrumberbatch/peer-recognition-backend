@@ -53,7 +53,7 @@ export class UsersService {
      * @returns {@link Login} user object.
      */
     async loginUser(username: string): Promise<Login> {
-        return this.loginRepo.findOne( { relations: ["employee", "employee.manager"], where: { email: username } });
+        return this.loginRepo.findOne( { relations: ["employee"], where: { email: username } });
     }
 
     //Function retrieves user profile using their userId.
