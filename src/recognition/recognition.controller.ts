@@ -145,7 +145,7 @@ export class RecognitionController {
      */
     @UseGuards(JwtAuthGuard)
     @Post(':recID/comment')
-    addComment(@Request() req, @Param('redID') rec_id, @Body() comment: Comment): Promise<Comment>
+    addComment(@Request() req, @Param('recID') rec_id, @Body() comment: Comment): Promise<Comment>
     {
         return this.recs.addComment(rec_id, comment, req.user);
     }

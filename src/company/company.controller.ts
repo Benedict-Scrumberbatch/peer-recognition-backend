@@ -3,6 +3,9 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { DeleteResult } from 'typeorm';
 import { Company } from '../dtos/entity/company.entity';
 import { CompanyService } from './company.service';
+import { Role } from '../dtos/enum/role.enum';
+import { RolesGuard } from '../roles/roles.guard';
+import { Roles } from '../roles/roles.decorator';
 
 @Controller('company')
 export class CompanyController {
@@ -54,8 +57,10 @@ export class CompanyController {
      * @param id URL parameter that specifies the company id.
      * @returns {@link DeleteResult} object.
      */
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.Admin)
     @Delete(':id')
-    delete(@Param('id') id): Promise<DeleteResult>{
+    delete(@Param('id') id): Promise<Company[]>{
         return this.companyService.deleteComp(id);
     }
 }

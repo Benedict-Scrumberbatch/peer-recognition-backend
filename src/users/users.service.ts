@@ -6,7 +6,7 @@ import { Company } from '../dtos/entity/company.entity';
 import { TagStats } from '../dtos/entity/tagstats.entity';
 import { CompanyService } from '../company/company.service';
 import { Recognition } from '../dtos/entity/recognition.entity';
-import { DeleteResult, Like, ILike, QueryBuilder, Repository, Brackets } from 'typeorm';
+import { DeleteResult, Like, QueryBuilder, ILike, Repository, getConnection, Brackets } from 'typeorm';
 import { Query } from 'typeorm/driver/Query';
 import { Role } from '../dtos/enum/role.enum';
 import { throwError } from 'rxjs';
@@ -16,11 +16,10 @@ import {
     Pagination,
     IPaginationOptions,
   } from 'nestjs-typeorm-paginate';
+import { from, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';    
 import { create } from 'node:domain';
 import { Console } from 'node:console';
-
-
-
 
 /**
  * Service for {@link UsersController}. Functional logic is kept here.
@@ -54,7 +53,7 @@ export class UsersService {
      * @returns {@link Login} user object.
      */
     async loginUser(username: string): Promise<Login> {
-        return this.loginRepo.findOne( { relations: ["employee", "employee.manager"], where: { email: username } });
+        return this.loginRepo.findOne( { relations: ["employee"], where: { email: username } });
     }
 
     //Function retrieves user profile using their userId.
@@ -91,35 +90,7 @@ export class UsersService {
         await this.loginRepo.softDelete({employee: user});
         return await this.usersRepository.softRemove([user]);
     }
-    // TEMPORARY ONLY
-    // Create Dummy if Database is empty.
-    // This endpoint will add admin Dummy
-    async createDummy(): Promise<Users> {
-        const user = new Users();
-        user.role = Role.Admin;
-        user.employeeId = 0;
-        user.firstName = 'dummy';
-        user.lastName = 'dummy';
-        user.isManager = true;
-        user.positionTitle = 'dummy';
-        user.startDate = new Date("2014-12-18");
-
-        let company = await this.companyservice.createCompany({
-            companyId: 1, 
-            name: 'dummy', 
-            tags: undefined, recognitions: undefined,
-            users: undefined
-        });
-        user.company = company
-
-        const login = new Login();
-        login.email = 'dummy';
-        login.password = 'dummy';
-        login.employee = await this.usersRepository.save(user);
-        await this.loginRepo.save(login);
-        return user
-    }
-
+    
     /**
      * Method to create user: 
      * 
@@ -127,68 +98,46 @@ export class UsersService {
      * @param createuserDto 
      * @returns {@link Users} user is added to Database  
      */
-    async createUser(createuserDto: Users & Login & {managerId: number} & {companyName: string}): Promise<Users> {    
+    async createUser(createuserDto: Users & Login 
+         & {companyName: string},
+        requestId: number, creator_role: Role): Promise<Users> {    
+
         const user = new Users();
-        if (createuserDto.company != undefined) {
-            user.company = createuserDto.company;
-
+        let company = await this.companyRepository.findOne({companyId: requestId})
+        if (!company) {
+            throw new BadRequestException({error: 'Company Id does not exist'});
         }
-        else{
-            if (createuserDto.companyId != undefined) {
-                let company = await this.companyRepository.findOne({where:{companyId: createuserDto.companyId}})
-                // If company.name to companyName if they are not the same
-                // Don't 
-                if (company.name != createuserDto.companyName){
-                    company.name = createuserDto.companyName; 
-                    await this.companyRepository.save(company)
-                }
-
-                if (!company ) {
-                    let createCompany = new Company();
-                    createCompany.companyId = createuserDto.companyId;
-                    createCompany.name = createuserDto.lastName;
-                    createCompany.tags = undefined;
-                    createCompany.recognitions = undefined;
-                    createCompany.users = [createuserDto];
-                    company = await this.companyservice.createCompany(createCompany);
-                }
-                user.company = company
-            }
-        }
+        user.company = company
         user.employeeId = createuserDto.employeeId;
-        user.companyId = createuserDto.companyId;
+        user.companyId = requestId;
 
         user.firstName = createuserDto.firstName;
         user.lastName = createuserDto.lastName;
-
-        // Will add different level of admin 
-        
+    
         user.isManager = Boolean(createuserDto.isManager);
-        user.role = createuserDto.role;
-        user.positionTitle = createuserDto.positionTitle;
-        user.startDate = new Date(createuserDto.startDate);
-        
-        if (createuserDto.manager != undefined) {
-            user.manager = createuserDto.manager;
-        }
-        else {
-            if (createuserDto.managerId != undefined) {
-                let Manager = await this.usersRepository.findOne({where:{companyId: createuserDto.companyId , 
-                    employeeId : createuserDto.managerId}});
-                if (Manager.isManager == false){
-                    throw new BadRequestException('Invalid Manager')
-                }
-                user.manager = Manager;
+
+        // Only be able to add lower ranking user 
+        if (createuserDto.role != undefined){
+            if (Role[creator_role] >= Role[createuserDto.role]){
+                user.role = createuserDto.role;
+            }
+            else {
+                throw new BadRequestException({error: 'Creating higher ranking user is not permitted'});
             }
         }
+        user.positionTitle = createuserDto.positionTitle;
+        user.startDate = new Date(createuserDto.startDate);
+        user.managerId = createuserDto.managerId;
         
         const login = new Login();
         login.email = createuserDto.email;
         login.password = createuserDto.password;
-        login.employee = await this.usersRepository.save(user);
+        const saveduser = await this.usersRepository.save(user);
+        login.employee = saveduser
         await this.loginRepo.save(login);
+        // user.login = await this.loginRepo.save(login);
         
-        return user;
+        return saveduser;
     }
 
     /**
@@ -213,16 +162,53 @@ export class UsersService {
     }
     
     /**
-     * Method to create array of {@link Users} object 
+     * Method to create {@link Users} in the database from an array input
      * @param employeeMultiple 
      * @returns Array of {@link Users} object 
      */
-    async createUserMultiple(employeeMultiple: []): Promise <any>{
-        let arr_employee = [];
+    async createUserMultiple(employeeMultiple: (Users & Login & {companyName: string})[], cId: number): Promise <Users[]>{
+        let users = [];
+        let logins = [];
         for (let i = 0; i < employeeMultiple.length; i++) {
-            arr_employee.push(await this.createUser(employeeMultiple[i]));
+            const user = new Users();
+            user.company = await this.companyRepository.findOne({where:{companyId: cId}})
+
+            user.employeeId = employeeMultiple[i].employeeId;
+            // ignore input company id and override with the valid company id.
+            user.companyId = cId;
+            user.firstName = employeeMultiple[i].firstName;
+            user.lastName = employeeMultiple[i].lastName;
+            user.isManager = Boolean(employeeMultiple[i].isManager);
+            user.role = employeeMultiple[i].role;
+            user.positionTitle = employeeMultiple[i].positionTitle;
+            user.startDate = new Date(employeeMultiple[i].startDate);
+            user.managerId = employeeMultiple[i].managerId;
+
+            const login = new Login();
+            login.email = employeeMultiple[i].email;
+            login.password = employeeMultiple[i].password;
+            login.employee = user;
+            logins.push(login);
+            users.push(user);
         }
-        return arr_employee;
+
+        const connection = getConnection();
+        const queryRunner = connection.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+
+        try{
+            await queryRunner.manager.insert(Users, users);
+            await queryRunner.manager.insert(Login, logins);
+            queryRunner.commitTransaction();
+            queryRunner.release();
+            return users;
+        }
+        catch(error){
+            await queryRunner.rollbackTransaction();
+            queryRunner.release();
+            return [];
+        }
     }
 
    
@@ -319,5 +305,3 @@ export class UsersService {
     }
 
 } 
-
-   
