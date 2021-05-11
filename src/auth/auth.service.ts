@@ -81,7 +81,7 @@ export class AuthService {
             changes['email'] = edits.email;
         }
         if (edits.password) {
-            const saltOrRounds = 10;
+            const saltOrRounds = 3;
             const hash = await bcrypt.hash(edits.password, saltOrRounds);
             changes['password'] = hash;
         }

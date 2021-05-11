@@ -85,7 +85,7 @@ export class CompanyService {
             const login = new Login();
             login.email = `admin@${company.name.toLowerCase().replace(/\s/g, '')}.com`
 
-            const saltOrRounds = 10;
+            const saltOrRounds = 3;
             const password = 'password';
             const hash = await bcrypt.hash(password, saltOrRounds);
             login.password = hash;

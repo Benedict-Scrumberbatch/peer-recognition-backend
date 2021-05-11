@@ -43,7 +43,7 @@ describe('UsersController (e2e)', () => {
         const login1 = loginRepository.create();
         login1.email = "jjones@gmail.com";
         login1.employee = user1;
-        const saltOrRounds = 10;
+        const saltOrRounds = 3;
         const hash = await bcrypt.hash('password', saltOrRounds);
         login1.password = hash;
         await loginRepository.save(login1);

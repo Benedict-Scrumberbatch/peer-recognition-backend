@@ -132,7 +132,7 @@ export class UsersService {
         
         const login = new Login();
         login.email = createuserDto.email;
-        const saltOrRounds = 10;
+        const saltOrRounds = 3;
         const hash = await bcrypt.hash(createuserDto.password, saltOrRounds);
         login.password = hash;
         const saveduser = await this.usersRepository.save(user);
@@ -189,7 +189,7 @@ export class UsersService {
 
             const login = new Login();
             login.email = emp.email;
-            const saltOrRounds = 10;
+            const saltOrRounds = 3;
             const hash = await bcrypt.hash(emp.password, saltOrRounds);
             login.password = hash;
             login.employee = user;
