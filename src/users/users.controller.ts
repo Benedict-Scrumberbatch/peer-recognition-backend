@@ -1,4 +1,4 @@
-import { Controller, Request, Post, UseGuards, Get, Delete, Param, Body, Query, Patch} from '@nestjs/common';
+import { Controller, Request, Post, UseGuards, Get, Delete, Param, Body, Query, Patch, UseInterceptors, UploadedFile} from '@nestjs/common';
 import { Login } from '../dtos/entity/login.entity';
 import { Users } from '../dtos/entity/users.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -10,6 +10,8 @@ import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from '../auth/auth.service';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { Observable } from 'rxjs';
+import * as multer from 'multer';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 /**
  * Controller for users.
@@ -114,6 +116,18 @@ export class UsersController {
         return await this.usersService.createUserMultiple(employeeMultiple, req.user.companyId);
     }
 
+    // Posts a JSON to the backend to be uploaded into the db
+    // Guard admin
+    @Post('uploadJSON')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.Admin)
+    @UseInterceptors(FileInterceptor('file', {
+    storage: multer.memoryStorage()
+    }))
+    async uploadSingleFileWithPost(@UploadedFile() file, @Request() req): Promise<Users[]> {
+        const data = JSON.parse(file.buffer);
+        return await this.usersService.createUserMultiple(data, req.user.companyId);
+    }
     
    
     @UseGuards(JwtAuthGuard)

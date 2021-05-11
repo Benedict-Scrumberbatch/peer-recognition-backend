@@ -64,7 +64,7 @@ export class UsersService {
      * @returns {@link Users} object with manager relation.
      */
     async getProfile(userId: number, companyId: number): Promise<Users> {
-        return this.usersRepository.findOne( { relations: ["manager"], where: { employeeId: userId, companyId: companyId } } );
+        return this.usersRepository.findOne( { where: { employeeId: userId, companyId: companyId } } );
     }
     /**
      * Returns {@link Users}[ ] object array with user information and manager relation.
@@ -258,7 +258,6 @@ export class UsersService {
         queryBuilder.orderBy('user.firstName', 'ASC')
         // Must specify both firstname and lastname
         .where("user.companyId = :id", {id: comp_id})
-        .leftJoinAndSelect('user.manager', 'manager');
         if(search || matchCase){
             queryBuilder.andWhere(new Brackets (comp => {
                 if (search) {

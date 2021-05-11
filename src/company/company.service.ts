@@ -55,16 +55,16 @@ export class CompanyService {
 
         company.companyId = createcompanyDto.companyId;
         company.name = createcompanyDto.name;
-        
+        company.users = createcompanyDto.users;
+
         company.recognitions = createcompanyDto.recognitions;
+        const savedCompany = await this.companyRepository.save(company);
+
         // Create tags if tags do not exist in DB
-        company.tags = createcompanyDto.tags;
+        // company.tags = createcompanyDto.tags;
         if (createcompanyDto.tags != null && createcompanyDto.tags != undefined){
             for (let i = 0; i < createcompanyDto.tags.length; i++){ 
-                let tag = await this.tagRepository.findOne({where:{tagId: createcompanyDto.tags[i].tagId}})
-                if (!tag ) {
-                    await this.tagservice.createTag(createcompanyDto.companyId, createcompanyDto.tags[i].value);
-                }
+                await this.tagservice.createTag(savedCompany.companyId, createcompanyDto.tags[i].value);
             }
         }
         // if there is no initial employee 
@@ -78,8 +78,8 @@ export class CompanyService {
             user.isManager = true;
             user.positionTitle = 'Admin';
             user.startDate = new Date("2014-12-18");
-            user.company = company;
-            user.companyId = createcompanyDto.companyId;
+            user.company = savedCompany;
+            user.companyId = savedCompany.companyId;
 
             const login = new Login();
             login.email = `admin@${company.name.toLowerCase().replace(/\s/g, '')}.com`
@@ -87,13 +87,9 @@ export class CompanyService {
 
             // company.users = [user];
 
-            await this.companyRepository.save(company)
+            // await this.companyRepository.save(company)
             login.employee = await this.usersRepository.save(user);
             await this.loginRepo.save(login);
-        }
-        else {
-            company.users = createcompanyDto.users;
-            await this.companyRepository.save(company);
         }
         return company;
         
