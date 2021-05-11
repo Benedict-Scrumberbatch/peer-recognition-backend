@@ -78,7 +78,7 @@ export class CompanyService {
             user.lastName = 'Admin';
             user.isManager = true;
             user.positionTitle = 'Admin';
-            user.startDate = new Date("2014-12-18");
+            user.startDate = new Date();
             user.company = savedCompany;
             user.companyId = savedCompany.companyId;
 
