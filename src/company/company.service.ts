@@ -3,10 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Tag } from '../dtos/entity/tag.entity';
 import { DeleteResult, Repository } from 'typeorm';
 import { Company } from '../dtos/entity/company.entity';
+import { Users } from '../dtos/entity/users.entity';
+import { Role } from '../dtos/enum/role.enum';
+import { Login } from '../dtos/entity/login.entity';
+import { TagService } from '../tag/tag.service';
+
 
 @Injectable()
 export class CompanyService {
-
     /**
      * Constructor is called automatically by Nest.
      * @param companyRepository 
@@ -14,10 +18,14 @@ export class CompanyService {
     constructor(
         @InjectRepository(Company)
         private companyRepository: Repository<Company>,
+        @InjectRepository(Users)
+        private usersRepository: Repository<Users>,
+        @InjectRepository(Login)
+        private loginRepo: Repository<Login>,
         @InjectRepository(Tag)
-        private tagRepository: Repository<Tag>,
-
-        
+        private tagRepository: Repository<Tag>, 
+        private tagservice: TagService,
+    
     ){}
 
     /**
@@ -49,26 +57,62 @@ export class CompanyService {
         company.name = createcompanyDto.name;
         
         company.recognitions = createcompanyDto.recognitions;
+        // Create tags if tags do not exist in DB
+        company.tags = createcompanyDto.tags;
+        if (createcompanyDto.tags != null && createcompanyDto.tags != undefined){
+            for (let i = 0; i < createcompanyDto.tags.length; i++){ 
+                let tag = await this.tagRepository.findOne({where:{tagId: createcompanyDto.tags[i].tagId}})
+                if (!tag ) {
+                    await this.tagservice.createTag(createcompanyDto.companyId, createcompanyDto.tags[i].value);
+                }
+            }
+        }
+        // if there is no initial employee 
+        if (createcompanyDto.users == undefined || createcompanyDto.users == null) {
+            // Create a default admin account when create empty company 
+            const user = new Users();
+            user.role = Role.Admin;
+            user.employeeId = 0;
+            user.firstName = 'Admin';
+            user.lastName = 'Admin';
+            user.isManager = true;
+            user.positionTitle = 'Admin';
+            user.startDate = new Date("2014-12-18");
+            user.company = company;
+            user.companyId = createcompanyDto.companyId;
+
+            const login = new Login();
+            login.email = `admin@${company.name.toLowerCase().replace(/\s/g, '')}.com`
+            login.password = 'password';
+
+            // company.users = [user];
+
+            await this.companyRepository.save(company)
+            login.employee = await this.usersRepository.save(user);
+            await this.loginRepo.save(login);
+        }
+        else {
+            company.users = createcompanyDto.users;
+            await this.companyRepository.save(company);
+        }
+        return company;
         
-        // createcompanyDto.tags.forEach(createTag)
-        // async function createTag(item: Tag) {
-        //     const tag = await this.tagRepository.save(item);
-        //     company.tags.push(tag)
-        //   } 
-        
-        company.users = createcompanyDto.users;
-        const tags = await this.tagRepository.save(createcompanyDto.tags);
-        company.tags = tags;
-        return await this.companyRepository.save(company);
     }
     
-
+    // Soft Delete Company 
     /**
      * Deletes a company from the database.
      * @param id specifies the id of the company that should be deleted.
      * @returns {@link DeleteResult} object.
      */
-    async deleteComp(id: number):Promise<DeleteResult>{
-        return await this.companyRepository.delete(id)
+    async deleteComp(id: number): Promise<Company[]>{
+        const company = await this.companyRepository.createQueryBuilder('company')
+        .where('company.companyId = :id', {id: id})
+        .leftJoinAndSelect('company.users', 'users')
+        .leftJoinAndSelect('users.login', 'login')
+        .leftJoinAndSelect('company.recognitions', 'recognitions')
+        .leftJoinAndSelect('company.tags', 'tags')
+        .getOne();
+        return await this.companyRepository.softRemove([company]);
     }
 } 

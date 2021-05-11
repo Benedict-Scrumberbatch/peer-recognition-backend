@@ -55,13 +55,6 @@ export class UsersController {
 	    return await this.usersService.getArrayOfUsers(company_id);
     }
 
-    // TEMPORARY ONLY
-    // Place holder endpoint if database is empty
-    @Post('createDummy')
-    async createDummy(){
-        return await this.usersService.createDummy();
-    }
-
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(Role.Admin)
     /**
@@ -88,11 +81,9 @@ export class UsersController {
      * @returns adding user to Database 
      */
     //This endpoint should be guarded
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles(Role.Admin)
     @Post('create')
-    async createUser(@Body() createuserDto: Users & Login & {managerId: number}, @Request() req) {
-        return await this.usersService.createUser(createuserDto, req.user.companyId);
+    async createUser(@Body() createuserDto: Users & Login & {companyName: string}, @Request() req) {
+        return await this.usersService.createUser(createuserDto, req.user.companyId, req.user.role);
     }
 
     /**
