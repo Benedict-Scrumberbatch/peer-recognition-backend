@@ -172,30 +172,31 @@ export class UsersService {
     async createUserMultiple(employeeMultiple: (Users & Login & {companyName: string})[], cId: number): Promise <Users[]>{
         let users = [];
         let logins = [];
-        for (let i = 0; i < employeeMultiple.length; i++) {
+        await Promise.all(employeeMultiple.map(async (emp) => {
             const user = new Users();
             user.company = await this.companyRepository.findOne({where:{companyId: cId}})
 
-            user.employeeId = employeeMultiple[i].employeeId;
+            user.employeeId = emp.employeeId;
             // ignore input company id and override with the valid company id.
             user.companyId = cId;
-            user.firstName = employeeMultiple[i].firstName;
-            user.lastName = employeeMultiple[i].lastName;
-            user.isManager = Boolean(employeeMultiple[i].isManager);
-            user.role = employeeMultiple[i].role;
-            user.positionTitle = employeeMultiple[i].positionTitle;
-            user.startDate = new Date(employeeMultiple[i].startDate);
-            user.managerId = employeeMultiple[i].managerId;
+            user.firstName = emp.firstName;
+            user.lastName = emp.lastName;
+            user.isManager = Boolean(emp.isManager);
+            user.role = emp.role;
+            user.positionTitle = emp.positionTitle;
+            user.startDate = new Date(emp.startDate);
+            user.managerId = emp.managerId;
 
             const login = new Login();
-            login.email = employeeMultiple[i].email;
+            login.email = emp.email;
             const saltOrRounds = 10;
-            const hash = await bcrypt.hash(employeeMultiple[i].password, saltOrRounds);
+            const hash = await bcrypt.hash(emp.password, saltOrRounds);
             login.password = hash;
             login.employee = user;
             logins.push(login);
             users.push(user);
-        }
+        }))
+ 
 
         const connection = getConnection();
         const queryRunner = connection.createQueryRunner();
