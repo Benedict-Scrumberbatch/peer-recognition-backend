@@ -6,6 +6,8 @@ import { Login } from '../dtos/entity/login.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, UpdateResult } from 'typeorm';
 import { Users } from '../dtos/entity/users.entity';
+import * as bcrypt from 'bcrypt';
+
 
 /**
  * Service for the {@link AuthController}. Functional logic is kept here.
@@ -28,7 +30,8 @@ export class AuthService {
      */
     async validateUser(username: string, pass: string): Promise<any> {
         const user = await this.usersService.loginUser(username);
-        if (user && user.password === pass) {
+        const passMatch = await bcrypt.compare(pass, user.password);
+        if (user &&  passMatch) {
             const { password, ...result} = user;
             return result;
         }
@@ -76,7 +79,9 @@ export class AuthService {
             changes['email'] = edits.email;
         }
         if (edits.password) {
-            changes['password'] = edits.password;
+            const saltOrRounds = 10;
+            const hash = await bcrypt.hash(edits.password, saltOrRounds);
+            changes['password'] = hash;
         }
         let result: UpdateResult = await this.loginRepo.createQueryBuilder()
             .update()

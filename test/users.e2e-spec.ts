@@ -10,6 +10,7 @@ import { Login } from '../src/dtos/entity/login.entity';
 import { getMaxListeners } from 'node:process';
 import { Company } from '../src/dtos/entity/company.entity';
 import { response } from 'express';
+import * as bcrypt from 'bcrypt';
 
 describe('UsersController (e2e)', () => {
   let app: INestApplication;
@@ -42,7 +43,9 @@ describe('UsersController (e2e)', () => {
         const login1 = loginRepository.create();
         login1.email = "jjones@gmail.com";
         login1.employee = user1;
-        login1.password = "password";
+        const saltOrRounds = 10;
+        const hash = await bcrypt.hash('password', saltOrRounds);
+        login1.password = hash;
         await loginRepository.save(login1);
         
         

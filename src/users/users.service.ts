@@ -20,6 +20,7 @@ import { from, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';    
 import { create } from 'node:domain';
 import { Console } from 'node:console';
+import * as bcrypt from 'bcrypt';
 
 /**
  * Service for {@link UsersController}. Functional logic is kept here.
@@ -131,7 +132,9 @@ export class UsersService {
         
         const login = new Login();
         login.email = createuserDto.email;
-        login.password = createuserDto.password;
+        const saltOrRounds = 10;
+        const hash = await bcrypt.hash(createuserDto.password, saltOrRounds);
+        login.password = hash;
         const saveduser = await this.usersRepository.save(user);
         login.employee = saveduser
         await this.loginRepo.save(login);
@@ -186,7 +189,9 @@ export class UsersService {
 
             const login = new Login();
             login.email = employeeMultiple[i].email;
-            login.password = employeeMultiple[i].password;
+            const saltOrRounds = 10;
+            const hash = await bcrypt.hash(employeeMultiple[i].password, saltOrRounds);
+            login.password = hash;
             login.employee = user;
             logins.push(login);
             users.push(user);

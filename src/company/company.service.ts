@@ -7,6 +7,7 @@ import { Users } from '../dtos/entity/users.entity';
 import { Role } from '../dtos/enum/role.enum';
 import { Login } from '../dtos/entity/login.entity';
 import { TagService } from '../tag/tag.service';
+import * as bcrypt from 'bcrypt';
 
 
 @Injectable()
@@ -83,7 +84,11 @@ export class CompanyService {
 
             const login = new Login();
             login.email = `admin@${company.name.toLowerCase().replace(/\s/g, '')}.com`
-            login.password = 'password';
+
+            const saltOrRounds = 10;
+            const password = 'password';
+            const hash = await bcrypt.hash(password, saltOrRounds);
+            login.password = hash;
 
             // company.users = [user];
 
