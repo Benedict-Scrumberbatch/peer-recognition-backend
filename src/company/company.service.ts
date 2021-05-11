@@ -97,6 +97,7 @@ export class CompanyService {
             await this.companyRepository.save(company);
         }
         return company;
+        
     }
     
     // Soft Delete Company 

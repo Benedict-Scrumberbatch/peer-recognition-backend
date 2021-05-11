@@ -6,7 +6,6 @@ import {Reaction} from '../dtos/entity/reaction.entity';
 import { Controller, Get, Post, Delete, Body, Param, Request, UseGuards, Query} from '@nestjs/common';
 import { CreateRecDto } from '../dtos/dto/create-rec.dto';
 import { DeleteResult } from 'typeorm';
-import { ReactType } from '../dtos/enum/reacttype.enum'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../roles/roles.guard';
 import { Roles } from '../roles/roles.decorator';
@@ -25,6 +24,47 @@ export class RecognitionController {
     findAll(@Request() req): Promise<Recognition[]>{
         return this.recs.findCompRec(req.user.companyId);
     }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('search')
+    async index(
+        @Query('page') page: number = 1,
+        @Query('limit') limit: number = 10,
+        @Query('firstName_to') firstName_t: string,
+        @Query('lastName_to') lastName_t: string,
+        @Query('firstName_from') firstName_f: string,
+        @Query('lastName_from') lastName_f: string,
+        @Query('empTo_id') empTo_id: number,
+        @Query('empToFrom_id') empToFrom_id: number,
+        @Query('empFrom_id') empFrom_id: number,
+        @Query('search') search: string,
+        @Query('msg') msg: string,   
+        @Request() req
+    ): Promise<Pagination<Recognition>> {
+        let path: string = req.url;
+        let [host, query] = path.split('?');
+        const params = new URLSearchParams(query);
+        
+        params.delete('page');
+        params.delete('limit');
+        
+        limit = limit > 100 ? 100: limit
+        limit = limit <= 0 ? 1: limit
+        return this.recs.paginate_post(
+            {page: Number(page), limit: Number(limit), route: host + '?' + params.toString()},
+            firstName_t, lastName_t,
+            firstName_f, lastName_f,
+            empTo_id, empFrom_id,
+            empToFrom_id, 
+            search, msg,
+            req.user.companyId);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get(':id')
+    findOne(@Request() req, @Param('id') id): Promise<Recognition>{
+        return this.recs.findRecById(req.user.companyId, id);
+    }
   /**
      * Allows for user to create a new recognition in the database
      * @param recognition takes in a {@link Recognition} object and a req object
@@ -33,7 +73,7 @@ export class RecognitionController {
     @UseGuards(JwtAuthGuard)
     @Post('create')
     create(@Request() req, @Body() recognition: Recognition): Promise<Recognition>{
-        return this.recs.createRec(recognition, req.user.companyId, req.user.employeeId);
+        return this.recs.createRec(recognition, req.user);
     }
   
    
@@ -46,7 +86,7 @@ export class RecognitionController {
     @UseGuards(JwtAuthGuard)
     @Delete(':id')
     delete(@Request() req, @Param('id') id): Promise<DeleteResult>{
-        return this.recs.deleteRec(id, req.user.companyId, req.user.employeeId, req.user.role);
+        return this.recs.deleteRec(id, req.user);
     }
 
      /**
@@ -71,9 +111,16 @@ export class RecognitionController {
 
     @UseGuards(JwtAuthGuard)
     @Post(':recID/report')
-    addReport(@Request() req, @Param('recID') rec_id): Promise<Report>
+    addReport(@Request() req, @Param('recID') rec_id, @Body() report: Report): Promise<Report>
     {
-        return this.recs.reportRec(rec_id, req.user);
+        return this.recs.reportRec(rec_id, req.user, report);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post(':recID/comment/:commentId/report')
+    addReportComment(@Request() req, @Param('commentId') comment_id, @Body() report: Report): Promise<Report>
+    {
+        return this.recs.reportComment(comment_id, req.user, report);
     }
 
     /**
@@ -98,9 +145,9 @@ export class RecognitionController {
      */
     @UseGuards(JwtAuthGuard)
     @Post(':recID/comment')
-    addComment(@Request() req, @Param('redID') rec_id, @Body() text: string): Promise<Comment| Error>
+    addComment(@Request() req, @Param('recID') rec_id, @Body() comment: Comment): Promise<Comment>
     {
-        return this.recs.addComment(rec_id, text, req.user);
+        return this.recs.addComment(rec_id, comment, req.user);
     }
 
     /**
@@ -126,9 +173,9 @@ export class RecognitionController {
      */
     @UseGuards(JwtAuthGuard)
     @Post(':recID/reaction')
-    addReaction(@Request() req, @Param('recID') rec_id, @Body() type: ReactType) : Promise<Reaction| Error>
+    addReaction(@Request() req, @Param('recID') rec_id) : Promise<Reaction| Error>
     {
-        return this.recs.addReaction(rec_id, req.user, type);
+        return this.recs.addReaction(rec_id, req.user);
     }
 
     /**
@@ -170,32 +217,6 @@ export class RecognitionController {
     deleteReaction(@Request() req, @Param('reactionID') reaction_id): Promise<Reaction[]>
     {
         return this.recs.removeReaction(reaction_id);
-    }
-
-    @UseGuards(JwtAuthGuard)
-    @Get('search')
-    async index(
-        @Query('page') page: number = 1,
-        @Query('limit') limit: number = 10,
-        @Query('firstName_t') firstName_t: string,
-        @Query('lastName_t') lastName_t: string,
-        @Query('firstName_f') firstName_f: string,
-        @Query('lastName_f') lastName_f: string,
-        @Query('empTo_id') empTo_id: number,
-        @Query('empFrom_id') empFrom_id: number,
-        @Query('search') search: string,
-        @Query('msg') msg: string,   
-        @Request() req
-    ): Promise<Pagination<Recognition>> {
-        limit = limit > 100 ? 100: limit
-        return this.recs.paginate_post(
-            {page: Number(page), limit: Number(limit), route: 'http://localhost:4200/recognitions/search'},
-            firstName_t, lastName_t,
-            firstName_f, lastName_f,
-            empTo_id, empFrom_id,
-            search,
-            msg,
-            req.user.companyId);
     }
 
 }

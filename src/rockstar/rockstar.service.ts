@@ -50,14 +50,18 @@ export class RockstarService {
     async getRockstar( companyId: number, month: number, year: number): Promise<ReturnRockstarDto> {
        
          //gets a list of recognitions for the given month, year and company
-        let queryString :string = `SELECT t1.empID, t1.numRecog FROM (select recognition."empToEmployeeId" as empID, count(recognition."empToEmployeeId") as numRecog from Recognition where recognition."empToCompanyId" = ${companyId} and extract(Month from recognition."postDate") = ${ month } and extract(Year from recognition."postDate") = ${ year } group by recognition."empToEmployeeId" ) t1 group by t1.empID, t1.numRecog order by t1.numrecog DESC;`
+        let queryString :string = `SELECT t1.empID, t1.numRecog FROM (select recognition."empToEmployeeId" as empID, count(recognition."empToEmployeeId") as numRecog from Recognition where recognition."empToCompanyId" = ${companyId} and extract(Month from recognition."createdAt") = ${ month } and extract(Year from recognition."createdAt") = ${ year } group by recognition."empToEmployeeId" ) t1 group by t1.empID, t1.numRecog order by t1.numrecog DESC;`
 
         let retQuery= await this.recognitionRepository.query(queryString);
         //takes the first employeeID in the list (sorted so highest number of recognitions is on top, and finds the employee in the DB)
-        let rockstarUser = await this.usersRepository.findOne( {where: { employeeId : retQuery[0].empid}});
+        let rockstarUser: Users;
+        let recogs = [];
+        if (retQuery.length > 0) {
+            rockstarUser = await this.usersRepository.findOne( {where: { employeeId : retQuery[0].empid}});
+            recogs = await this.recognitionRepository.createQueryBuilder().select("*").innerJoin("recognition_tags_tag","test","test.recognitionRecId = Recognition.recId").where("Recognition.empToCompanyId = :compID", {compID : rockstarUser.companyId}).andWhere("Recognition.empToEmployeeId = :empID", {empID: rockstarUser.employeeId}).andWhere("extract(Month from Recognition.createdAt) = :prvMonth",{prvMonth:month}).andWhere("extract(Year from Recognition.createdAt) = :yr",{yr:year}).getRawMany();
+        }
 
         //gets recognitions for this emloyee
-        let recogs = await this.recognitionRepository.createQueryBuilder().select("*").innerJoin("recognition_tags_tag","test","test.recognitionRecId = Recognition.recId").where("Recognition.empToCompanyId = :compID", {compID : rockstarUser.companyId}).andWhere("Recognition.empToEmployeeId = :empID", {empID: rockstarUser.employeeId}).andWhere("extract(Month from Recognition.postDate) = :prvMonth",{prvMonth:month}).andWhere("extract(Year from Recognition.postDate) = :yr",{yr:year}).getRawMany();
 
         let tagStatsList: RockstarStats[] = [];
         let tags: number[] = [];
@@ -88,20 +92,24 @@ export class RockstarService {
                 }
             }
         }
-        //assembles the rockstar object
-        let rockstar: Rockstar = new Rockstar();
-        rockstar.month = month;
-        rockstar.year = year;
 
-        rockstar.rockstar = rockstarUser;
-        rockstar.compID = rockstarUser.companyId;
+      
         //checks if the rockstar is saved already
-        let savedRockstar = await this.rockstarRepo.findOne({where: { compID:rockstar.compID, month: month, year:year}});
+        let savedRockstar = await this.rockstarRepo.findOne({where: { compID: companyId, month: month, year:year}, relations:['rockstar', 'recognitions', 'stats', 'recognitions.empFrom', 'recognitions.empTo', 'recognitions.tags']});
 
         //if not already there, saves it 
-        if (savedRockstar == undefined)
+        if (!savedRockstar && rockstarUser)
         {
-             savedRockstar = await this.rockstarRepo.save(rockstar);
+            //assembles the rockstar object
+            let rockstar: Rockstar = new Rockstar();
+            rockstar.month = month;
+            rockstar.year = year;
+            rockstar.recognitions = recogs;
+
+            rockstar.rockstar = rockstarUser;
+            rockstar.compID = rockstarUser.companyId;
+            await this.rockstarRepo.save(rockstar);
+            savedRockstar = await this.rockstarRepo.findOne({where: { compID: companyId, month: month, year:year}, relations:['rockstar', 'recognitions', 'stats', 'recognitions.empFrom', 'recognitions.empTo', 'recognitions.tags']});
         }
 
         //passes the rockstar's ID in the rockstar table to the tags 
@@ -122,7 +130,7 @@ export class RockstarService {
         
         //assembles the DTO for return
         let returnVal: ReturnRockstarDto = new ReturnRockstarDto();
-        returnVal.rockstar = rockstar;
+        returnVal.rockstar = savedRockstar;
         returnVal.rockstarStats = tagStatsList;
         return returnVal;
 

@@ -31,6 +31,7 @@ jobs:
         uses: actions/setup-node@v2.1.5
       - uses: c-hive/gha-npm-cache@v1
       - run: npm install
+      - run: npm run submodule
       - run: npm run build
 
   test-application:
@@ -44,5 +45,6 @@ jobs:
         uses: actions/setup-node@v2.1.5   
       - uses: c-hive/gha-npm-cache@v1
       - run: npm install
+      - run: npm run submodule
       - run: docker-compose up -d
       - run: npm run test:e2e

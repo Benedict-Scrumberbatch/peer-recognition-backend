@@ -1,4 +1,4 @@
-import { Controller, Request, Post, UseGuards, Get, Delete, Param, Body, Query } from '@nestjs/common';
+import { Controller, Request, Post, UseGuards, Get, Delete, Param, Body, Query, Patch} from '@nestjs/common';
 import { Login } from '../dtos/entity/login.entity';
 import { Users } from '../dtos/entity/users.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -81,13 +81,9 @@ export class UsersController {
      * @returns adding user to Database 
      */
     //This endpoint should be guarded
-    @UseGuards(JwtAuthGuard)
-    @Roles(Role.Admin)
     @Post('create')
-    async createUser(@Body() createuserDto: Users & Login 
-    & {managerId: number} & {companyName: string} 
-    , @Request() req) {
-        return await this.usersService.createUser(createuserDto, req.user.companyId, req.user.role);
+    async createUser(@Body() createuserDto: Users & Login & {managerId: number}, @Request() req) {
+        return await this.usersService.createUser(createuserDto, req.user.companyId);
     }
 
     /**
@@ -111,12 +107,12 @@ export class UsersController {
      * @param employeeMultiple 
      * @returns adding multiple users to Database 
      */
-    // @UseGuards(JwtAuthGuard, RolesGuard)
-    // @Roles(Role.Admin)
-    // @Post('create_multiple')
-    // async createUserMultiple(@Body() employeeMultiple: []) {
-    //     return await this.usersService.createUserMultiple(employeeMultiple);
-    // }
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.Admin)
+    @Post('create_multiple')
+    async createUserMultiple(@Body() employeeMultiple: [], @Request() req) {
+        return await this.usersService.createUserMultiple(employeeMultiple, req.user.companyId);
+    }
 
     
    
@@ -130,9 +126,29 @@ export class UsersController {
         @Query('search') search: string,
         @Request() req
     ): Promise<Pagination<Users>> {
+        let path: string = req.url;
+        let [host, query] = path.split('?');
+        const params = new URLSearchParams(query);
+        
+        params.delete('page');
+        params.delete('limit');
         limit = limit > 100 ? 100: limit
+        limit = limit <= 0 ? 1: limit
         return this.usersService.paginate_username(
-            {page: Number(page), limit: Number(limit), route: 'http://localhost:4200/users/search'},
+            {page: Number(page), limit: Number(limit), route: host + '?' + params.toString()},
             firstName, lastName, search, req.user.companyId);
     }
+
+    /**
+     * 
+     * @param req request object
+     * @param user User object which to be used to update 
+     * @returns User object
+     */
+    @UseGuards(JwtAuthGuard)
+    @Patch(':employeeId/edit')
+    async editUserDetails(@Param('employeeId') employeeId: number, @Request() req, @Body() user: Users){
+        return this.usersService.editUserDetails(req.user, employeeId, user);
+    }
 }
+    

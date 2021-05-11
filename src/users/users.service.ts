@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from '../dtos/entity/users.entity';
 import { Login } from '../dtos/entity/login.entity';
@@ -6,7 +6,7 @@ import { Company } from '../dtos/entity/company.entity';
 import { TagStats } from '../dtos/entity/tagstats.entity';
 import { CompanyService } from '../company/company.service';
 import { Recognition } from '../dtos/entity/recognition.entity';
-import { DeleteResult, Like, ILike, QueryBuilder, Repository, Brackets } from 'typeorm';
+import { DeleteResult, Like, QueryBuilder, ILike, Repository, getConnection, Brackets } from 'typeorm';
 import { Query } from 'typeorm/driver/Query';
 import { Role } from '../dtos/enum/role.enum';
 import { throwError } from 'rxjs';
@@ -20,8 +20,6 @@ import { from, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';    
 import { create } from 'node:domain';
 import { Console } from 'node:console';
-
-
 
 /**
  * Service for {@link UsersController}. Functional logic is kept here.
@@ -55,7 +53,7 @@ export class UsersService {
      * @returns {@link Login} user object.
      */
     async loginUser(username: string): Promise<Login> {
-        return this.loginRepo.findOne( { relations: ["employee"], where: { email: username } });
+        return this.loginRepo.findOne( { relations: ["employee", "employee.manager"], where: { email: username } });
     }
 
     //Function retrieves user profile using their userId.
@@ -193,53 +191,148 @@ export class UsersService {
     }
     
     /**
-     * Method to create array of {@link Users} object 
+     * Method to create {@link Users} in the database from an array input
      * @param employeeMultiple 
      * @returns Array of {@link Users} object 
      */
-    // async createUserMultiple(employeeMultiple: []): Promise <any>{
-    //     let arr_employee = [];
-    //     for (let i = 0; i < employeeMultiple.length; i++) {
-    //         arr_employee.push(await this.createUser(employeeMultiple[i]));
-    //     }
-    //     return arr_employee;
-    // }
+    async createUserMultiple(employeeMultiple: (Users & Login & {managerId: number} & {companyName: string})[], cId: number): Promise <Users[]>{
+        let users = [];
+        let logins = [];
+        for (let i = 0; i < employeeMultiple.length; i++) {
+            const user = new Users();
+            user.company = await this.companyRepository.findOne({where:{companyId: cId}})
+
+            user.employeeId = employeeMultiple[i].employeeId;
+            // ignore input company id and override with the valid company id.
+            user.companyId = cId;
+            user.firstName = employeeMultiple[i].firstName;
+            user.lastName = employeeMultiple[i].lastName;
+            user.isManager = Boolean(employeeMultiple[i].isManager);
+            user.role = employeeMultiple[i].role;
+            user.positionTitle = employeeMultiple[i].positionTitle;
+            user.startDate = new Date(employeeMultiple[i].startDate);
+            if (employeeMultiple[i].manager != undefined) {
+                user.manager = employeeMultiple[i].manager;
+            }
+
+            const login = new Login();
+            login.email = employeeMultiple[i].email;
+            login.password = employeeMultiple[i].password;
+            login.employee = user;
+            logins.push(login);
+            users.push(user);
+        }
+
+        const connection = getConnection();
+        const queryRunner = connection.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+
+        try{
+            await queryRunner.manager.insert(Users, users);
+            await queryRunner.manager.insert(Login, logins);
+            queryRunner.commitTransaction();
+            queryRunner.release();
+            return users;
+        }
+        catch(error){
+            await queryRunner.rollbackTransaction();
+            queryRunner.release();
+            return [];
+        }
+    }
 
    
     async paginate(options: IPaginationOptions): Promise<Pagination<Users>> {
         return paginate<Users>(this.usersRepository, options);
     }
 
-    async paginate_username(options: IPaginationOptions, firstName: string, lastName: string, 
-        search: string, comp_id: number): Promise<Pagination<Users>> {
+    /**
+     * Method to get Rockstar of the month stats
+     * 
+     * @param rockstar 
+     * @returns stats
+     */
+    async getRockstarStats(rockstar: Users): Promise<any> {
+        let date: Date = new Date();
+        let prevMonth: number = -1;
+        let year = date.getFullYear()
+        if (date.getMonth() == 1)
+        {
+            prevMonth = 12;
+            year = date.getFullYear() - 1;
+        }
+        else
+        {
+            prevMonth = date.getMonth()
+        }
+        let results = {};
+        let recogs = await this.recognitionRepository.createQueryBuilder().select("*").innerJoin("recognition_tags_tag","test","test.recognitionRecId = Recognition.recId").where("Recognition.empToCompanyId = :compID", {compID : rockstar.company}).andWhere("Recognition.empToEmployeeId = :empID", {empID: rockstar.employeeId}).andWhere("extract(Month from Recognition.postDate) = :prvMonth",{prvMonth:prevMonth}).andWhere("extract(Year from Recognition.postDate) = :yr",{yr:year}).getRawMany();
+        for (let i = 0; i < recogs.length; ++i)
+        {
+            if (!(recogs[i].tagTagID in results))
+            {
+                results[recogs[i].tagTagId]= 1;
+            }
+            else 
+            {
+                let numTag = results[recogs[i].tagTagId];
+                results[recogs[i].tagTagId]= numTag + 1;
+            }
+        }
+        return results;
+    }
+   
+    async paginate_username(options: IPaginationOptions, firstName: string, lastName: string, search: string, comp_id: number): Promise<Pagination<Users>> {
+        const matchCase = firstName || lastName;
         const queryBuilder = this.usersRepository.createQueryBuilder('user');
         queryBuilder.orderBy('user.firstName', 'ASC')
         // Must specify both firstname and lastname
         .where("user.companyId = :id", {id: comp_id})
-        .andWhere(new Brackets (comp => {
-            if (firstName != null && firstName != undefined 
-                && lastName != null && lastName != undefined){
-                comp.orWhere("user.firstName ilike :firstName", {firstName: '%'+firstName+'%'})
-                .andWhere("user.lastName ilike :lastName", {lastName: '%'+lastName+'%'})
-            }
-            else {
-                comp.orWhere("user.firstName ilike :firstName", {firstName: '%'+firstName+'%'})
-                .orWhere("user.lastName ilike :lastName", {lastName: '%'+lastName+'%'})
-            }
-            // search: string return users with similar firstname and lastname
-            if (search != null && search != undefined){
-                const arr = search.split(' ', 2)
-                if (arr.length > 1) {
-                    comp.orWhere("user.firstName ilike :fn", {fn: '%'+arr[0]+'%'})
-                    .andWhere("user.lastName ilike :ln", {ln: '%'+arr[1]+'%'})
-                }
-                else {
+        .leftJoinAndSelect('user.manager', 'manager');
+        if(search || matchCase){
+            queryBuilder.andWhere(new Brackets (comp => {
+                if (search) {
                     comp.orWhere("user.firstName ilike :search", {search: '%'+search+'%'})
-                    .orWhere("user.lastName ilike :search", {search: '%'+search+'%'})
+                    .orWhere("user.lastName ilike :search", {search: '%'+search+'%'});
                 }
-            }
-        })); 
+                if (matchCase) {
+                    comp.orWhere(new Brackets (bracket => {
+                        if (firstName) {
+                            bracket.andWhere("user.firstName ilike :firstName", {firstName: '%'+firstName+'%'});
+                        }
+        
+                        if (lastName) {
+                            bracket.andWhere("user.lastName ilike :lastName", {lastName: '%'+lastName+'%'});
+                        }
+        
+                    }));
+                }        
+            })); 
+        }
+      
         return paginate<Users>(queryBuilder, options);
+    }
+
+    /**
+     * 
+     * @param empID ID of the logged in user
+     * @param newUser new User object to update old user
+     * @returns the new User object which was used to update the user
+     */
+    async editUserDetails(requester: Users, employeeId: number, newUser: Users){
+        if(requester.employeeId !== employeeId && requester.role !== Role.Admin){
+            throw new UnauthorizedException();
+        }
+        const user = await this.usersRepository.findOne({employeeId, companyId: requester.companyId});
+        user.firstName = newUser.firstName;
+        user.lastName = newUser.lastName;
+        if (requester.role === Role.Admin) {
+            user.positionTitle = newUser.positionTitle;
+            user.startDate = newUser.startDate;
+            user.isManager = newUser.isManager
+        }
+        return await this.usersRepository.save(user);
     }
 
 } 

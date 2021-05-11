@@ -88,7 +88,12 @@
       "resourceRequirements": null,
       "ulimits": null,
       "dnsServers": null,
-      "mountPoints": [],
+      "mountPoints": [
+        {
+            "sourceVolume": "backend-database-production-system-data",
+            "containerPath": "/var/lib/postgresql/data/"
+        }
+      ],
       "workingDirectory": null,
       "secrets": null,
       "dockerSecurityOptions": null,
