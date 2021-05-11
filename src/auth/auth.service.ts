@@ -3,6 +3,8 @@ import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
 import { Login } from '../dtos/entity/login.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import { Users } from '../dtos/entity/users.entity';
 
 /**
@@ -10,7 +12,12 @@ import { Users } from '../dtos/entity/users.entity';
  */
 @Injectable()
 export class AuthService {
-    constructor(private usersService: UsersService, private jwtService: JwtService) {}
+    constructor(
+        private usersService: UsersService, 
+        private jwtService: JwtService,
+        @InjectRepository(Login)
+        private loginRepo: Repository<Login>
+        ) {}
 
     /**
      * Retrieves user object from the {@link UsersService} and verifies that the password matches.
@@ -55,5 +62,28 @@ export class AuthService {
             access_token: this.jwtService.sign(payload),
             accessTokenExpire: accessTokenExpireDate,   // expire in 5 minutes
         };
+    }
+
+    /**
+     * Method that edits the email and password of the user.
+     * @param user Login details prior to change.
+     * @param edits New login details (only email and password)
+     * @returns
+     */
+    async editLogin(user: Login, edits: Login): Promise<UpdateResult> {
+        let changes = {};
+        if (edits.email) {
+            changes['email'] = edits.email;
+        }
+        if (edits.password) {
+            changes['password'] = edits.password;
+        }
+        let result: UpdateResult = await this.loginRepo.createQueryBuilder()
+            .update()
+            .set(changes)
+            .where("employeeCompanyId = :company", {company: user.employee.companyId})
+            .andWhere("employeeEmployeeId = :employee", {employee: user.employee.employeeId})
+            .execute();
+        return result;
     }
 }
