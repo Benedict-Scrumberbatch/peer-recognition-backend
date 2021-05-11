@@ -64,7 +64,7 @@ export class UsersController {
      * @param companyId 
      * @returns 
      */
-     @UseGuards(JwtAuthGuard)
+     @UseGuards(JwtAuthGuard, RolesGuard)
      @Roles(Role.Admin)
      @Delete(':employeeId')
      async removeUser(@Param('employeeId') employeeId: number, @Request() req) {
@@ -82,8 +82,8 @@ export class UsersController {
      */
     //This endpoint should be guarded
     @Post('create')
-    async createUser(@Body() createuserDto: Users & Login & {managerId: number}, @Request() req) {
-        return await this.usersService.createUser(createuserDto, req.user.companyId);
+    async createUser(@Body() createuserDto: Users & Login & {companyName: string}, @Request() req) {
+        return await this.usersService.createUser(createuserDto, req.user.companyId, req.user.role);
     }
 
     /**

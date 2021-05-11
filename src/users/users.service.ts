@@ -99,26 +99,15 @@ export class UsersService {
      * @returns {@link Users} user is added to Database  
      */
     async createUser(createuserDto: Users & Login 
-        & {managerId: number} & {companyName: string},
+         & {companyName: string},
         requestId: number, creator_role: Role): Promise<Users> {    
 
         const user = new Users();
-        if (createuserDto.companyName != undefined) {
-            let company = await this.companyRepository.findOne({name: createuserDto.companyName})
-            if (!company) {
-                throw new BadRequestException({error: 'Company name does not exist'});
-            }
-            user.company = company;
+        let company = await this.companyRepository.findOne({companyId: requestId})
+        if (!company) {
+            throw new BadRequestException({error: 'Company Id does not exist'});
         }
-        else{   // Not sure if this is needed because req.user.companyId anyway 
-            if (requestId != undefined) {
-                let company = await this.companyRepository.findOne({companyId: requestId})
-                if (!company) {
-                    throw new BadRequestException({error: 'Company Id does not exist'});
-                }
-                user.company = company
-            }
-        }
+        user.company = company
         user.employeeId = createuserDto.employeeId;
         user.companyId = requestId;
 
@@ -129,7 +118,7 @@ export class UsersService {
 
         // Only be able to add lower ranking user 
         if (createuserDto.role != undefined){
-            if (creator_role > createuserDto.role){
+            if (Role[creator_role] >= Role[createuserDto.role]){
                 user.role = createuserDto.role;
             }
             else {
@@ -138,25 +127,7 @@ export class UsersService {
         }
         user.positionTitle = createuserDto.positionTitle;
         user.startDate = new Date(createuserDto.startDate);
-        
-        if (createuserDto.manager != undefined) {
-            user.manager = createuserDto.manager;
-        }
-        else {
-            if (createuserDto.managerId != undefined) {
-                let Manager = await this.usersRepository.findOne({where:{companyId: requestId , 
-                    employeeId : createuserDto.managerId}});
-                if (Manager) {
-                    if (Manager.isManager == false || Manager.isManager == undefined || Manager.isManager == null){
-                        throw new BadRequestException('Invalid Manager')
-                    }
-                }
-                else {
-                    throw new BadRequestException('Invalid Manager')
-                }
-                user.manager = Manager;
-            }
-        }
+        user.managerId = createuserDto.managerId;
         
         const login = new Login();
         login.email = createuserDto.email;
@@ -195,7 +166,7 @@ export class UsersService {
      * @param employeeMultiple 
      * @returns Array of {@link Users} object 
      */
-    async createUserMultiple(employeeMultiple: (Users & Login & {managerId: number} & {companyName: string})[], cId: number): Promise <Users[]>{
+    async createUserMultiple(employeeMultiple: (Users & Login & {companyName: string})[], cId: number): Promise <Users[]>{
         let users = [];
         let logins = [];
         for (let i = 0; i < employeeMultiple.length; i++) {
@@ -211,9 +182,7 @@ export class UsersService {
             user.role = employeeMultiple[i].role;
             user.positionTitle = employeeMultiple[i].positionTitle;
             user.startDate = new Date(employeeMultiple[i].startDate);
-            if (employeeMultiple[i].manager != undefined) {
-                user.manager = employeeMultiple[i].manager;
-            }
+            user.managerId = employeeMultiple[i].managerId;
 
             const login = new Login();
             login.email = employeeMultiple[i].email;
