@@ -14,7 +14,6 @@
     "build:heroku": "cross-env NODE_ENV=prod-heroku nest build",
     "start:prod:heroku": "cross-env NODE_ENV=prod-heroku node dist/main",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "submodule": "git submodule update --init --recursive",
     "start": "cross-env NODE_ENV=dev nest start ",
     "start:dev": "cross-env NODE_ENV=dev nest start --watch",
     "start:debug": "cross-env NODE_ENV=dev nest start --debug --watch",
