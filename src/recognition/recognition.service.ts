@@ -499,7 +499,7 @@ export class RecognitionService {
         .leftJoinAndSelect('rec.tags', 'tags').leftJoinAndSelect('rec.reactions', 'reactions')
         .leftJoinAndSelect('rec.comments', 'comments').leftJoinAndSelect('reactions.employeeFrom', 'reactFrom')
         .leftJoinAndSelect('comments.employeeFrom', 'commentFrom')
-        .leftJoinAndSelect('comments.reactions', 'commentReactions').leftJoinAndSelect('commentReactions.employeeFrom', 'commentReactionsFrom')
+        .leftJoinAndSelect('comments.reactions', 'commentReactions').leftJoinAndSelect('commentReactions.employeeFrom', 'commentReactionsFrom').orderBy('rec.createdAt', 'DESC')
 
         .where("empTo.companyId = :comp_id", {comp_id: comp_id});
         if(search || matchCase){
