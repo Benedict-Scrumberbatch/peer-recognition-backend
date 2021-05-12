@@ -15,7 +15,8 @@ export class CompanyController {
      * Endpoint to retrieve all companies from the database.
      * @returns List of companies including their tags.
      */
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.ServerAdmin)
     @Get('all')
     async getCompany(){
         return await this.companyService.getCompany();
@@ -37,6 +38,8 @@ export class CompanyController {
      * @param id URL parameter that specifies the company id.
      * @returns {@link Company} object along with the company's values (tags).
      */
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.ServerAdmin)
     @Get(':id')
     async getOneCompany(@Param('id') id): Promise<Company>{
         return await this.companyService.getOneCompany(id);
