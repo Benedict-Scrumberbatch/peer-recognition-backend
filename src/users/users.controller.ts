@@ -164,5 +164,16 @@ export class UsersController {
     async editUserDetails(@Param('employeeId') employeeId: number, @Request() req, @Body() user: Users){
         return this.usersService.editUserDetails(req.user, employeeId, user);
     }
+
+    /**
+     * Retrieves user email from JWT token.
+     * @param req 
+     * @returns 
+     */
+    @UseGuards(JwtAuthGuard)
+    @Get('email')
+    async getUserEmail(@Request() req): Promise<{ email: string }> {
+        return { email: req.user.email };
+    }
 }
     
