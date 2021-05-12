@@ -117,10 +117,17 @@ export class RecognitionController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Post(':recID/comment/:commentId/report')
+    @Post('comment/:commentId/report')
     addReportComment(@Request() req, @Param('commentId') comment_id, @Body() report: Report): Promise<Report>
     {
         return this.recs.reportComment(comment_id, req.user, report);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('comment/:commentId/reaction')
+    addReactionComment(@Request() req, @Param('commentId') comment_id, @Body() report: Report): Promise<Reaction>
+    {
+        return this.recs.reactComment(comment_id, req.user);
     }
 
     /**
@@ -136,6 +143,14 @@ export class RecognitionController {
     {
         return this.recs.getComments(rec_id, req.user);
     }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('comment/:id')
+    getSingleComment(@Request() req, @Param('id') id): Promise<Comment | Error>
+    {
+        return this.recs.getSingleComment(id, req.user);
+    }
+
 
     /**
      * Creates a comment for the given rec_id

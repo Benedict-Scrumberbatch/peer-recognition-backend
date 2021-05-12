@@ -48,11 +48,11 @@ export class RecognitionService {
      * @returns an array of {@link Recognition} objects
      */
     async findCompRec(id: number): Promise<Recognition[]>{
-     return await this.recognitionsRepository.find({relations: ['empFrom', 'empTo', 'tags', 'comments', 'reactions'], where:{company:id}});
+     return await this.recognitionsRepository.find({relations: ['empFrom', 'empTo', 'tags', 'comments', 'comments.employeeFrom', 'reactions', 'reactions.employeeFrom', 'comments.reactions', 'comments.reactions.employeeFrom'], where:{company:id}});
     }
 
     async findRecById(companyId: number, id: number): Promise<Recognition>{
-        return await this.recognitionsRepository.findOne({relations: ['empFrom', 'empTo', 'tags', 'comments', 'comments.employeeFrom', 'reactions'], where:{company: companyId, recId: id}});
+        return await this.recognitionsRepository.findOne({relations: ['empFrom', 'empTo', 'tags', 'comments', 'comments.employeeFrom', 'reactions', 'reactions.employeeFrom', 'comments.reactions', 'comments.reactions.employeeFrom'], where:{company: companyId, recId: id}});
        }
 
     /**
@@ -60,7 +60,7 @@ export class RecognitionService {
      * @returns an array of {@link Recognition} objects
      */
     async findAll(): Promise<Recognition[]>{
-        return await this.recognitionsRepository.find({relations: ['empFrom', 'empTo', 'tags', 'comments', 'reactions']});
+        return await this.recognitionsRepository.find({relations: ['empFrom', 'empTo', 'tags', 'comments', 'comments.employeeFrom', 'reactions', 'reactions.employeeFrom', 'comments.reactions', 'comments.reactions.employeeFrom']});
     }
 
    /**
@@ -116,7 +116,7 @@ export class RecognitionService {
  * @returns {@link DeleteResult} 
  */
     async deleteRec(id: number, user: Users): Promise<DeleteResult> {        
-        let rec = await this.recognitionsRepository.findOne({ relations: ["empFrom", "empTo", "company", "tags"], where: { recId: id } });
+        let rec = await this.recognitionsRepository.findOne({ relations: ['empFrom', 'empTo', 'tags', 'comments', 'comments.employeeFrom', 'reactions', 'reactions.employeeFrom', 'comments.reactions', 'comments.reactions.employeeFrom'], where: { recId: id } });
         if(rec.empFrom.employeeId !== user.employeeId  && user.role !== Role.Admin){
             throw new UnauthorizedException();
         }
@@ -253,7 +253,7 @@ export class RecognitionService {
      */
     async reportRec(rec_id: number, reporter: Users, report: Report)
     {
-        let recog = await this.recognitionsRepository.findOne( {relations: ["empFrom", "empTo", "company", "tags"],  where: { recId: rec_id }} );
+        let recog = await this.recognitionsRepository.findOne( {relations: ['empFrom', 'empTo', 'tags', 'comments', 'comments.employeeFrom', 'reactions', 'reactions.employeeFrom', 'comments.reactions', 'comments.reactions.employeeFrom'],  where: { recId: rec_id }} );
 
         report.employeeFrom = reporter;
         report.recognition = recog;
@@ -283,7 +283,7 @@ export class RecognitionService {
 
     async reportComment(comment_id: number, reporter: Users, report: Report)
     {
-        let comment = await this.commentRepo.findOne( {relations: ["empFrom", "empTo", "company", "tags"],  where: { commentID: comment_id }} );
+        let comment = await this.commentRepo.findOne( {relations: ['empFrom', 'empTo', 'tags', 'comments', 'comments.employeeFrom', 'reactions', 'reactions.employeeFrom', 'comments.reactions', 'comments.reactions.employeeFrom'],  where: { commentID: comment_id }} );
 
         report.employeeFrom = reporter;
         report.comment = comment;
@@ -321,7 +321,7 @@ export class RecognitionService {
     {
      
         newComment.employeeFrom = user;
-        let recognition = await this.recognitionsRepository.findOne( {relations: ["empFrom", "empTo", "company", "tags"],  where: { recId: rec_id }} );
+        let recognition = await this.recognitionsRepository.findOne( {relations: ['empFrom', 'empTo', 'tags', 'comments', 'comments.employeeFrom', 'reactions', 'reactions.employeeFrom', 'comments.reactions', 'comments.reactions.employeeFrom'],  where: { recId: rec_id }} );
         newComment.recognition = recognition;
         if (newComment.recognition == undefined) {
             throw new NotFoundException('no recognition with that ID was found');
@@ -365,6 +365,18 @@ export class RecognitionService {
 
         return savedReaction;
     }
+
+    async reactComment(id: number, user: Users)
+    {
+        let newReaction = new Reaction();
+        newReaction.employeeFrom = user;
+        
+        let comment = await this.commentRepo.findOne( {  where: { commentID : id }} );
+        newReaction.comment = comment;
+        const savedReaction = await this.reactRepo.save(newReaction);
+
+        return savedReaction;
+    }
     
     /**
      * Gets all {@link Report} for a given recognition and returns them
@@ -395,10 +407,23 @@ export class RecognitionService {
     async getComments(rec_id: Number, user: Users)
     {
         let recognition = await this.recognitionsRepository.findOne( { where: {recId: rec_id}});
-        let comments = await this.commentRepo.find( {  where: { recognition: recognition }} );
+        let comments = await this.commentRepo.find( {relations: ['employeeFrom', 'reactions', 'reactions.employeeFrom'],  where: { recognition: recognition }} );
         if (comments != undefined)
         {
             return comments;
+        }
+        else
+        {
+            return new Error("No comments found");
+        }
+    }
+
+    async getSingleComment(id: Number, user: Users)
+    {
+        let comment = await this.commentRepo.findOne( {relations: ['employeeFrom', 'reactions', 'reactions.employeeFrom'],  where: {commentID: id}});
+        if (comment != undefined)
+        {
+            return comment;
         }
         else
         {
@@ -472,7 +497,10 @@ export class RecognitionService {
 
         queryBuilder.leftJoinAndSelect('rec.empTo', 'empTo').leftJoinAndSelect('rec.empFrom', 'empFrom')
         .leftJoinAndSelect('rec.tags', 'tags').leftJoinAndSelect('rec.reactions', 'reactions')
-        .leftJoinAndSelect('rec.comments', 'comments')
+        .leftJoinAndSelect('rec.comments', 'comments').leftJoinAndSelect('reactions.employeeFrom', 'reactFrom')
+        .leftJoinAndSelect('comments.employeeFrom', 'commentFrom')
+        .leftJoinAndSelect('comments.reactions', 'commentReactions').leftJoinAndSelect('commentReactions.employeeFrom', 'commentReactionsFrom')
+
         .where("empTo.companyId = :comp_id", {comp_id: comp_id});
         if(search || matchCase){
             queryBuilder.andWhere(new Brackets (comp => {

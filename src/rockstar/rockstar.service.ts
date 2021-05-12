@@ -55,47 +55,56 @@ export class RockstarService {
         let retQuery= await this.recognitionRepository.query(queryString);
         //takes the first employeeID in the list (sorted so highest number of recognitions is on top, and finds the employee in the DB)
         let rockstarUser: Users;
-        let recogs = [];
+        let recogs: Recognition[] = [];
         if (retQuery.length > 0) {
             rockstarUser = await this.usersRepository.findOne( {where: { employeeId : retQuery[0].empid}});
-            recogs = await this.recognitionRepository.createQueryBuilder().select("*").innerJoin("recognition_tags_tag","test","test.recognitionRecId = Recognition.recId").where("Recognition.empToCompanyId = :compID", {compID : rockstarUser.companyId}).andWhere("Recognition.empToEmployeeId = :empID", {empID: rockstarUser.employeeId}).andWhere("extract(Month from Recognition.createdAt) = :prvMonth",{prvMonth:month}).andWhere("extract(Year from Recognition.createdAt) = :yr",{yr:year}).getRawMany();
+            recogs = await   this.recognitionRepository.createQueryBuilder('rec')
+            .leftJoinAndSelect('rec.empTo', 'empTo').leftJoinAndSelect('rec.empFrom', 'empFrom')
+            .leftJoinAndSelect('rec.tags', 'tags').leftJoinAndSelect('rec.reactions', 'reactions')
+            .leftJoinAndSelect('rec.comments', 'comments').leftJoinAndSelect('reactions.employeeFrom', 'reactFrom')
+            .leftJoinAndSelect('comments.employeeFrom', 'commentFrom')
+            .leftJoinAndSelect('comments.reactions', 'commentReactions').leftJoinAndSelect('commentReactions.employeeFrom', 'commentReactionsFrom')
+            .where("rec.empToCompanyId = :compID", {compID : rockstarUser.companyId}).andWhere("rec.empToEmployeeId = :empID", {empID: rockstarUser.employeeId})
+            .andWhere("extract(Month from rec.createdAt) = :prvMonth",{prvMonth:month}).andWhere("extract(Year from rec.createdAt) = :yr",{yr:year}).
+            getMany();
         }
 
         //gets recognitions for this emloyee
 
         let tagStatsList: RockstarStats[] = [];
-        let tags: number[] = [];
+        let tags: Tag[] = [];
         
         //loops through each recognition, tallying the tags they have
-        for (let i = 0; i < recogs.length; ++i)
+        for (let i = 0; i < recogs.length; i++)
         {
-            let num = parseInt(recogs[i].tags);
-            if (isNaN(num))
+            const rec = recogs[i];
+            for (let j = 0; j < rec.tags.length; j++) 
             {
+                let tag = rec.tags[j]
+                const tagSet = tags.findIndex(aTag => aTag.tagId === tag.tagId)
+                    
                 
-            
-                if (!tags.includes(recogs[i].tagTagId) )
-                {
-                    tags.push(recogs[i].tagTagId)
-                    const currTag = await this.tagRepository.findOne({ where: { tagId: recogs[i].tagTagId } });
-                    let currStat = new RockstarStats();
-                    currStat.countReceived = 1;
-                    currStat.tag = currTag;
-                    currStat.month = month;
-                    currStat.year = year;
-                    tagStatsList.push(currStat);
-                }
-                else 
-                {
-                    let index = tags.indexOf(recogs[i].tagTagId);
-                    tagStatsList[index].countReceived = tagStatsList[index].countReceived + 1;
-                }
+                    if (tagSet === -1)
+                    {
+                        tags.push(tag)
+                        let currStat = new RockstarStats();
+                        currStat.countReceived = 1;
+                        currStat.tag = tag;
+                        currStat.month = month;
+                        currStat.year = year;
+                        tagStatsList.push(currStat);
+                    }
+                    else 
+                    {
+                        tagStatsList[tagSet].countReceived = tagStatsList[tagSet].countReceived + 1;
+                    }
             }
+
         }
 
       
         //checks if the rockstar is saved already
-        let savedRockstar = await this.rockstarRepo.findOne({where: { compID: companyId, month: month, year:year}, relations:['rockstar', 'recognitions', 'stats', 'recognitions.empFrom', 'recognitions.empTo', 'recognitions.tags']});
+        let savedRockstar = await this.rockstarRepo.findOne({where: { compID: companyId, month: month, year:year}, relations:['rockstar', 'recognitions', 'stats', 'recognitions.empFrom', 'recognitions.empTo', 'recognitions.tags', 'recognitions.comments', 'recognitions.comments.employeeFrom', 'recognitions.reactions', 'recognitions.reactions.employeeFrom', 'recognitions.comments.reactions', 'recognitions.comments.reactions.employeeFrom']});
 
         //if not already there, saves it 
         if (!savedRockstar && rockstarUser)
@@ -109,7 +118,7 @@ export class RockstarService {
             rockstar.rockstar = rockstarUser;
             rockstar.compID = rockstarUser.companyId;
             await this.rockstarRepo.save(rockstar);
-            savedRockstar = await this.rockstarRepo.findOne({where: { compID: companyId, month: month, year:year}, relations:['rockstar', 'recognitions', 'stats', 'recognitions.empFrom', 'recognitions.empTo', 'recognitions.tags']});
+            savedRockstar = await this.rockstarRepo.findOne({where: { compID: companyId, month: month, year:year}, relations:['rockstar', 'recognitions', 'stats', 'recognitions.empFrom', 'recognitions.empTo', 'recognitions.tags', 'recognitions.comments', 'recognitions.comments.employeeFrom', 'recognitions.reactions', 'recognitions.reactions.employeeFrom', 'recognitions.comments.reactions', 'recognitions.comments.reactions.employeeFrom']});
         }
 
         //passes the rockstar's ID in the rockstar table to the tags 
