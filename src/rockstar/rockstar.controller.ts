@@ -1,15 +1,15 @@
 import {RockstarService} from './rockstar.service';
-import {Recognition} from '../dtos/entity/recognition.entity';
-import {Report} from '../dtos/entity/report.entity';
-import {Users} from '../dtos/entity/users.entity';
+import {Recognition} from '../common/entity/recognition.entity';
+import {Report} from '../common/entity/report.entity';
+import {Users} from '../common/entity/users.entity';
 import { Controller, Get, Post, Delete, Body, Param, Request, UseGuards} from '@nestjs/common';
 import { DeleteResult } from 'typeorm';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../roles/roles.guard';
 import { Roles } from '../roles/roles.decorator';
-import { Role } from '../dtos/enum/role.enum';
-import { Rockstar } from '../dtos/entity/rockstar.entity';
-import { ReturnRockstarDto } from '../dtos/dto/rockstar-stats.dto';
+import { Role } from '../common/enum/role.enum';
+import { Rockstar } from '../common/entity/rockstar.entity';
+import { ReturnRockstarDto } from '../common/dto/rockstar-stats.dto';
 
 @Controller('rockstar')
 export class RockstarController {

@@ -1,16 +1,16 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Users } from '../dtos/entity/users.entity';
-import { Login } from '../dtos/entity/login.entity';
-import { Company } from '../dtos/entity/company.entity';
-import { TagStats } from '../dtos/entity/tagstats.entity';
+import { Users } from '../common/entity/users.entity';
+import { Login } from '../common/entity/login.entity';
+import { Company } from '../common/entity/company.entity';
+import { TagStats } from '../common/entity/tagstats.entity';
 import { CompanyService } from '../company/company.service';
-import { Recognition } from '../dtos/entity/recognition.entity';
+import { Recognition } from '../common/entity/recognition.entity';
 import { DeleteResult, Like, QueryBuilder, ILike, Repository, getConnection, Brackets } from 'typeorm';
 import { Query } from 'typeorm/driver/Query';
-import { Role } from '../dtos/enum/role.enum';
+import { Role } from '../common/enum/role.enum';
 import { throwError } from 'rxjs';
-import { UserStats } from '../dtos/interface/userstats.interface';
+import { UserStats } from '../common/interface/userstats.interface';
 import {
     paginate,
     Pagination,

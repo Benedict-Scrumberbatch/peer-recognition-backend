@@ -5,10 +5,10 @@ import { AppModule } from '../src/app.module';
 import {UsersModule} from '../src/users/users.module'
 import { AuthModule } from '../src/auth/auth.module';
 import { Connection, getRepository, Repository } from 'typeorm';
-import { Users } from '../src/dtos/entity/users.entity';
-import { Login } from '../src/dtos/entity/login.entity';
+import { Users } from '../src/common/entity/users.entity';
+import { Login } from '../src/common/entity/login.entity';
 import { getMaxListeners } from 'node:process';
-import { Company } from '../src/dtos/entity/company.entity';
+import { Company } from '../src/common/entity/company.entity';
 import { response } from 'express';
 import * as bcrypt from 'bcrypt';
 

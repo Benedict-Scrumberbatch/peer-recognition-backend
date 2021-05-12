@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
-import { Login } from '../dtos/entity/login.entity';
+import { Login } from '../common/entity/login.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, UpdateResult } from 'typeorm';
-import { Users } from '../dtos/entity/users.entity';
+import { Users } from '../common/entity/users.entity';
 import * as bcrypt from 'bcrypt';
 
 

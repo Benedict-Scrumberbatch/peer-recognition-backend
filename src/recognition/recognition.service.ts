@@ -1,23 +1,23 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Brackets, DeleteResult, getConnection, Like, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Recognition } from '../dtos/entity/recognition.entity';
-import { Company } from '../dtos/entity/company.entity';
-import { Users } from '../dtos/entity/users.entity';
-import { Tag } from '../dtos/entity/tag.entity';
-import { TagStats } from '../dtos/entity/tagstats.entity';
-import { CreateRecDto } from '../dtos/dto/create-rec.dto';
-import {Report} from '../dtos/entity/report.entity';
+import { Recognition } from '../common/entity/recognition.entity';
+import { Company } from '../common/entity/company.entity';
+import { Users } from '../common/entity/users.entity';
+import { Tag } from '../common/entity/tag.entity';
+import { TagStats } from '../common/entity/tagstats.entity';
+import { CreateRecDto } from '../common/dto/create-rec.dto';
+import {Report} from '../common/entity/report.entity';
 import { reverse } from 'node:dns';
-import {Comment} from '../dtos/entity/comment.entity';
-import {Reaction} from '../dtos/entity/reaction.entity';
+import {Comment} from '../common/entity/comment.entity';
+import {Reaction} from '../common/entity/reaction.entity';
 import { text } from 'express';
 
-import { Role } from '../dtos/enum/role.enum';
+import { Role } from '../common/enum/role.enum';
 import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { NotificationsService } from '../notifications/notifications.service';
-import { UserNotification } from '../dtos/entity/notification.entity';
-import { NotificationType } from '../dtos/enum/notification-types';
+import { UserNotification } from '../common/entity/notification.entity';
+import { NotificationType } from '../common/enum/notification-types';
 
 
 @Injectable()

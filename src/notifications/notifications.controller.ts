@@ -1,5 +1,5 @@
 import { Controller, Get, UseGuards, Request, Delete, Param } from '@nestjs/common';
-import { UserNotification } from '../dtos/entity/notification.entity';
+import { UserNotification } from '../common/entity/notification.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { NotificationsService } from './notifications.service';
 import { DeleteResult } from 'typeorm';

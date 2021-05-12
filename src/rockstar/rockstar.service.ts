@@ -1,17 +1,17 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { DeleteResult, getConnection, Repository, Transaction, getManager } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Recognition } from '../dtos/entity/recognition.entity';
-import { Company } from '../dtos/entity/company.entity';
-import { Users } from '../dtos/entity/users.entity';
-import { Tag } from '../dtos/entity/tag.entity';
-import { TagStats } from '../dtos/entity/tagstats.entity';
-import { CreateRecDto } from '../dtos/dto/create-rec.dto';
-import {Report} from '../dtos/entity/report.entity';
+import { Recognition } from '../common/entity/recognition.entity';
+import { Company } from '../common/entity/company.entity';
+import { Users } from '../common/entity/users.entity';
+import { Tag } from '../common/entity/tag.entity';
+import { TagStats } from '../common/entity/tagstats.entity';
+import { CreateRecDto } from '../common/dto/create-rec.dto';
+import {Report} from '../common/entity/report.entity';
 import { reverse } from 'node:dns';
-import { Rockstar } from '../dtos/entity/rockstar.entity';
-import { RockstarStats} from '../dtos/entity/rockstarstats.entity';
-import { ReturnRockstarDto} from '../dtos/dto/rockstar-stats.dto';
+import { Rockstar } from '../common/entity/rockstar.entity';
+import { RockstarStats} from '../common/entity/rockstarstats.entity';
+import { ReturnRockstarDto} from '../common/dto/rockstar-stats.dto';
 
 
 

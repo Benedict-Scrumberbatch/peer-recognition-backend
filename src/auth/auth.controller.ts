@@ -4,7 +4,7 @@ import { LocalAuthGuard } from './local-auth.guard';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtAuthRefreshGuard } from './jwt-auth.refresh.guard';
-import { EditLoginDto } from '../dtos/dto/edit-login.dto';
+import { EditLoginDto } from '../common/dto/edit-login.dto';
 import { UpdateResult } from 'typeorm';
 
 /**

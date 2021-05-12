@@ -1,11 +1,11 @@
 import { Controller, Request, Post, UseGuards, Get, Delete, Param, Body, Query, Patch, UseInterceptors, UploadedFile} from '@nestjs/common';
-import { Login } from '../dtos/entity/login.entity';
-import { Users } from '../dtos/entity/users.entity';
+import { Login } from '../common/entity/login.entity';
+import { Users } from '../common/entity/users.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UsersService } from './users.service';
 import { Roles } from '../roles/roles.decorator';
 import { RolesGuard } from '../roles/roles.guard';
-import { Role } from '../dtos/enum/role.enum'
+import { Role } from '../common/enum/role.enum'
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from '../auth/auth.service';
 import { Pagination } from 'nestjs-typeorm-paginate';

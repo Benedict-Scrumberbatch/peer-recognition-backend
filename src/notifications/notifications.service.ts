@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Users } from '../dtos/entity/users.entity';
+import { Users } from '../common/entity/users.entity';
 import { DeleteResult, Repository } from 'typeorm';
-import { UserNotification } from '../dtos/entity/notification.entity';
+import { UserNotification } from '../common/entity/notification.entity';
 
 @Injectable()
 export class NotificationsService {

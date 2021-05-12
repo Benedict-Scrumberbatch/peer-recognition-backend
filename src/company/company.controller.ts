@@ -1,9 +1,9 @@
 import { Controller, Request, Post, Get, Delete, Param, Body, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { DeleteResult } from 'typeorm';
-import { Company } from '../dtos/entity/company.entity';
+import { Company } from '../common/entity/company.entity';
 import { CompanyService } from './company.service';
-import { Role } from '../dtos/enum/role.enum';
+import { Role } from '../common/enum/role.enum';
 import { RolesGuard } from '../roles/roles.guard';
 import { Roles } from '../roles/roles.decorator';
 

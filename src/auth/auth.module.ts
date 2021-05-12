@@ -9,7 +9,7 @@ import { JwtStrategy } from './jwt.strategy';
 import { AuthController } from './auth.controller';
 import { JwtRefreshTokenStrategy } from './jwt.refreshtoken.strategy';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Login } from '../dtos/entity/login.entity';
+import { Login } from '../common/entity/login.entity';
 
 @Module({
   imports: [

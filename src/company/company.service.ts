@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Tag } from '../dtos/entity/tag.entity';
+import { Tag } from '../common/entity/tag.entity';
 import { DeleteResult, Repository } from 'typeorm';
-import { Company } from '../dtos/entity/company.entity';
-import { Users } from '../dtos/entity/users.entity';
-import { Role } from '../dtos/enum/role.enum';
-import { Login } from '../dtos/entity/login.entity';
+import { Company } from '../common/entity/company.entity';
+import { Users } from '../common/entity/users.entity';
+import { Role } from '../common/enum/role.enum';
+import { Login } from '../common/entity/login.entity';
 import { TagService } from '../tag/tag.service';
 import * as bcrypt from 'bcrypt';
 

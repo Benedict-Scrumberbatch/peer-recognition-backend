@@ -1,15 +1,15 @@
 import {RecognitionService} from './recognition.service';
-import {Recognition} from '../dtos/entity/recognition.entity';
-import {Report} from '../dtos/entity/report.entity';
-import {Comment} from '../dtos/entity/comment.entity';
-import {Reaction} from '../dtos/entity/reaction.entity';
+import {Recognition} from '../common/entity/recognition.entity';
+import {Report} from '../common/entity/report.entity';
+import {Comment} from '../common/entity/comment.entity';
+import {Reaction} from '../common/entity/reaction.entity';
 import { Controller, Get, Post, Delete, Body, Param, Request, UseGuards, Query} from '@nestjs/common';
-import { CreateRecDto } from '../dtos/dto/create-rec.dto';
+import { CreateRecDto } from '../common/dto/create-rec.dto';
 import { DeleteResult } from 'typeorm';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../roles/roles.guard';
 import { Roles } from '../roles/roles.decorator';
-import { Role } from '../dtos/enum/role.enum';
+import { Role } from '../common/enum/role.enum';
 import { Pagination } from 'nestjs-typeorm-paginate';
 
 @Controller('recognitions')
