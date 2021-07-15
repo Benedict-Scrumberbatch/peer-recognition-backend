@@ -1,0 +1,686 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>@Benedict-Scrumberbatch/peer-recognition-backend documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	      <link rel="stylesheet" href="../styles/style.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+            <a href="../" class="navbar-brand">@Benedict-Scrumberbatch/peer-recognition-backend documentation</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content injectable">
+                   <div class="content-data">
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li>Injectables</li>
+  <li>CompanyService</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="c-info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>src/company/company.service.ts</code>
+        </p>
+
+
+
+
+            <section>
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#createCompany">createCompany</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#deleteComp">deleteComp</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#getCompany">getCompany</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#getOneCompany">getOneCompany</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+            <section>
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(companyRepository: <a href="../classes/Company.html">Repository<Company></a>, usersRepository: <a href="../classes/Users.html">Repository<Users></a>, loginRepo: <a href="../classes/Login.html">Repository<Login></a>, tagRepository: <a href="../classes/Tag.html">Repository<Tag></a>, tagservice: <a href="../injectables/TagService.html">TagService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="14" class="link-to-prism">src/company/company.service.ts:14</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div class="io-description"><p>Constructor is called automatically by Nest.</p>
+</div>
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>companyRepository</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../classes/Company.html" target="_self" >Repository&lt;Company&gt;</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>usersRepository</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../classes/Users.html" target="_self" >Repository&lt;Users&gt;</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>loginRepo</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../classes/Login.html" target="_self" >Repository&lt;Login&gt;</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>tagRepository</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../classes/Tag.html" target="_self" >Repository&lt;Tag&gt;</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>tagservice</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/TagService.html" target="_self" >TagService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+            <section>
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="createCompany"></a>
+                    <span class="name">
+                        <b>
+                            <span class="modifier">Async</span>
+                            createCompany
+                        </b>
+                        <a href="#createCompany"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>createCompany(createcompanyDto: <a href="../classes/Company.html">Company</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="54"
+                            class="link-to-prism">src/company/company.service.ts:54</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Creates a company in the database.</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                    <td>Description</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>createcompanyDto</td>
+                                    <td>
+                                                <code><a href="../classes/Company.html" target="_self" >Company</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>Company object that specifies new company information.</p>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="../classes/Company.html" target="_self" >Promise&lt;Company&gt;</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="deleteComp"></a>
+                    <span class="name">
+                        <b>
+                            <span class="modifier">Async</span>
+                            deleteComp
+                        </b>
+                        <a href="#deleteComp"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>deleteComp(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="109"
+                            class="link-to-prism">src/company/company.service.ts:109</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Deletes a company from the database.</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                    <td>Description</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>id</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>specifies the id of the company that should be deleted.</p>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="../classes/Company.html" target="_self" >Promise&lt;Company[]&gt;</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getCompany"></a>
+                    <span class="name">
+                        <b>
+                            <span class="modifier">Async</span>
+                            getCompany
+                        </b>
+                        <a href="#getCompany"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getCompany()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="36"
+                            class="link-to-prism">src/company/company.service.ts:36</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Retrieves all companies in database.</p>
+</div>
+
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="../classes/Company.html" target="_self" >Promise&lt;Company[]&gt;</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        <p>Array of Company objects.</p>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getOneCompany"></a>
+                    <span class="name">
+                        <b>
+                            <span class="modifier">Async</span>
+                            getOneCompany
+                        </b>
+                        <a href="#getOneCompany"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getOneCompany(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="45"
+                            class="link-to-prism">src/company/company.service.ts:45</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Retrieves company specified by ID.</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                    <td>Description</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>id</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>Specifies the companyID to search for.</p>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="../classes/Company.html" target="_self" >Promise&lt;Company&gt;</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Injectable } from &#x27;@nestjs/common&#x27;;
+import { InjectRepository } from &#x27;@nestjs/typeorm&#x27;;
+import { Tag } from &#x27;../common/entity/tag.entity&#x27;;
+import { DeleteResult, Repository } from &#x27;typeorm&#x27;;
+import { Company } from &#x27;../common/entity/company.entity&#x27;;
+import { Users } from &#x27;../common/entity/users.entity&#x27;;
+import { Role } from &#x27;../common/enum/role.enum&#x27;;
+import { Login } from &#x27;../common/entity/login.entity&#x27;;
+import { TagService } from &#x27;../tag/tag.service&#x27;;
+import * as bcrypt from &#x27;bcrypt&#x27;;
+
+
+@Injectable()
+export class CompanyService {
+    /**
+     * Constructor is called automatically by Nest.
+     * @param companyRepository 
+     */
+    constructor(
+        @InjectRepository(Company)
+        private companyRepository: Repository&lt;Company&gt;,
+        @InjectRepository(Users)
+        private usersRepository: Repository&lt;Users&gt;,
+        @InjectRepository(Login)
+        private loginRepo: Repository&lt;Login&gt;,
+        @InjectRepository(Tag)
+        private tagRepository: Repository&lt;Tag&gt;, 
+        private tagservice: TagService,
+    
+    ){}
+
+    /**
+     * Retrieves all companies in database.
+     * @returns Array of Company objects.
+     */
+    async getCompany(): Promise&lt;Company[]&gt;{
+        return await this.companyRepository.find({relations:[&quot;tags&quot;]});
+    }
+
+    /**
+     * Retrieves company specified by ID.
+     * @param id Specifies the companyID to search for.
+     * @returns {@link Company} object.
+     */
+    async getOneCompany(id:number): Promise&lt;Company&gt;{
+        return await this.companyRepository.findOne({relations:[&quot;tags&quot;], where:{companyId:id}})
+    }
+
+    /**
+     * Creates a company in the database.
+     * @param createcompanyDto Company object that specifies new company information.
+     * @returns {@link Company} object that was created in the database.
+     */
+    async createCompany(createcompanyDto: Company): Promise&lt;Company&gt; {
+        const company &#x3D; new Company();
+
+        company.companyId &#x3D; createcompanyDto.companyId;
+        company.name &#x3D; createcompanyDto.name;
+        company.users &#x3D; createcompanyDto.users;
+
+        company.recognitions &#x3D; createcompanyDto.recognitions;
+        const savedCompany &#x3D; await this.companyRepository.save(company);
+
+        // Create tags if tags do not exist in DB
+        // company.tags &#x3D; createcompanyDto.tags;
+        if (createcompanyDto.tags !&#x3D; null &amp;&amp; createcompanyDto.tags !&#x3D; undefined){
+            for (let i &#x3D; 0; i &lt; createcompanyDto.tags.length; i++){ 
+                await this.tagservice.createTag(savedCompany.companyId, createcompanyDto.tags[i].value);
+            }
+        }
+        // if there is no initial employee 
+        if (createcompanyDto.users &#x3D;&#x3D; undefined || createcompanyDto.users &#x3D;&#x3D; null) {
+            // Create a default admin account when create empty company 
+            const user &#x3D; new Users();
+            user.role &#x3D; Role.Admin;
+            user.employeeId &#x3D; 0;
+            user.firstName &#x3D; &#x27;Admin&#x27;;
+            user.lastName &#x3D; &#x27;Admin&#x27;;
+            user.isManager &#x3D; true;
+            user.positionTitle &#x3D; &#x27;Admin&#x27;;
+            user.startDate &#x3D; new Date();
+            user.company &#x3D; savedCompany;
+            user.companyId &#x3D; savedCompany.companyId;
+
+            const login &#x3D; new Login();
+            login.email &#x3D; &#x60;admin@${company.name.toLowerCase().replace(/\s/g, &#x27;&#x27;)}.com&#x60;
+
+            const saltOrRounds &#x3D; 3;
+            const password &#x3D; &#x27;password&#x27;;
+            const hash &#x3D; await bcrypt.hash(password, saltOrRounds);
+            login.password &#x3D; hash;
+
+            // company.users &#x3D; [user];
+
+            // await this.companyRepository.save(company)
+            login.employee &#x3D; await this.usersRepository.save(user);
+            await this.loginRepo.save(login);
+        }
+        return company;
+        
+    }
+    
+    // Soft Delete Company 
+    /**
+     * Deletes a company from the database.
+     * @param id specifies the id of the company that should be deleted.
+     * @returns {@link DeleteResult} object.
+     */
+    async deleteComp(id: number): Promise&lt;Company[]&gt;{
+        const company &#x3D; await this.companyRepository.createQueryBuilder(&#x27;company&#x27;)
+        .where(&#x27;company.companyId &#x3D; :id&#x27;, {id: id})
+        .leftJoinAndSelect(&#x27;company.users&#x27;, &#x27;users&#x27;)
+        .leftJoinAndSelect(&#x27;users.login&#x27;, &#x27;login&#x27;)
+        .leftJoinAndSelect(&#x27;company.recognitions&#x27;, &#x27;recognitions&#x27;)
+        .leftJoinAndSelect(&#x27;company.tags&#x27;, &#x27;tags&#x27;)
+        .getOne();
+        return await this.companyRepository.softRemove([company]);
+    }
+} 
+</code></pre>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+                   
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> result-matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'injectable';
+            var COMPODOC_CURRENT_PAGE_URL = 'CompanyService.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+       <!-- Required to polyfill modern browsers as code is ES5 for IE... -->
+       <script src="../js/libs/custom-elements-es5-adapter.js" charset="utf-8" defer></script>
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

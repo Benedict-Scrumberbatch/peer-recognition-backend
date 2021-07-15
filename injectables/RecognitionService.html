@@ -1,0 +1,2732 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>@Benedict-Scrumberbatch/peer-recognition-backend documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	      <link rel="stylesheet" href="../styles/style.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+            <a href="../" class="navbar-brand">@Benedict-Scrumberbatch/peer-recognition-backend documentation</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content injectable">
+                   <div class="content-data">
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li>Injectables</li>
+  <li>RecognitionService</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="c-info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>src/recognition/recognition.service.ts</code>
+        </p>
+
+
+
+
+            <section>
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#addComment">addComment</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#addReaction">addReaction</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#changeUserStats">changeUserStats</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#createRec">createRec</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#deleteRec">deleteRec</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#findAll">findAll</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#findCompRec">findCompRec</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#findRecById">findRecById</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#getComments">getComments</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#getReactions">getReactions</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#getReports">getReports</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#getSingleComment">getSingleComment</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#paginate_post">paginate_post</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#reactComment">reactComment</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#removeComment">removeComment</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#removeReaction">removeReaction</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#removeReport">removeReport</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#reportComment">reportComment</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#reportRec">reportRec</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+            <section>
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(userRepository: <a href="../classes/Users.html">Repository<Users></a>, companyRepository: <a href="../classes/Company.html">Repository<Company></a>, tagRepository: <a href="../classes/Tag.html">Repository<Tag></a>, recognitionsRepository: <a href="../classes/Recognition.html">Repository<Recognition></a>, tagStatsRepo: Repository<TagStats>, reportRepo: <a href="../classes/Report.html">Repository<Report></a>, commentRepo: <a href="../classes/Comment.html">Repository<Comment></a>, reactRepo: <a href="../classes/Reaction.html">Repository<Reaction></a>, notificationRepository: <a href="../classes/UserNotification.html">Repository<UserNotification></a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="24" class="link-to-prism">src/recognition/recognition.service.ts:24</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>userRepository</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../classes/Users.html" target="_self" >Repository&lt;Users&gt;</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>companyRepository</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../classes/Company.html" target="_self" >Repository&lt;Company&gt;</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>tagRepository</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../classes/Tag.html" target="_self" >Repository&lt;Tag&gt;</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>recognitionsRepository</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../classes/Recognition.html" target="_self" >Repository&lt;Recognition&gt;</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>tagStatsRepo</td>
+                                                  
+                                                        <td>
+                                                                    <code>Repository&lt;TagStats&gt;</code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>reportRepo</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../classes/Report.html" target="_self" >Repository&lt;Report&gt;</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>commentRepo</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../classes/Comment.html" target="_self" >Repository&lt;Comment&gt;</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>reactRepo</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../classes/Reaction.html" target="_self" >Repository&lt;Reaction&gt;</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>notificationRepository</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../classes/UserNotification.html" target="_self" >Repository&lt;UserNotification&gt;</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+            <section>
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="addComment"></a>
+                    <span class="name">
+                        <b>
+                            <span class="modifier">Async</span>
+                            addComment
+                        </b>
+                        <a href="#addComment"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>addComment(rec_id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, newComment: <a href="../classes/Comment.html">Comment</a>, user: <a href="../classes/Users.html">Users</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="320"
+                            class="link-to-prism">src/recognition/recognition.service.ts:320</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Create a <a href="../classes/Comment.html">Comment</a> for a <a href="../classes/Recognition.html">Recognition</a> and writes it to the DB</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                    <td>Description</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>rec_id</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>ID of the recognition to be reported</p>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>newComment</td>
+                                    <td>
+                                                <code><a href="../classes/Comment.html" target="_self" >Comment</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>user</td>
+                                    <td>
+                                                <code><a href="../classes/Users.html" target="_self" >Users</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>the {</p>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>{}</code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="addReaction"></a>
+                    <span class="name">
+                        <b>
+                            <span class="modifier">Async</span>
+                            addReaction
+                        </b>
+                        <a href="#addReaction"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>addReaction(rec_id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, user: <a href="../classes/Users.html">Users</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="357"
+                            class="link-to-prism">src/recognition/recognition.service.ts:357</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Create a <a href="../classes/Reaction.html">Reaction</a> for a <a href="recognition">recognition</a> and writes it to the DB</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                    <td>Description</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>rec_id</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>ID of the recognition to be reacted to</p>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>user</td>
+                                    <td>
+                                                <code><a href="../classes/Users.html" target="_self" >Users</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>the {</p>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>{}</code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="changeUserStats"></a>
+                    <span class="name">
+                        <b>
+                            <span class="modifier">Private</span>
+                            <span class="modifier">Async</span>
+                            changeUserStats
+                        </b>
+                        <a href="#changeUserStats"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>changeUserStats(recDto: <a href="../classes/Recognition.html">Recognition</a>, increment: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank">boolean</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="156"
+                            class="link-to-prism">src/recognition/recognition.service.ts:156</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Increment or decrement user tag stats and recognition stats.</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                    <td>Description</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>recDto</td>
+                                    <td>
+                                                <code><a href="../classes/Recognition.html" target="_self" >Recognition</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>Info about the recognition. (This will be changed to use the {</p>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>increment</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p><code>boolean</code> value that specifies whether we are incrementing or decrementing the recognition and tag stats.</p>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="createRec"></a>
+                    <span class="name">
+                        <b>
+                            <span class="modifier">Async</span>
+                            createRec
+                        </b>
+                        <a href="#createRec"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>createRec(recognition: <a href="../classes/Recognition.html">Recognition</a>, requester: <a href="../classes/Users.html">Users</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="71"
+                            class="link-to-prism">src/recognition/recognition.service.ts:71</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Adds a new recognition to the database and updates user stats</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                    <td>Description</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>recognition</td>
+                                    <td>
+                                                <code><a href="../classes/Recognition.html" target="_self" >Recognition</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>takes in a {</p>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>requester</td>
+                                    <td>
+                                                <code><a href="../classes/Users.html" target="_self" >Users</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="../classes/Recognition.html" target="_self" >Promise&lt;Recognition&gt;</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        <p>a {</p>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="deleteRec"></a>
+                    <span class="name">
+                        <b>
+                            <span class="modifier">Async</span>
+                            deleteRec
+                        </b>
+                        <a href="#deleteRec"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>deleteRec(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, user: <a href="../classes/Users.html">Users</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="118"
+                            class="link-to-prism">src/recognition/recognition.service.ts:118</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Confirms a user is valid to delete a post and then deletes post by given id number and changes user stats</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                    <td>Description</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>id</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>RecognitionId of post user wants to delete</p>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>user</td>
+                                    <td>
+                                                <code><a href="../classes/Users.html" target="_self" >Users</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>Promise&lt;DeleteResult&gt;</code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="findAll"></a>
+                    <span class="name">
+                        <b>
+                            <span class="modifier">Async</span>
+                            findAll
+                        </b>
+                        <a href="#findAll"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>findAll()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="62"
+                            class="link-to-prism">src/recognition/recognition.service.ts:62</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Finds all recognitions in the database</p>
+</div>
+
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="../classes/Recognition.html" target="_self" >Promise&lt;Recognition[]&gt;</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        <p>an array of {</p>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="findCompRec"></a>
+                    <span class="name">
+                        <b>
+                            <span class="modifier">Async</span>
+                            findCompRec
+                        </b>
+                        <a href="#findCompRec"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>findCompRec(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="50"
+                            class="link-to-prism">src/recognition/recognition.service.ts:50</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Finds the recognitions for given <a href="../classes/Company.html">Company</a></p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                    <td>Description</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>id</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>companyId number</p>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="../classes/Recognition.html" target="_self" >Promise&lt;Recognition[]&gt;</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        <p>an array of {</p>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="findRecById"></a>
+                    <span class="name">
+                        <b>
+                            <span class="modifier">Async</span>
+                            findRecById
+                        </b>
+                        <a href="#findRecById"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>findRecById(companyId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="54"
+                            class="link-to-prism">src/recognition/recognition.service.ts:54</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>companyId</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>id</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="../classes/Recognition.html" target="_self" >Promise&lt;Recognition&gt;</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getComments"></a>
+                    <span class="name">
+                        <b>
+                            <span class="modifier">Async</span>
+                            getComments
+                        </b>
+                        <a href="#getComments"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getComments(rec_id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" target="_blank">Number</a>, user: <a href="../classes/Users.html">Users</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="407"
+                            class="link-to-prism">src/recognition/recognition.service.ts:407</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Gets all <a href="../classes/Comment.html">Comment</a> for a given recognition and returns them</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                    <td>Description</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>rec_id</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" target="_blank" >Number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>ID of the recognition to find reports for</p>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>user</td>
+                                    <td>
+                                                <code><a href="../classes/Users.html" target="_self" >Users</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>unused {</p>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>{}</code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getReactions"></a>
+                    <span class="name">
+                        <b>
+                            <span class="modifier">Async</span>
+                            getReactions
+                        </b>
+                        <a href="#getReactions"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getReactions(rec_id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" target="_blank">Number</a>, user: <a href="../classes/Users.html">Users</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="440"
+                            class="link-to-prism">src/recognition/recognition.service.ts:440</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Gets all <a href="../classes/Reaction.html">Reaction</a> for a given recognition and returns them</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                    <td>Description</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>rec_id</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" target="_blank" >Number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>ID of the recognition to find reports for</p>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>user</td>
+                                    <td>
+                                                <code><a href="../classes/Users.html" target="_self" >Users</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>unused {</p>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>{}</code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getReports"></a>
+                    <span class="name">
+                        <b>
+                            <span class="modifier">Async</span>
+                            getReports
+                        </b>
+                        <a href="#getReports"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getReports(rec_id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" target="_blank">Number</a>, user: <a href="../classes/Users.html">Users</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="387"
+                            class="link-to-prism">src/recognition/recognition.service.ts:387</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Gets all <a href="../classes/Report.html">Report</a> for a given recognition and returns them</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                    <td>Description</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>rec_id</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" target="_blank" >Number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>ID of the recognition to find reports for</p>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>user</td>
+                                    <td>
+                                                <code><a href="../classes/Users.html" target="_self" >Users</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>unused {</p>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>{}</code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getSingleComment"></a>
+                    <span class="name">
+                        <b>
+                            <span class="modifier">Async</span>
+                            getSingleComment
+                        </b>
+                        <a href="#getSingleComment"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getSingleComment(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" target="_blank">Number</a>, user: <a href="../classes/Users.html">Users</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="421"
+                            class="link-to-prism">src/recognition/recognition.service.ts:421</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>id</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" target="_blank" >Number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>user</td>
+                                    <td>
+                                                <code><a href="../classes/Users.html" target="_self" >Users</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>{}</code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="paginate_post"></a>
+                    <span class="name">
+                        <b>
+                            <span class="modifier">Async</span>
+                            paginate_post
+                        </b>
+                        <a href="#paginate_post"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>paginate_post(options: IPaginationOptions, firstName_t: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, lastName_t: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, firstName_f: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, lastName_f: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, empTo_id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, empFrom_id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, empToFrom_id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, search: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, msg: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, comp_id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="483"
+                            class="link-to-prism">src/recognition/recognition.service.ts:483</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>options</td>
+                                    <td>
+                                            <code>IPaginationOptions</code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>firstName_t</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>lastName_t</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>firstName_f</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>lastName_f</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>empTo_id</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>empFrom_id</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>empToFrom_id</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>search</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>msg</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>comp_id</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="../classes/Recognition.html" target="_self" >Promise&lt;Pagination&lt;Recognition&gt;&gt;</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="reactComment"></a>
+                    <span class="name">
+                        <b>
+                            <span class="modifier">Async</span>
+                            reactComment
+                        </b>
+                        <a href="#reactComment"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>reactComment(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, user: <a href="../classes/Users.html">Users</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="369"
+                            class="link-to-prism">src/recognition/recognition.service.ts:369</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>id</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>user</td>
+                                    <td>
+                                                <code><a href="../classes/Users.html" target="_self" >Users</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>{}</code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="removeComment"></a>
+                    <span class="name">
+                        <b>
+                            <span class="modifier">Async</span>
+                            removeComment
+                        </b>
+                        <a href="#removeComment"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>removeComment(commentID: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="469"
+                            class="link-to-prism">src/recognition/recognition.service.ts:469</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Soft Deletes the given  <a href="../classes/Comment.html">Comment</a></p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                    <td>Description</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>commentID</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>ID of the reaction to remove </p>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="../classes/Comment.html" target="_self" >Promise&lt;Comment[]&gt;</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="removeReaction"></a>
+                    <span class="name">
+                        <b>
+                            <span class="modifier">Async</span>
+                            removeReaction
+                        </b>
+                        <a href="#removeReaction"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>removeReaction(reactionID: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="459"
+                            class="link-to-prism">src/recognition/recognition.service.ts:459</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Removes the given <a href="../classes/Reaction.html">Reaction</a></p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                    <td>Description</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>reactionID</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>ID of the reaction to remove</p>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="../classes/Reaction.html" target="_self" >Promise&lt;Reaction[]&gt;</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="removeReport"></a>
+                    <span class="name">
+                        <b>
+                            <span class="modifier">Async</span>
+                            removeReport
+                        </b>
+                        <a href="#removeReport"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>removeReport(reportID: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="479"
+                            class="link-to-prism">src/recognition/recognition.service.ts:479</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Soft Deletes the given  <a href="../classes/Report.html">Report</a></p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                    <td>Description</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>reportID</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>ID of the reaction to remove </p>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="../classes/Report.html" target="_self" >Promise&lt;Report[]&gt;</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="reportComment"></a>
+                    <span class="name">
+                        <b>
+                            <span class="modifier">Async</span>
+                            reportComment
+                        </b>
+                        <a href="#reportComment"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>reportComment(comment_id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, reporter: <a href="../classes/Users.html">Users</a>, report: <a href="../classes/Report.html">Report</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="284"
+                            class="link-to-prism">src/recognition/recognition.service.ts:284</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>comment_id</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>reporter</td>
+                                    <td>
+                                                <code><a href="../classes/Users.html" target="_self" >Users</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>report</td>
+                                    <td>
+                                                <code><a href="../classes/Report.html" target="_self" >Report</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>{}</code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="reportRec"></a>
+                    <span class="name">
+                        <b>
+                            <span class="modifier">Async</span>
+                            reportRec
+                        </b>
+                        <a href="#reportRec"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>reportRec(rec_id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, reporter: <a href="../classes/Users.html">Users</a>, report: <a href="../classes/Report.html">Report</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="254"
+                            class="link-to-prism">src/recognition/recognition.service.ts:254</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Create a <a href="../classes/Report.html">Report</a> for a <a href="../classes/Recognition.html">Recognition</a> and writes it to the DB</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                    <td>Description</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>rec_id</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>ID of the recognition to be reported</p>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>reporter</td>
+                                    <td>
+                                                <code><a href="../classes/Users.html" target="_self" >Users</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>the {</p>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>report</td>
+                                    <td>
+                                                <code><a href="../classes/Report.html" target="_self" >Report</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>{}</code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Injectable, NotFoundException, UnauthorizedException } from &#x27;@nestjs/common&#x27;;
+import { Brackets, DeleteResult, getConnection, Like, Repository } from &#x27;typeorm&#x27;;
+import { InjectRepository } from &#x27;@nestjs/typeorm&#x27;;
+import { Recognition } from &#x27;../common/entity/recognition.entity&#x27;;
+import { Company } from &#x27;../common/entity/company.entity&#x27;;
+import { Users } from &#x27;../common/entity/users.entity&#x27;;
+import { Tag } from &#x27;../common/entity/tag.entity&#x27;;
+import { TagStats } from &#x27;../common/entity/tagstats.entity&#x27;;
+import { CreateRecDto } from &#x27;../common/dto/create-rec.dto&#x27;;
+import {Report} from &#x27;../common/entity/report.entity&#x27;;
+import { reverse } from &#x27;node:dns&#x27;;
+import {Comment} from &#x27;../common/entity/comment.entity&#x27;;
+import {Reaction} from &#x27;../common/entity/reaction.entity&#x27;;
+import { text } from &#x27;express&#x27;;
+
+import { Role } from &#x27;../common/enum/role.enum&#x27;;
+import { IPaginationOptions, paginate, Pagination } from &#x27;nestjs-typeorm-paginate&#x27;;
+import { NotificationsService } from &#x27;../notifications/notifications.service&#x27;;
+import { UserNotification } from &#x27;../common/entity/notification.entity&#x27;;
+import { NotificationType } from &#x27;../common/enum/notification-types&#x27;;
+
+
+@Injectable()
+export class RecognitionService {
+    constructor(
+        @InjectRepository(Users)
+        private userRepository: Repository&lt;Users&gt;,
+        @InjectRepository(Company)
+        private companyRepository: Repository&lt;Company&gt;,
+        @InjectRepository(Tag)
+        private tagRepository: Repository&lt;Tag&gt;, 
+        @InjectRepository(Recognition)
+        private recognitionsRepository: Repository&lt;Recognition&gt;,
+        @InjectRepository(TagStats)
+        private tagStatsRepo: Repository&lt;TagStats&gt;,
+        @InjectRepository(Report)
+        private reportRepo: Repository&lt;Report&gt;,
+        @InjectRepository(Comment)
+        private commentRepo: Repository&lt;Comment&gt;,
+        @InjectRepository(Reaction)
+        private reactRepo: Repository&lt;Reaction&gt;,
+        @InjectRepository(UserNotification)
+        private notificationRepository: Repository&lt;UserNotification&gt;,
+    ){} 
+    /**
+     * Finds the recognitions for given {@link Company}
+     * @param id companyId number
+     * @returns an array of {@link Recognition} objects
+     */
+    async findCompRec(id: number): Promise&lt;Recognition[]&gt;{
+     return await this.recognitionsRepository.find({relations: [&#x27;empFrom&#x27;, &#x27;empTo&#x27;, &#x27;tags&#x27;, &#x27;comments&#x27;, &#x27;comments.employeeFrom&#x27;, &#x27;reactions&#x27;, &#x27;reactions.employeeFrom&#x27;, &#x27;comments.reactions&#x27;, &#x27;comments.reactions.employeeFrom&#x27;], where:{company:id}});
+    }
+
+    async findRecById(companyId: number, id: number): Promise&lt;Recognition&gt;{
+        return await this.recognitionsRepository.findOne({relations: [&#x27;empFrom&#x27;, &#x27;empTo&#x27;, &#x27;tags&#x27;, &#x27;comments&#x27;, &#x27;comments.employeeFrom&#x27;, &#x27;reactions&#x27;, &#x27;reactions.employeeFrom&#x27;, &#x27;comments.reactions&#x27;, &#x27;comments.reactions.employeeFrom&#x27;], where:{company: companyId, recId: id}});
+       }
+
+    /**
+     * Finds all recognitions in the database
+     * @returns an array of {@link Recognition} objects
+     */
+    async findAll(): Promise&lt;Recognition[]&gt;{
+        return await this.recognitionsRepository.find({relations: [&#x27;empFrom&#x27;, &#x27;empTo&#x27;, &#x27;tags&#x27;, &#x27;comments&#x27;, &#x27;comments.employeeFrom&#x27;, &#x27;reactions&#x27;, &#x27;reactions.employeeFrom&#x27;, &#x27;comments.reactions&#x27;, &#x27;comments.reactions.employeeFrom&#x27;]});
+    }
+
+   /**
+     * Adds a new recognition to the database and updates user stats
+     * @param recognition takes in a {@link Recognition} object and the current&#x27;s user&#x27;s ID number
+     * @returns a {@link Recognition} object
+     */    
+    async createRec(recognition: Recognition, requester: Users): Promise&lt;Recognition&gt; {
+        if(recognition.empTo.employeeId &#x3D;&#x3D;&#x3D; requester.employeeId){
+            throw new UnauthorizedException();
+        }
+        let comp &#x3D; new Company();
+        comp.companyId &#x3D; requester.companyId;
+        recognition.empFrom &#x3D; requester;
+        recognition.company &#x3D; comp;
+        recognition.empTo &#x3D; await this.userRepository.findOne({where: {employeeId: recognition.empTo.employeeId, companyId: recognition.empTo.companyId}})
+  
+        let savedRecognition &#x3D; await this.recognitionsRepository.save(recognition);
+
+        await this.changeUserStats(savedRecognition, true);
+
+        const notifications: UserNotification[] &#x3D; []
+
+        // notifications
+        const empFromNotification &#x3D; new UserNotification();
+        empFromNotification.title &#x3D; &#x27;New Recogntion!&#x27;
+        empFromNotification.recognition &#x3D; savedRecognition;
+        empFromNotification.employeeTo &#x3D; savedRecognition.empFrom;
+        empFromNotification.notificationType &#x3D; NotificationType.Recognition;
+        empFromNotification.msg &#x3D; &#x60;Your recognition of ${savedRecognition.empTo.firstName} ${savedRecognition.empTo.lastName} has been posted!&#x60;;
+        notifications.push(empFromNotification);
+
+        const empToNotification &#x3D; new UserNotification();
+        empToNotification.title &#x3D; &#x27;New Recogntion!&#x27;
+        empToNotification.recognition &#x3D; savedRecognition;
+        empToNotification.employeeTo &#x3D; savedRecognition.empTo;
+        empToNotification.notificationType &#x3D; NotificationType.Recognition;
+        empToNotification.msg &#x3D; &#x60;You have been recognized by ${savedRecognition.empFrom.firstName} ${savedRecognition.empFrom.lastName}!&#x60;
+        notifications.push(empToNotification);
+        
+        await this.notificationRepository.save(notifications);
+
+
+        return savedRecognition;
+    }
+  
+  /**
+ * Confirms a user is valid to delete a post and then deletes post by given id number and changes user stats
+ * @param id RecognitionId of post user wants to delete
+ * @param companyId companyId of logged in user
+ * @param empId employee ID of logged in user
+ * @param role the role of the logged in user
+ * @returns {@link DeleteResult} 
+ */
+    async deleteRec(id: number, user: Users): Promise&lt;DeleteResult&gt; {        
+        let rec &#x3D; await this.recognitionsRepository.findOne({ relations: [&#x27;empFrom&#x27;, &#x27;empTo&#x27;, &#x27;tags&#x27;, &#x27;comments&#x27;, &#x27;comments.employeeFrom&#x27;, &#x27;reactions&#x27;, &#x27;reactions.employeeFrom&#x27;, &#x27;comments.reactions&#x27;, &#x27;comments.reactions.employeeFrom&#x27;], where: { recId: id } });
+        if(rec.empFrom.employeeId !&#x3D;&#x3D; user.employeeId  &amp;&amp; user.role !&#x3D;&#x3D; Role.Admin){
+            throw new UnauthorizedException();
+        }
+
+        await this.changeUserStats(rec, false);
+
+        // let deletor &#x3D; await this.userRepository.findOne({ where: {companyId: use, employeeId: empId} });
+        await this.recognitionsRepository.update(id, {deletedBy: user});
+
+        const result &#x3D; await this.recognitionsRepository.softDelete({recId:id});
+
+        // notifications
+        const empFromNotification &#x3D; new UserNotification();
+        empFromNotification.title &#x3D; &#x27;Recognition Deleted!&#x27;;
+        empFromNotification.recognition &#x3D; rec;
+        empFromNotification.employeeTo &#x3D; rec.empFrom;
+        empFromNotification.notificationType &#x3D; NotificationType.Recognition;
+        empFromNotification.msg &#x3D; &#x60;Your recognition of ${rec.empTo.firstName} ${rec.empTo.lastName} has been deleted by ${user.firstName} ${user.lastName}.&#x60;;
+
+        const empToNotification &#x3D; new UserNotification();
+        empToNotification.title &#x3D; &#x27;Recognition Deleted!&#x27;;
+        empToNotification.recognition &#x3D; rec;
+        empToNotification.employeeTo &#x3D; rec.empTo;
+        empToNotification.notificationType &#x3D; NotificationType.Recognition;
+        empToNotification.msg &#x3D; &#x60;The recogniton you have recieved from ${rec.empFrom.firstName} ${rec.empFrom.lastName} has been deleted by ${user.firstName} ${user.lastName}.&#x60;
+        
+        await this.notificationRepository.save([empToNotification, empFromNotification]);
+
+        return result;
+    }
+
+    /**
+     * Increment or decrement user tag stats and recognition stats.
+     * @param recDto Info about the recognition. (This will be changed to use the {@link Recognition} entity)
+     * @param increment &#x60;boolean&#x60; value that specifies whether we are incrementing or decrementing the recognition and tag stats.
+     */
+    private async changeUserStats(recDto: Recognition, increment: boolean) { 
+        let sign &#x3D; &#x27;-&#x27;;
+        if (increment)
+            sign &#x3D; &#x27;+&#x27;;
+
+        //Increment numRecsSent stat
+        await this.userRepository.createQueryBuilder()
+            .update()
+            .set({
+                numRecsSent: () &#x3D;&gt; &#x60;&quot;numRecsSent&quot; ${sign} 1&#x60;
+            })
+            .where(&quot;companyId &#x3D; :company&quot;, {company: recDto.company.companyId})
+            .andWhere(&quot;employeeId &#x3D; :employee&quot;, {employee: recDto.empFrom.employeeId})
+            .execute();
+
+        //Increment numRecsReceived stat
+        await this.userRepository.createQueryBuilder()
+            .update()
+            .set({
+                numRecsReceived: () &#x3D;&gt; &#x60;&quot;numRecsReceived&quot; ${sign} 1&#x60;
+            })
+            .where(&quot;companyId &#x3D; :company&quot;, {company: recDto.company.companyId})
+            .andWhere(&quot;employeeId &#x3D; :employee&quot;, {employee: recDto.empTo.employeeId})
+            .execute();
+
+        
+        let userFrom &#x3D; await this.userRepository.findOne({ where: {employeeId: recDto.empFrom.employeeId, companyId: recDto.company.companyId}});
+        let userTo &#x3D; await this.userRepository.findOne({where: {employeeId: recDto.empTo.employeeId, companyId: recDto.company.companyId}})
+        for(let i &#x3D; 0; i &lt; recDto.tags.length; i++){
+            const currTag &#x3D; await this.tagRepository.findOne({ where: { tagId: recDto.tags[i].tagId } });
+            if (currTag !&#x3D; undefined) {
+
+                //Employee from tag stats
+                let findFrom &#x3D; await this.tagStatsRepo.createQueryBuilder()
+                        .where(&#x27;&quot;employeeCompanyId&quot; &#x3D; :comp&#x27;, {comp: recDto.company.companyId})
+                        .andWhere(&#x27;&quot;employeeEmployeeId&quot; &#x3D; :emp&#x27;, { emp: recDto.empFrom.employeeId })
+                        .andWhere(&#x27;&quot;tagTagId&quot; &#x3D; :tag&#x27;, {tag: recDto.tags[i].tagId})
+                        .getOne();
+                if (findFrom !&#x3D; undefined) {
+                    await this.tagStatsRepo.createQueryBuilder()
+                        .update()
+                        .set({
+                            countSent: () &#x3D;&gt; &#x60;&quot;countSent&quot; ${sign} 1&#x60;,
+                        })
+                        .where(&quot;employeeCompanyId &#x3D; :comp&quot;, {comp: recDto.company.companyId})
+                        .andWhere(&quot;employeeEmployeeId &#x3D; :emp&quot;, { emp: recDto.empFrom.employeeId })
+                        .andWhere(&quot;tagTagId &#x3D; :tag&quot;, {tag: recDto.tags[i].tagId})
+                        .execute();
+                }
+                else if (increment){
+                    await this.tagStatsRepo.createQueryBuilder()
+                        .insert()
+                        .values([{
+                            countSent: 1,
+                            employee: userFrom,
+                            tag: currTag
+                        }])
+                        .execute();
+                }
+
+                //Employee to tag stats.
+                let findTo &#x3D; await this.tagStatsRepo.createQueryBuilder()
+                        .where(&#x27;&quot;employeeCompanyId&quot; &#x3D; :comp&#x27;, {comp: recDto.company.companyId})
+                        .andWhere(&#x27;&quot;employeeEmployeeId&quot; &#x3D; :emp&#x27;, { emp: recDto.empTo.employeeId })
+                        .andWhere(&#x27;&quot;tagTagId&quot; &#x3D; :tag&#x27;, {tag: recDto.tags[i].tagId})
+                        .getOne();
+                if (findTo !&#x3D; undefined) {
+                    let res &#x3D; await this.tagStatsRepo.createQueryBuilder()
+                        .update()
+                        .set({
+                            countReceived: () &#x3D;&gt; &#x60;&quot;countReceived&quot; ${sign} 1&#x60;,
+                        })
+                        .where(&quot;employeeCompanyId &#x3D; :comp&quot;, {comp: recDto.company.companyId})
+                        .andWhere(&quot;employeeEmployeeId &#x3D; :emp&quot;, { emp: recDto.empTo.employeeId })
+                        .andWhere(&quot;tagTagId &#x3D; :tag&quot;, {tag: recDto.tags[i].tagId})
+                        .execute();
+                }
+                else if (increment) {
+                    await this.tagStatsRepo.createQueryBuilder()
+                        .insert()
+                        .values([{
+                            countReceived: 1,
+                            employee: userTo,
+                            tag: currTag
+                        }])
+                        .execute();
+                }
+                
+            }
+        }
+    }
+
+    /**
+     * Create a {@link Report} for a {@link Recognition} and writes it to the DB
+     * @param rec_id ID of the recognition to be reported
+     * @param reporter the {@link Users} who is filing the report
+     * @returns {@link Report} the filed report
+     */
+    async reportRec(rec_id: number, reporter: Users, report: Report)
+    {
+        let recog &#x3D; await this.recognitionsRepository.findOne( {relations: [&#x27;empFrom&#x27;, &#x27;empTo&#x27;, &#x27;tags&#x27;, &#x27;comments&#x27;, &#x27;comments.employeeFrom&#x27;, &#x27;reactions&#x27;, &#x27;reactions.employeeFrom&#x27;, &#x27;comments.reactions&#x27;, &#x27;comments.reactions.employeeFrom&#x27;],  where: { recId: rec_id }} );
+
+        report.employeeFrom &#x3D; reporter;
+        report.recognition &#x3D; recog;
+        const savedReport &#x3D;  await this.reportRepo.save(report);
+
+        const empFromNotification &#x3D; new UserNotification();
+        empFromNotification.title &#x3D; &#x27;Recognition Reported!&#x27;;
+        empFromNotification.report &#x3D; savedReport;
+        empFromNotification.employeeTo &#x3D; savedReport.employeeFrom;
+        empFromNotification.notificationType &#x3D; NotificationType.Report;
+        empFromNotification.msg &#x3D; &#x60;Your report of ${recog.empFrom.firstName} ${recog.empFrom.lastName}&#x27;s recogniton of ${recog.empTo.firstName} ${recog.empTo.lastName} has been recieved.&#x60;;
+
+        const admins &#x3D; await this.userRepository.find({companyId: reporter.companyId, role: Role.Admin})
+        const adminNotifications &#x3D; admins.map(admin &#x3D;&gt; {
+            const adminNotif &#x3D; new UserNotification();
+            adminNotif.title &#x3D; &#x27;Recognition Reported!&#x27;;
+            adminNotif.report &#x3D; savedReport;
+            adminNotif.employeeTo &#x3D; admin;
+            adminNotif.notificationType &#x3D; NotificationType.Report;
+            adminNotif.msg &#x3D; &#x60;${savedReport.employeeFrom.firstName} ${savedReport.employeeFrom.lastName} has reported recognition ${savedReport.recognition.recId}.&#x60;;
+            return adminNotif
+        })
+        await this.notificationRepository.save([...adminNotifications, empFromNotification])
+
+        return savedReport;
+    }
+
+    async reportComment(comment_id: number, reporter: Users, report: Report)
+    {
+        let comment &#x3D; await this.commentRepo.findOne( {relations: [&#x27;empFrom&#x27;, &#x27;empTo&#x27;, &#x27;tags&#x27;, &#x27;comments&#x27;, &#x27;comments.employeeFrom&#x27;, &#x27;reactions&#x27;, &#x27;reactions.employeeFrom&#x27;, &#x27;comments.reactions&#x27;, &#x27;comments.reactions.employeeFrom&#x27;],  where: { commentID: comment_id }} );
+
+        report.employeeFrom &#x3D; reporter;
+        report.comment &#x3D; comment;
+        const savedReport &#x3D; await this.reportRepo.save(report);
+
+        const empFromNotification &#x3D; new UserNotification();
+        empFromNotification.title &#x3D; &#x27;Comment Reported!&#x27;;
+        empFromNotification.report &#x3D; savedReport;
+        empFromNotification.employeeTo &#x3D; savedReport.employeeFrom;
+        empFromNotification.notificationType &#x3D; NotificationType.Report;
+        empFromNotification.msg &#x3D; &#x60;Your report of ${comment.employeeFrom.firstName} ${comment.employeeFrom.lastName}&#x27;s comment has been recieved.&#x60;;
+
+        const admins &#x3D; await this.userRepository.find({companyId: reporter.companyId, role: Role.Admin})
+        const adminNotifications &#x3D; admins.map(admin &#x3D;&gt; {
+            const adminNotif &#x3D; new UserNotification();
+            adminNotif.title &#x3D; &#x27;Comment Reported!&#x27;;
+            adminNotif.report &#x3D; savedReport;
+            adminNotif.employeeTo &#x3D; admin;
+            adminNotif.notificationType &#x3D; NotificationType.Report;
+            adminNotif.msg &#x3D; &#x60;${savedReport.employeeFrom.firstName} ${savedReport.employeeFrom.lastName} has reported comment ${savedReport.comment.commentID}.&#x60;;
+            return adminNotif
+        })
+        await this.notificationRepository.save([...adminNotifications, empFromNotification])
+        return savedReport;
+    }
+
+    /**
+     * Create a {@link Comment} for a {@link Recognition} and writes it to the DB
+     * @param rec_id ID of the recognition to be reported
+     * @param text the string of what the user wrote 
+     * @param user the {@link Users} who is making the comment
+     * @returns {@link Comment} the comment entity
+     */
+    async addComment(rec_id: number, newComment: Comment, user: Users)
+    {
+     
+        newComment.employeeFrom &#x3D; user;
+        let recognition &#x3D; await this.recognitionsRepository.findOne( {relations: [&#x27;empFrom&#x27;, &#x27;empTo&#x27;, &#x27;tags&#x27;, &#x27;comments&#x27;, &#x27;comments.employeeFrom&#x27;, &#x27;reactions&#x27;, &#x27;reactions.employeeFrom&#x27;, &#x27;comments.reactions&#x27;, &#x27;comments.reactions.employeeFrom&#x27;],  where: { recId: rec_id }} );
+        newComment.recognition &#x3D; recognition;
+        if (newComment.recognition &#x3D;&#x3D; undefined) {
+            throw new NotFoundException(&#x27;no recognition with that ID was found&#x27;);
+        }
+        
+        const empFromNotification &#x3D; new UserNotification();
+        empFromNotification.title &#x3D; &#x27;New Comment!&#x27;;
+        empFromNotification.employeeTo &#x3D; newComment.employeeFrom;
+        empFromNotification.notificationType &#x3D; NotificationType.Comment;
+        empFromNotification.msg &#x3D; &#x60;Your comment on ${recognition.empTo.firstName} ${recognition.empTo.lastName}&#x27;s recognition has been posted.&#x60;;
+
+        const empToNotification &#x3D; new UserNotification();
+        empToNotification.title &#x3D; &#x27;New Comment!&#x27;;
+        empToNotification.employeeTo &#x3D; recognition.empTo;
+        empToNotification.notificationType &#x3D; NotificationType.Comment;
+        empToNotification.msg &#x3D; &#x60;${newComment.employeeFrom.firstName} ${newComment.employeeFrom.lastName} has commented on your recognition.&#x60;;
+    
+        newComment.notifications &#x3D; [empFromNotification, empToNotification]
+
+        const savedComment &#x3D; await this.commentRepo.save(newComment);
+
+        return savedComment;
+
+    }
+
+    /**
+     * Create a {@link Reaction} for a {@link recognition} and writes it to the DB
+     * @param rec_id ID of the recognition to be reacted to
+     * @param user the {@link Users} who is making the reaction
+     * @param reactType the type of the reaction, from {@link ReactType}
+     * @returns {@link Reaction} the Reaction entity
+     */
+    async addReaction(rec_id: number, user: Users)
+    {
+        let newReaction &#x3D; new Reaction();
+        newReaction.employeeFrom &#x3D; user;
+        
+        let recog &#x3D; await this.recognitionsRepository.findOne( {  where: { recId: rec_id }} );
+        newReaction.recognition &#x3D; recog;
+        const savedReaction &#x3D; await this.reactRepo.save(newReaction);
+
+        return savedReaction;
+    }
+
+    async reactComment(id: number, user: Users)
+    {
+        let newReaction &#x3D; new Reaction();
+        newReaction.employeeFrom &#x3D; user;
+        
+        let comment &#x3D; await this.commentRepo.findOne( {  where: { commentID : id }} );
+        newReaction.comment &#x3D; comment;
+        const savedReaction &#x3D; await this.reactRepo.save(newReaction);
+
+        return savedReaction;
+    }
+    
+    /**
+     * Gets all {@link Report} for a given recognition and returns them
+     * @param rec_id ID of the recognition to find reports for
+     * @param user unused {@link Users} 
+     * @returns {@link Report} an array of found reports
+     */
+    async getReports(rec_id: Number, user: Users)
+    {
+        let recognition &#x3D; await this.recognitionsRepository.findOne( { where: {recId: rec_id}});
+        let reports &#x3D; await this.reportRepo.find( {  where: { recognition: recognition }} );
+        if (reports !&#x3D; undefined)
+        {
+            return reports;
+        }
+        else
+        {
+            return new Error(&quot;No reports found&quot;);
+        }
+    }
+
+    /**
+     * Gets all {@link Comment} for a given recognition and returns them
+     * @param rec_id ID of the recognition to find reports for
+     * @param user unused {@link Users} 
+     * @returns {@link Comment} an array of found comments
+     */
+    async getComments(rec_id: Number, user: Users)
+    {
+        let recognition &#x3D; await this.recognitionsRepository.findOne( { where: {recId: rec_id}});
+        let comments &#x3D; await this.commentRepo.find( {relations: [&#x27;employeeFrom&#x27;, &#x27;reactions&#x27;, &#x27;reactions.employeeFrom&#x27;],  where: { recognition: recognition }} );
+        if (comments !&#x3D; undefined)
+        {
+            return comments;
+        }
+        else
+        {
+            return new Error(&quot;No comments found&quot;);
+        }
+    }
+
+    async getSingleComment(id: Number, user: Users)
+    {
+        let comment &#x3D; await this.commentRepo.findOne( {relations: [&#x27;employeeFrom&#x27;, &#x27;reactions&#x27;, &#x27;reactions.employeeFrom&#x27;],  where: {commentID: id}});
+        if (comment !&#x3D; undefined)
+        {
+            return comment;
+        }
+        else
+        {
+            return new Error(&quot;No comments found&quot;);
+        }
+    }
+
+    /**
+     * Gets all {@link Reaction} for a given recognition and returns them
+     * @param rec_id ID of the recognition to find reports for
+     * @param user unused {@link Users} 
+     * @returns {@link Reaction} an array of found reactions
+     */
+    async getReactions(rec_id: Number, user: Users)
+    {
+        let recognition &#x3D; await this.recognitionsRepository.findOne( { where: {recId: rec_id}});
+        let reactions &#x3D; await this.reactRepo.find( {  where: { recognition: recognition }} );
+        if (reactions !&#x3D; undefined)
+        {
+            return reactions;
+        }
+        else
+        {
+            return new Error(&quot;No reactions found&quot;);
+        }
+    }
+
+    /**
+     * Removes the given {@link Reaction}
+     * @param reactionID ID of the reaction to remove
+     * @returns {@link Reaction} the removed reaction or null if it didn&#x27;t exist
+     */
+    async removeReaction(reactionID: number): Promise&lt;Reaction[]&gt; {
+        const reaction &#x3D; await this.reactRepo.findOne({ reactionID: reactionID });
+        return await this.reactRepo.remove([reaction]);
+    }
+
+    /**
+     * Soft Deletes the given  {@link Comment}
+     * @param commentID ID of the reaction to remove 
+     * @returns {@link Comment} the removed comment or null if it didn&#x27;t exist
+     */
+    async removeComment(commentID: number): Promise&lt;Comment[]&gt; {
+        const comment &#x3D; await this.commentRepo.findOne({commentID: commentID});
+        return await this.commentRepo.softRemove([comment]);
+    }
+
+     /**
+     * Soft Deletes the given  {@link Report}
+     * @param reportID ID of the reaction to remove 
+     * @returns {@link Report} the removed report or null if it didn&#x27;t exist
+     */
+    async removeReport(reportID: number): Promise&lt;Report[]&gt; {
+        const report &#x3D; await this.reportRepo.findOne({reportID: reportID});
+        return await this.reportRepo.softRemove([report]);
+    }
+    async paginate_post(options: IPaginationOptions, 
+        firstName_t: string, 
+        lastName_t: string,
+        firstName_f: string,
+        lastName_f: string,
+        empTo_id: number,
+        empFrom_id: number,
+        empToFrom_id: number,
+        search: string,
+        msg: string,
+        comp_id: number): Promise&lt;Pagination&lt;Recognition&gt;&gt; {
+        
+        const matchCase &#x3D; firstName_f || firstName_t || lastName_f|| lastName_t || empFrom_id || empTo_id || empToFrom_id || msg
+        const queryBuilder &#x3D; this.recognitionsRepository.createQueryBuilder(&#x27;rec&#x27;);
+
+        queryBuilder.leftJoinAndSelect(&#x27;rec.empTo&#x27;, &#x27;empTo&#x27;).leftJoinAndSelect(&#x27;rec.empFrom&#x27;, &#x27;empFrom&#x27;)
+        .leftJoinAndSelect(&#x27;rec.tags&#x27;, &#x27;tags&#x27;).leftJoinAndSelect(&#x27;rec.reactions&#x27;, &#x27;reactions&#x27;)
+        .leftJoinAndSelect(&#x27;rec.comments&#x27;, &#x27;comments&#x27;).leftJoinAndSelect(&#x27;reactions.employeeFrom&#x27;, &#x27;reactFrom&#x27;)
+        .leftJoinAndSelect(&#x27;comments.employeeFrom&#x27;, &#x27;commentFrom&#x27;)
+        .leftJoinAndSelect(&#x27;comments.reactions&#x27;, &#x27;commentReactions&#x27;).leftJoinAndSelect(&#x27;commentReactions.employeeFrom&#x27;, &#x27;commentReactionsFrom&#x27;).orderBy(&#x27;rec.createdAt&#x27;, &#x27;DESC&#x27;)
+
+        .where(&quot;empTo.companyId &#x3D; :comp_id&quot;, {comp_id: comp_id});
+        if(search || matchCase){
+            queryBuilder.andWhere(new Brackets (comp &#x3D;&gt; {
+                if (search) {
+                    comp.orWhere(&quot;empTo.lastName ilike :search&quot;, {search: &#x27;%&#x27; + search + &#x27;%&#x27;})
+                    .orWhere(&quot;empTo.firstName ilike :search&quot;, {search: &#x27;%&#x27; + search + &#x27;%&#x27;})
+                    .orWhere(&quot;empFrom.firstName ilike :search&quot;, {search: &#x27;%&#x27; + search + &#x27;%&#x27;})
+                    .orWhere(&quot;empFrom.lastName ilike :search&quot;, {search: &#x27;%&#x27; + search + &#x27;%&#x27;})
+                    .orWhere(&quot;rec.msg like :search&quot;, {search: &#x27;%&#x27; + search + &#x27;%&#x27;});
+                }
+                if (matchCase) {
+                    comp.orWhere(new Brackets (bracket &#x3D;&gt; {
+                        if (firstName_t) {
+                            bracket.andWhere(&quot;empTo.firstName ilike :firstName_t&quot;, {firstName_t: &#x27;%&#x27;+firstName_t+&#x27;%&#x27;});
+                        }
+
+                        if (firstName_f) {
+                            bracket.andWhere(&quot;empFrom.firstName ilike :firstName_f&quot;, {firstName_f: &#x27;%&#x27;+firstName_f+&#x27;%&#x27;});
+                        }
+        
+                        if (lastName_t) {
+                            bracket.andWhere(&quot;empTo.lastName ilike :lastName_t&quot;, {lastName_t: &#x27;%&#x27;+lastName_t+&#x27;%&#x27;});
+                        }
+
+                        if (lastName_f) {
+                            bracket.andWhere(&quot;empFrom.lastName ilike :lastName_f&quot;, {lastName_f: &#x27;%&#x27;+lastName_f+&#x27;%&#x27;});
+                        }
+
+                        if (empFrom_id) {
+                            bracket.andWhere(&quot;empFrom.employeeId &#x3D; :empFrom_id&quot;, {empFrom_id: empFrom_id})
+                        }
+
+                        if (empTo_id) {
+                            bracket.andWhere(&quot;empTo.employeeId &#x3D; :empTo_id&quot;, {empTo_id: empTo_id})
+                        }
+
+                        if(msg) {
+                            bracket.andWhere(&quot;msg like :msg&quot;, {msg: &#x27;%&#x27; + msg + &#x27;%&#x27;})
+                        }
+
+                        if (empToFrom_id) {
+                            bracket.andWhere(new Brackets (query &#x3D;&gt; {
+                                query.orWhere(&quot;empTo.employeeId &#x3D; :empToFrom_id&quot;, {empToFrom_id: empToFrom_id})
+                                .orWhere(&quot;empFrom.employeeId &#x3D; :empToFrom_id&quot;, {empToFrom_id: empToFrom_id})
+                            }))
+                        }
+        
+                    }));
+                }        
+            })); 
+        }
+        return paginate&lt;Recognition&gt;(queryBuilder, options);
+    }
+}
+</code></pre>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+                   
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> result-matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'injectable';
+            var COMPODOC_CURRENT_PAGE_URL = 'RecognitionService.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+       <!-- Required to polyfill modern browsers as code is ES5 for IE... -->
+       <script src="../js/libs/custom-elements-es5-adapter.js" charset="utf-8" defer></script>
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

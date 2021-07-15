@@ -1,0 +1,561 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>@Benedict-Scrumberbatch/peer-recognition-backend documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	      <link rel="stylesheet" href="../styles/style.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+            <a href="../" class="navbar-brand">@Benedict-Scrumberbatch/peer-recognition-backend documentation</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content injectable">
+                   <div class="content-data">
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li>Injectables</li>
+  <li>RockstarService</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="c-info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>src/rockstar/rockstar.service.ts</code>
+        </p>
+
+
+
+
+            <section>
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#getRockstar">getRockstar</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+            <section>
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(usersRepository: <a href="../classes/Users.html">Repository<Users></a>, companyRepository: <a href="../classes/Company.html">Repository<Company></a>, tagRepository: <a href="../classes/Tag.html">Repository<Tag></a>, recognitionRepository: <a href="../classes/Recognition.html">Repository<Recognition></a>, tagStatsRepo: Repository<TagStats>, reportRepo: <a href="../classes/Report.html">Repository<Report></a>, rockstarRepo: <a href="../classes/Rockstar.html">Repository<Rockstar></a>, rockstarStatsRepo: Repository<RockstarStats>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="20" class="link-to-prism">src/rockstar/rockstar.service.ts:20</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>usersRepository</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../classes/Users.html" target="_self" >Repository&lt;Users&gt;</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>companyRepository</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../classes/Company.html" target="_self" >Repository&lt;Company&gt;</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>tagRepository</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../classes/Tag.html" target="_self" >Repository&lt;Tag&gt;</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>recognitionRepository</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../classes/Recognition.html" target="_self" >Repository&lt;Recognition&gt;</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>tagStatsRepo</td>
+                                                  
+                                                        <td>
+                                                                    <code>Repository&lt;TagStats&gt;</code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>reportRepo</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../classes/Report.html" target="_self" >Repository&lt;Report&gt;</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>rockstarRepo</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../classes/Rockstar.html" target="_self" >Repository&lt;Rockstar&gt;</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>rockstarStatsRepo</td>
+                                                  
+                                                        <td>
+                                                                    <code>Repository&lt;RockstarStats&gt;</code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+            <section>
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getRockstar"></a>
+                    <span class="name">
+                        <b>
+                            <span class="modifier">Async</span>
+                            getRockstar
+                        </b>
+                        <a href="#getRockstar"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getRockstar(companyId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, month: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>, year: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="50"
+                            class="link-to-prism">src/rockstar/rockstar.service.ts:50</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p><code>GET</code> endpoint to get all user in company</p>
+<p>Returns <a href="../classes/Users.html">Users</a>[ ]</p>
+</div>
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                    <td>Description</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>companyId</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>/companyID - number</p>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>month</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>/numerical month 1-12</p>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>year</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                    <td>
+                                        <p>/numerical year (2021)</p>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>Promise&lt;ReturnRockstarDto&gt;</code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Injectable, UnauthorizedException } from &#x27;@nestjs/common&#x27;;
+import { DeleteResult, getConnection, Repository, Transaction, getManager } from &#x27;typeorm&#x27;;
+import { InjectRepository } from &#x27;@nestjs/typeorm&#x27;;
+import { Recognition } from &#x27;../common/entity/recognition.entity&#x27;;
+import { Company } from &#x27;../common/entity/company.entity&#x27;;
+import { Users } from &#x27;../common/entity/users.entity&#x27;;
+import { Tag } from &#x27;../common/entity/tag.entity&#x27;;
+import { TagStats } from &#x27;../common/entity/tagstats.entity&#x27;;
+import { CreateRecDto } from &#x27;../common/dto/create-rec.dto&#x27;;
+import {Report} from &#x27;../common/entity/report.entity&#x27;;
+import { reverse } from &#x27;node:dns&#x27;;
+import { Rockstar } from &#x27;../common/entity/rockstar.entity&#x27;;
+import { RockstarStats} from &#x27;../common/entity/rockstarstats.entity&#x27;;
+import { ReturnRockstarDto} from &#x27;../common/dto/rockstar-stats.dto&#x27;;
+
+
+
+
+@Injectable()
+export class RockstarService {
+    constructor(
+        @InjectRepository(Users)
+        private usersRepository: Repository&lt;Users&gt;,
+        @InjectRepository(Company)
+        private companyRepository: Repository&lt;Company&gt;,
+        @InjectRepository(Tag)
+        private tagRepository: Repository&lt;Tag&gt;, 
+        @InjectRepository(Recognition)
+        private recognitionRepository: Repository&lt;Recognition&gt;,
+        @InjectRepository(TagStats)
+        private tagStatsRepo: Repository&lt;TagStats&gt;,
+        @InjectRepository(Report)
+        private reportRepo: Repository&lt;Report&gt;,
+        @InjectRepository(Rockstar)
+        private rockstarRepo: Repository&lt;Rockstar&gt;,
+        @InjectRepository(RockstarStats)
+        private rockstarStatsRepo: Repository&lt;RockstarStats&gt;
+    ){} 
+    
+    /**
+     * &#x60;GET&#x60; endpoint to get all user in company
+     * 
+     * Returns {@link Users}[ ]
+     * @param companyId /companyID - number
+     * @param month /numerical month 1-12
+     * @param year /numerical year (2021)
+     * @returns {@link ReturnRockstarDto} /object containing all the necessary info on the rockstar
+     */
+
+    async getRockstar( companyId: number, month: number, year: number): Promise&lt;ReturnRockstarDto&gt; {
+       
+         //gets a list of recognitions for the given month, year and company
+        let queryString :string &#x3D; &#x60;SELECT t1.empID, t1.numRecog FROM (select recognition.&quot;empToEmployeeId&quot; as empID, count(recognition.&quot;empToEmployeeId&quot;) as numRecog from Recognition where recognition.&quot;empToCompanyId&quot; &#x3D; ${companyId} and extract(Month from recognition.&quot;createdAt&quot;) &#x3D; ${ month } and extract(Year from recognition.&quot;createdAt&quot;) &#x3D; ${ year } group by recognition.&quot;empToEmployeeId&quot; ) t1 group by t1.empID, t1.numRecog order by t1.numrecog DESC;&#x60;
+
+        let retQuery&#x3D; await this.recognitionRepository.query(queryString);
+        //takes the first employeeID in the list (sorted so highest number of recognitions is on top, and finds the employee in the DB)
+        let rockstarUser: Users;
+        let recogs: Recognition[] &#x3D; [];
+        if (retQuery.length &gt; 0) {
+            rockstarUser &#x3D; await this.usersRepository.findOne( {where: { employeeId : retQuery[0].empid}});
+            recogs &#x3D; await   this.recognitionRepository.createQueryBuilder(&#x27;rec&#x27;)
+            .leftJoinAndSelect(&#x27;rec.empTo&#x27;, &#x27;empTo&#x27;).leftJoinAndSelect(&#x27;rec.empFrom&#x27;, &#x27;empFrom&#x27;)
+            .leftJoinAndSelect(&#x27;rec.tags&#x27;, &#x27;tags&#x27;).leftJoinAndSelect(&#x27;rec.reactions&#x27;, &#x27;reactions&#x27;)
+            .leftJoinAndSelect(&#x27;rec.comments&#x27;, &#x27;comments&#x27;).leftJoinAndSelect(&#x27;reactions.employeeFrom&#x27;, &#x27;reactFrom&#x27;)
+            .leftJoinAndSelect(&#x27;comments.employeeFrom&#x27;, &#x27;commentFrom&#x27;)
+            .leftJoinAndSelect(&#x27;comments.reactions&#x27;, &#x27;commentReactions&#x27;).leftJoinAndSelect(&#x27;commentReactions.employeeFrom&#x27;, &#x27;commentReactionsFrom&#x27;)
+            .where(&quot;rec.empToCompanyId &#x3D; :compID&quot;, {compID : rockstarUser.companyId}).andWhere(&quot;rec.empToEmployeeId &#x3D; :empID&quot;, {empID: rockstarUser.employeeId})
+            .andWhere(&quot;extract(Month from rec.createdAt) &#x3D; :prvMonth&quot;,{prvMonth:month}).andWhere(&quot;extract(Year from rec.createdAt) &#x3D; :yr&quot;,{yr:year}).
+            getMany();
+        }
+
+        //gets recognitions for this emloyee
+
+        let tagStatsList: RockstarStats[] &#x3D; [];
+        let tags: Tag[] &#x3D; [];
+        
+        //loops through each recognition, tallying the tags they have
+        for (let i &#x3D; 0; i &lt; recogs.length; i++)
+        {
+            const rec &#x3D; recogs[i];
+            for (let j &#x3D; 0; j &lt; rec.tags.length; j++) 
+            {
+                let tag &#x3D; rec.tags[j]
+                const tagSet &#x3D; tags.findIndex(aTag &#x3D;&gt; aTag.tagId &#x3D;&#x3D;&#x3D; tag.tagId)
+                    
+                
+                    if (tagSet &#x3D;&#x3D;&#x3D; -1)
+                    {
+                        tags.push(tag)
+                        let currStat &#x3D; new RockstarStats();
+                        currStat.countReceived &#x3D; 1;
+                        currStat.tag &#x3D; tag;
+                        currStat.month &#x3D; month;
+                        currStat.year &#x3D; year;
+                        tagStatsList.push(currStat);
+                    }
+                    else 
+                    {
+                        tagStatsList[tagSet].countReceived &#x3D; tagStatsList[tagSet].countReceived + 1;
+                    }
+            }
+
+        }
+
+      
+        //checks if the rockstar is saved already
+        let savedRockstar &#x3D; await this.rockstarRepo.findOne({where: { compID: companyId, month: month, year:year}, relations:[&#x27;rockstar&#x27;, &#x27;recognitions&#x27;, &#x27;stats&#x27;, &#x27;recognitions.empFrom&#x27;, &#x27;recognitions.empTo&#x27;, &#x27;recognitions.tags&#x27;, &#x27;recognitions.comments&#x27;, &#x27;recognitions.comments.employeeFrom&#x27;, &#x27;recognitions.reactions&#x27;, &#x27;recognitions.reactions.employeeFrom&#x27;, &#x27;recognitions.comments.reactions&#x27;, &#x27;recognitions.comments.reactions.employeeFrom&#x27;]});
+
+        //if not already there, saves it 
+        if (!savedRockstar &amp;&amp; rockstarUser)
+        {
+            //assembles the rockstar object
+            let rockstar: Rockstar &#x3D; new Rockstar();
+            rockstar.month &#x3D; month;
+            rockstar.year &#x3D; year;
+            rockstar.recognitions &#x3D; recogs;
+
+            rockstar.rockstar &#x3D; rockstarUser;
+            rockstar.compID &#x3D; rockstarUser.companyId;
+            await this.rockstarRepo.save(rockstar);
+            savedRockstar &#x3D; await this.rockstarRepo.findOne({where: { compID: companyId, month: month, year:year}, relations:[&#x27;rockstar&#x27;, &#x27;recognitions&#x27;, &#x27;stats&#x27;, &#x27;recognitions.empFrom&#x27;, &#x27;recognitions.empTo&#x27;, &#x27;recognitions.tags&#x27;, &#x27;recognitions.comments&#x27;, &#x27;recognitions.comments.employeeFrom&#x27;, &#x27;recognitions.reactions&#x27;, &#x27;recognitions.reactions.employeeFrom&#x27;, &#x27;recognitions.comments.reactions&#x27;, &#x27;recognitions.comments.reactions.employeeFrom&#x27;]});
+        }
+
+        //passes the rockstar&#x27;s ID in the rockstar table to the tags 
+        for (let i &#x3D; 0; i&lt; tagStatsList.length; ++i )
+        {
+            tagStatsList[i].rockstarID &#x3D; savedRockstar.rockstarID;
+        
+        }
+        //checks if each tag exists, if not writes them to the rockstar tag DB
+        for (let i &#x3D; 0; i &lt; tagStatsList.length; i++)
+        {
+            if (await this.rockstarStatsRepo.findOne({where: { month: month, year:year, rockstarID: savedRockstar.rockstarID, tag:tagStatsList[i].tag}}) &#x3D;&#x3D; undefined)
+            {
+                await this.rockstarStatsRepo.save(tagStatsList[i]);
+            }
+        }
+
+        
+        //assembles the DTO for return
+        let returnVal: ReturnRockstarDto &#x3D; new ReturnRockstarDto();
+        returnVal.rockstar &#x3D; savedRockstar;
+        returnVal.rockstarStats &#x3D; tagStatsList;
+        return returnVal;
+
+    }
+}</code></pre>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+                   
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> result-matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'injectable';
+            var COMPODOC_CURRENT_PAGE_URL = 'RockstarService.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+       <!-- Required to polyfill modern browsers as code is ES5 for IE... -->
+       <script src="../js/libs/custom-elements-es5-adapter.js" charset="utf-8" defer></script>
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>
