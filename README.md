@@ -24,6 +24,9 @@
 
 ## Description
 
+SEVERE VULNURABILITIES IN REPO DEPENDENCIES
+DO NOT USE WITHOUT MODIFICATION!
+
 Backend code for CS320 Peer Recognition Software Prototype (Spring 2021) using the [Nest](https://github.com/nestjs/nest) framework.
 
 ## Installation
